@@ -11,7 +11,6 @@ import {
 import type { MetaFunction } from "remix";
 import styles from "./tailwind.css";
 
-import { verifyUserRole } from "~/auth/authenticateUser";
 import { authenticator } from "./services/auth.server";
 export function links() {
   return [{ rel: "stylesheet", href: styles }];
