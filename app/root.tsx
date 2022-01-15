@@ -1,5 +1,6 @@
 import {
   Links,
+  LinksFunction,
   LiveReload,
   Meta,
   Outlet,
@@ -10,9 +11,9 @@ import {
 import type { MetaFunction } from "remix";
 import styles from "./tailwind.css";
 
-export function links() {
+export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
-}
+};
 
 export const meta: MetaFunction = () => {
   return { title: "LBS Student Management System" };

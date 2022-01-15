@@ -2,9 +2,8 @@ import type { ActionFunction, LoaderFunction } from "remix";
 
 import { authenticator } from "~/services/auth.server";
 
-export let loader: LoaderFunction = ({ request }) => {
+export let action: ActionFunction = async ({ request }) => {
   return authenticator.authenticate("auth0", request, {
     successRedirect: "/students",
-    failureRedirect: "/login",
   });
 };

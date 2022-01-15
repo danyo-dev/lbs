@@ -1,7 +1,7 @@
 import { LoaderFunction, Outlet, useLoaderData } from "remix";
 import { checkAuthStatus } from "~/services/checkAuthStatus";
 
-export let loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request }) => {
   return await checkAuthStatus(request);
 };
 
