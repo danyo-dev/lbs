@@ -6,8 +6,8 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
 } from "remix";
+
 import type { MetaFunction } from "remix";
 import styles from "./tailwind.css";
 
@@ -20,7 +20,6 @@ export const meta: MetaFunction = () => {
 };
 
 export default function App() {
-  const message = useLoaderData();
   return (
     <html lang="en">
       <head>
@@ -30,7 +29,6 @@ export default function App() {
         <Links />
       </head>
       <body>
-        {message}
         <Outlet />
         <ScrollRestoration />
         <Scripts />

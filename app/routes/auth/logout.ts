@@ -8,7 +8,7 @@ export let action: ActionFunction = async ({ request }): Promise<Response> => {
   const logoutURL = new URL("https://dev-jp67y3j5.us.auth0.com/v2/logout");
 
   logoutURL.searchParams.set("client_id", "P2kCIEBbNaeHT2ssCo8cefdUWKENO0z6");
-  logoutURL.searchParams.set("returnTo", "http://localhost:3000/login");
+  logoutURL.searchParams.set("returnTo", "http://localhost:3000/");
 
   return redirect(logoutURL.toString(), {
     headers: { "Set-Cookie": await destroySession(session) },

@@ -1,7 +1,7 @@
 export default function Index() {
   return (
     <>
-      <h1>student</h1>
+      <h2>Admin index</h2>
     </>
   );
 }

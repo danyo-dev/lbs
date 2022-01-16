@@ -2,9 +2,15 @@ import { json } from "@remix-run/server-runtime";
 import { authenticator } from "./auth.server";
 
 export async function checkAuthStatus(request: Request) {
-  const user = await authenticator.isAuthenticated(request, {
-    failureRedirect: "/login",
+  return await authenticator.isAuthenticated(request);
+}
+
+export async function handleAuthFailureRedirect(request: Request) {
+  return await authenticator.isAuthenticated(request, {
+    failureRedirect: "/",
   });
-  return user;
-  // throw json({ message: "Forbidden" }, { status: 403 });
+}
+
+export function handleAuthFailureError() {
+  throw json({ message: "Forbidden" }, { status: 403 });
 }
