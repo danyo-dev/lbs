@@ -1,23 +1,21 @@
-import { LoaderFunction, Outlet } from "remix";
-import {
-  checkAuthStatus,
-  handleAuthFailureRedirect,
-} from "~/services/checkAuthStatus";
+import { LoaderFunction, Outlet, useLoaderData } from "remix";
+import type { Auth0Profile } from "remix-auth-auth0";
 import Sidebar from "~/components/Sidebar";
+import { authenticator } from "~/services/auth.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const user = await checkAuthStatus(request);
-  if (await checkAuthStatus(request)) return user;
-  return await handleAuthFailureRedirect(request);
+  return await authenticator.isAuthenticated(request, { failureRedirect: "/" });
 };
 
-export default function Index() {
+export default function Admin() {
+  const { displayName } = useLoaderData<Auth0Profile>();
+
   return (
     <div className="flex">
-      <div className="w-1/5">
-        <Sidebar />
+      <div className="w-1/6">
+        <Sidebar displayName={displayName} />
       </div>
-      <div className="w-4/5 px-10 pt-10">
+      <div className="w-5/6 px-10 pt-10">
         <Outlet />
       </div>
     </div>

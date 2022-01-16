@@ -5,7 +5,7 @@ import { authenticator } from "~/services/auth.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
   return await authenticator.isAuthenticated(request, {
-    successRedirect: "/admin",
+    successRedirect: "/admin/overview",
   });
 };
 
@@ -39,7 +39,7 @@ export default function Index() {
         <img
           className="absolute inset-0 object-cover w-full h-full"
           src={university}
-          alt=""
+          alt="university"
         />
       </div>
     </div>
