@@ -7,7 +7,7 @@ import { Auth0Strategy, Auth0Profile } from "remix-auth-auth0";
 // strategies will return and will be stored in the session
 export const authenticator = new Authenticator<Auth0Profile>(sessionStorage);
 
-let auth0Strategy = new Auth0Strategy(
+const auth0Strategy = new Auth0Strategy(
   {
     callbackURL: process.env.AUTH0_CALLBACK_URL || "",
     clientID: process.env.AUTH0_CLIENT_ID || "",
