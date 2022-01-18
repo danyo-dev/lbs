@@ -1,51 +1,56 @@
-/* This example requires Tailwind CSS v2.0+ */
+import { Link } from "remix";
+
 const people = [
   {
+    id: "1",
     name: "Jane Cooper",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: "Admin",
+    title: "Bachelor",
+    department: "Semester: 4",
+    role: "123456",
     email: "jane.cooper@example.com",
     image:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
   },
   {
+    id: "2",
     name: "Jane Cooper",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: "Admin",
+    title: "Master",
+    department: "Semester: 7",
+    role: "234567",
     email: "jane.cooper@example.com",
     image:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
   },
   {
+    id: "3",
     name: "Jane Cooper",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: "Admin",
+    title: "Master",
+    department: "Semester: 7",
+    role: "345678",
     email: "jane.cooper@example.com",
     image:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
   },
   {
+    id: "4",
     name: "Jane Cooper",
-    title: "Regional Paradigm Technician",
-    department: "Optimization",
-    role: "Admin",
+    title: "Bachelor",
+    department: "Semester: 4",
+    role: "123456",
     email: "jane.cooper@example.com",
     image:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
   },
-  // More people...
 ];
 
-export default function Overview() {
+export default function StudentsIndex() {
   return (
-    <div className="my-6 overflow-x-auto ">
-      <div className="py-2 align-middle  ">
-        <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+    <>
+      <h1 className="text-2xl font-extrabold text-slate-800 mb-6">Students</h1>
+      <div className="align-middle">
+        <div className="shadow overflow-hidden border-b border-gray-200 rounded-lg">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-white">
               <tr>
                 <th
                   scope="col"
@@ -57,19 +62,19 @@ export default function Overview() {
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Title
+                  Semester
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Status
+                  Payment Status
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Role
+                  Student Number
                 </th>
                 <th scope="col" className="relative px-6 py-3">
                   <span className="sr-only">Edit</span>
@@ -85,7 +90,7 @@ export default function Overview() {
                         <img
                           className="h-10 w-10 rounded-full"
                           src={person.image}
-                          alt=""
+                          alt="image"
                         />
                       </div>
                       <div className="ml-4">
@@ -113,12 +118,12 @@ export default function Overview() {
                     {person.role}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <a
-                      href="#"
+                    <Link
+                      to={person.id}
                       className="text-indigo-600 hover:text-indigo-900"
                     >
                       Edit
-                    </a>
+                    </Link>
                   </td>
                 </tr>
               ))}
@@ -126,6 +131,6 @@ export default function Overview() {
           </table>
         </div>
       </div>
-    </div>
+    </>
   );
 }
