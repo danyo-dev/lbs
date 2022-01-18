@@ -6,7 +6,7 @@ export default function Sidebar() {
   return (
     <aside>
       <div className="pb-4 flex flex-col">
-        <img className="w-80 rounded-lg" src={logo} />
+        <img className="w-40 rounded-lg" src={logo} />
       </div>
 
       <ul className="text-slate-600 ">
