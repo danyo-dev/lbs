@@ -8,8 +8,7 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "remix";
-import type { LoaderFunction } from "remix";
-import type { MetaFunction } from "remix";
+import type { MetaFunction, LoaderFunction } from "remix";
 import { EnvVars } from "~/types/envTypes";
 import styles from "./tailwind.css";
 
