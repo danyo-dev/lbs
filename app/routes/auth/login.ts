@@ -7,3 +7,8 @@ export const action: ActionFunction = async ({ request }) => {
     successRedirect: "/admin/overview",
   });
 };
+export const loader: LoaderFunction = () => {
+  throw new Response("404 Not Found", {
+    status: 404,
+  });
+};

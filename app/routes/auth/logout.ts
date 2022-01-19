@@ -1,5 +1,5 @@
 import { redirect } from "remix";
-import type { ActionFunction } from "remix";
+import type { ActionFunction, LoaderFunction } from "remix";
 import { destroySession, getSession } from "~/services/session.server";
 
 export let action: ActionFunction = async ({ request }): Promise<Response> => {
@@ -12,5 +12,11 @@ export let action: ActionFunction = async ({ request }): Promise<Response> => {
 
   return redirect(logoutURL.toString(), {
     headers: { "Set-Cookie": await destroySession(session) },
+  });
+};
+
+export const loader: LoaderFunction = () => {
+  throw new Response("404 Not Found", {
+    status: 404,
   });
 };
