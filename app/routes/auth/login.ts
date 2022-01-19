@@ -1,4 +1,4 @@
-import type { ActionFunction } from "remix";
+import type { LoaderFunction, ActionFunction } from "remix";
 
 import { authenticator } from "~/services/auth.server";
 
