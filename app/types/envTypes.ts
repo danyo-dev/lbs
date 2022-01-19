@@ -4,4 +4,4 @@ export interface EnvVars {
   };
 }
 
-export interface CustomWindow extends Window, EnvVars
+export interface CustomWindow extends Window, EnvVars {}
