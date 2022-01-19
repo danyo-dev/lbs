@@ -9,11 +9,10 @@ export const authenticator = new Authenticator<Auth0Profile>(sessionStorage);
 
 const auth0Strategy = new Auth0Strategy(
   {
-    callbackURL: "http://localhost:3000/auth/callback",
-    clientID: "P2kCIEBbNaeHT2ssCo8cefdUWKENO0z6",
-    clientSecret:
-      "CbCKYSuF5suGGoQ7Zt9h6g6kU8V1xH5AvvuU1NUZmr95T0sFkexNP6JB8B9qDXc7",
-    domain: "dev-jp67y3j5.us.auth0.com",
+    callbackURL: process.env.AUTH0_CALLBACK_URL || "",
+    clientID: process.env.AUTH0_CLIENT_ID || "",
+    clientSecret: process.env.AUTH0_CLIENT_SECRET || "",
+    domain: process.env.AUTH0_ISSUER_BASE_URL || "",
   },
   async ({ profile }) => {
     return profile;
