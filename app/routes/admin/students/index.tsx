@@ -14,7 +14,9 @@ export default function StudentsIndex() {
   const [filterBy, setFilterBy] = useState("");
 
   const filteredStudents = data.filter((entry: any) => {
-    return filterBy ? entry.name.startsWith(filterBy) : data;
+    return filterBy
+      ? entry.name.toLowerCase().startsWith(filterBy.toLowerCase())
+      : data;
   });
 
   return (
