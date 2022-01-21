@@ -11,24 +11,16 @@ export const loader: LoaderFunction = () => {
 // simulating API Student data to intgrate search fuction -> needs to be adjusted when actual data is received
 export default function StudentsIndex() {
   const data = useLoaderData<any>();
-  const [students, setStudents] = useState(data);
+  const [filterBy, setFilterBy] = useState("");
 
-  function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
-    const currentValue = e.target.value;
-    if (currentValue === "") {
-      setStudents(data);
-      return;
-    }
-    const filteredStudents = data.filter((user) => {
-      return user.name.toLowerCase().startsWith(currentValue.toLowerCase());
-    });
-    setStudents(filteredStudents);
-  }
+  const filteredStudents = data.filter((entry: any) => {
+    return filterBy ? entry.name.startsWith(filterBy) : data;
+  });
 
   return (
     <>
       <h1 className="text-2xl font-extrabold text-slate-800 mb-6">Students</h1>
-      <SearchBar handleSearch={handleSearch} />
+      <SearchBar setFilterBy={setFilterBy} />
 
       <div className="align-middle">
         <div className=" overflow-hidden border border-slate-200 rounded-lg">
@@ -65,7 +57,7 @@ export default function StudentsIndex() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-slate-200">
-              {students.map((person, idx) => (
+              {filteredStudents.map((person, idx) => (
                 <tr key={`${person.email}-${idx}`}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
