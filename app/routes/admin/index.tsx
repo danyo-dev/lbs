@@ -1,10 +1,7 @@
-import { Outlet } from "remix";
+import type { LoaderFunction } from "remix";
 
-export default function Overview() {
-  return (
-    <>
-      <h1>Overview</h1>
-      <Outlet />
-    </>
-  );
-}
+export const loader: LoaderFunction = () => {
+  throw new Response("404 Not Found", {
+    status: 404,
+  });
+};

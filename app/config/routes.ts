@@ -6,17 +6,17 @@ import {
 
 export const routes = [
   {
-    path: "/admin/",
+    path: "overview",
     icon: HomeIcon,
     name: "Overview",
   },
   {
-    path: "/admin/students/",
+    path: "students",
     icon: AcademicCapIcon,
     name: "Students",
   },
   {
-    path: "/admin/logs/",
+    path: "logs",
     icon: ClipboardListIcon,
     name: "Logs",
   },
