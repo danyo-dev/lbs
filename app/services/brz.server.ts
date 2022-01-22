@@ -21,7 +21,7 @@ export async function brzLoginRequestHandler(): Promise<BrzLoginResponse> {
       headers,
     }
   );
-  if (response.status >= 200 && response.status <= 299) {
+  if (response.status === 200) {
     return response.json();
   } else {
     throw new Response("error occured", {
@@ -46,7 +46,12 @@ export async function brzRequestMatrikelNumber(request: Request): Promise<any> {
     headers,
   });
 
-  const XMLResponse = await response.text();
-
-  return converter.xml2json(XMLResponse, { compact: true });
+  if (response.status === 200) {
+    const XMLResponse = await response.text();
+    return converter.xml2json(XMLResponse, { compact: true });
+  } else {
+    throw new Response("error occured", {
+      status: response.status,
+    });
+  }
 }
