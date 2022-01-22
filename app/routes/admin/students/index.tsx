@@ -1,16 +1,11 @@
 import { useState } from "react";
-import { Link, useLoaderData } from "remix";
-import type { LoaderFunction } from "remix";
+import { Form, Link } from "remix";
 import SearchBar from "~/components/SearchBar";
 import { people } from "~/data/students";
 
-export const loader: LoaderFunction = () => {
-  return people;
-};
-
 // simulating API Student data to intgrate search fuction -> needs to be adjusted when actual data is received
 export default function StudentsIndex() {
-  const data = useLoaderData<any>();
+  const data = people;
   const [filterBy, setFilterBy] = useState("");
 
   const filteredStudents = data.filter((entry: any) => {
