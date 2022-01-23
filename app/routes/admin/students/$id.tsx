@@ -1,7 +1,6 @@
-import { json, Link, LoaderFunction } from "remix";
+import { json, Link, LoaderFunction, useMatches, useParams } from "remix";
 import { ArrowLeftIcon } from "@heroicons/react/outline";
-import { brzRequestMatrikelNumber } from "~/services/brz.server";
-import { people } from "~/data/students";
+import { brzRequestMatrikelNumber } from "~/services/brzService";
 import MatrikelBox from "~/components/MatrikelBox";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -13,8 +12,9 @@ export const loader: LoaderFunction = async ({ request }) => {
   const parseData = JSON.parse(matrikelData);
 
   // Extract data needed by Client
-  const matrikelStatusCode =
-    parseData.matrikelpruefungantwort.matrikelpruefergebnis.statuscode._text;
+  const matrikelStatusCode = parseInt(
+    parseData.matrikelpruefungantwort.matrikelpruefergebnis.statuscode._text
+  );
   const matrikelNummer =
     parseData.matrikelpruefungantwort.matrikelpruefergebnis.matrikelliste
       .extendedstudierendenkey?.matrikelnummer._text;
@@ -23,6 +23,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function EditStudent() {
+  const data = useMatches().find((m) => m.pathname === "/admin/students")?.data;
+  const params = useParams();
+
+  const student = data?.find((student) => student.id === params.id);
+  console.log(student);
   return (
     <>
       <div className="flex items-center mb-6">
@@ -43,13 +48,14 @@ export default function EditStudent() {
               <div className="col-span-3">
                 <label
                   htmlFor="first-name"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-600"
                 >
                   First name
                 </label>
                 <input
                   type="text"
                   name="first-name"
+                  defaultValue={student.name}
                   id="first-name"
                   autoComplete="given-name"
                   className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg"
@@ -59,13 +65,14 @@ export default function EditStudent() {
               <div className="col-span-3">
                 <label
                   htmlFor="last-name"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-600"
                 >
                   Last name
                 </label>
                 <input
                   type="text"
                   name="last-name"
+                  defaultValue={student.name}
                   id="last-name"
                   autoComplete="family-name"
                   className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
@@ -75,7 +82,7 @@ export default function EditStudent() {
               <div className="col-span-6 sm:col-span-6">
                 <label
                   htmlFor="email-address"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-600"
                 >
                   Email address
                 </label>
@@ -91,7 +98,7 @@ export default function EditStudent() {
               <div className="col-span-6 sm:col-span-6">
                 <label
                   htmlFor="country"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-600"
                 >
                   Country
                 </label>
@@ -107,7 +114,7 @@ export default function EditStudent() {
               <div className="col-span-6">
                 <label
                   htmlFor="street-address"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-600"
                 >
                   Street address
                 </label>
@@ -123,7 +130,7 @@ export default function EditStudent() {
               <div className="col-span-2 ">
                 <label
                   htmlFor="city"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-600"
                 >
                   City
                 </label>
@@ -139,7 +146,7 @@ export default function EditStudent() {
               <div className="col-span-2">
                 <label
                   htmlFor="region"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-600"
                 >
                   State / Province
                 </label>
@@ -155,7 +162,7 @@ export default function EditStudent() {
               <div className="col-span-2">
                 <label
                   htmlFor="postal-code"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-600"
                 >
                   ZIP / Postal code
                 </label>

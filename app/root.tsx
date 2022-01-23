@@ -1,4 +1,5 @@
 import {
+  json,
   Links,
   LinksFunction,
   LiveReload,
@@ -11,13 +12,25 @@ import {
 import type { MetaFunction, LoaderFunction } from "remix";
 import { EnvVars } from "~/types/envTypes";
 import styles from "./tailwind.css";
+import { commitSession, getSession } from "./services/session.server";
+import { brzLoginRequestHandler } from "./services/brzService";
 
-export const loader: LoaderFunction = () => {
-  return {
-    ENV: {
-      AUTH0_SESSION_TIMEOUT: process.env.AUTH0_SESSION_TIMEOUT,
+export const loader: LoaderFunction = async ({ request }) => {
+  const brzLoginResponse = await brzLoginRequestHandler();
+  const session = await getSession(request);
+  session.set("brz_auth", brzLoginResponse);
+  return json(
+    {
+      ENV: {
+        AUTH0_SESSION_TIMEOUT: process.env.AUTH0_SESSION_TIMEOUT,
+      },
     },
-  };
+    {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    }
+  );
 };
 
 export const links: LinksFunction = () => {

@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Form, Link } from "remix";
+import { Link, useLoaderData, useMatches } from "remix";
 import SearchBar from "~/components/SearchBar";
-import { people } from "~/data/students";
 
 // simulating API Student data to intgrate search fuction -> needs to be adjusted when actual data is received
 export default function StudentsIndex() {
-  const data = people;
+  const data = useMatches().find((m) => m.pathname === "/admin/students")?.data;
+
   const [filterBy, setFilterBy] = useState("");
 
-  const filteredStudents = data.filter((entry: any) => {
+  const filteredStudents = data?.filter((entry: any) => {
     return filterBy
       ? entry.name.toLowerCase().startsWith(filterBy.toLowerCase())
       : data;
