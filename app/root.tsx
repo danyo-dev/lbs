@@ -12,11 +12,12 @@ import {
 import type { MetaFunction, LoaderFunction } from "remix";
 import { EnvVars } from "~/types/envTypes";
 import styles from "./tailwind.css";
-import { commitSession, getSession } from "./services/session.server";
+import { authenticator } from "./services/auth.server";
 import { brzLoginRequestHandler } from "./services/brzService";
+import { commitSession } from "./services/session.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const { session } = await brzLoginRequestHandler(request);
+  const brzSession = await brzLoginRequestHandler(request);
   return json(
     {
       ENV: {
@@ -25,7 +26,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     },
     {
       headers: {
-        "Set-Cookie": await commitSession(session),
+        "Set-Cookie": await commitSession(brzSession),
       },
     }
   );
