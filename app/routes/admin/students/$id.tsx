@@ -1,6 +1,6 @@
-import { json, Link, LoaderFunction, useMatches, useParams } from "remix";
+import { Form, json, Link, LoaderFunction, useMatches, useParams } from "remix";
 import { ArrowLeftIcon } from "@heroicons/react/outline";
-import { brzRequestMatrikelNumber } from "~/services/brzService";
+import { requestBrzMatrikelNumber } from "~/services/brzService";
 import MatrikelBox from "~/components/MatrikelBox";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -8,7 +8,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   // get MatrikelNumber infos
   // TODO: fetch student data and pass as param
-  const matrikelData = await brzRequestMatrikelNumber(request);
+  const matrikelData = await requestBrzMatrikelNumber(request);
   const parseData = JSON.parse(matrikelData);
 
   // Extract data needed by Client
@@ -26,8 +26,12 @@ export default function EditStudent() {
   const data = useMatches().find((m) => m.pathname === "/admin/students")?.data;
   const params = useParams();
 
+  const pathName = useMatches().find(
+    (m) => m.pathname === "/admin/students"
+  )?.pathname;
+
   const student = data?.find((student) => student.id === params.id);
-  console.log(student);
+
   return (
     <>
       <div className="flex items-center mb-6">
@@ -186,6 +190,15 @@ export default function EditStudent() {
           </div>
         </div>
       </form>
+      <Form action="/auth/brzRefresh" method="post">
+        <input type="hidden" name="origin" value={pathName} />
+        <button
+          type="submit"
+          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Refresh Token
+        </button>
+      </Form>
     </>
   );
 }

@@ -16,9 +16,7 @@ import { commitSession, getSession } from "./services/session.server";
 import { brzLoginRequestHandler } from "./services/brzService";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const brzLoginResponse = await brzLoginRequestHandler();
-  const session = await getSession(request);
-  session.set("brz_auth", brzLoginResponse);
+  const { session } = await brzLoginRequestHandler(request);
   return json(
     {
       ENV: {
