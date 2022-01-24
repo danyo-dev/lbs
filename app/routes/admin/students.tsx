@@ -26,7 +26,7 @@ export function CatchBoundary() {
       <div>
         Please contact
         <a className="text-blue-600" href='mailTo="#"'>
-          support{" "}
+          support
         </a>
         for assistance
       </div>
