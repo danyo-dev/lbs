@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { Form, LoaderFunction, Outlet, useCatch, useFetcher } from "remix";
+import { LoaderFunction, Outlet, useCatch } from "remix";
 import { people as data } from "~/data/students";
 
 export const loader: LoaderFunction = () => {
@@ -7,11 +6,7 @@ export const loader: LoaderFunction = () => {
 };
 
 export default function Students() {
-  return (
-    <>
-      <Outlet />
-    </>
-  );
+  return <Outlet />;
 }
 
 export function CatchBoundary() {
@@ -20,12 +15,12 @@ export function CatchBoundary() {
   return (
     <div className="error-container">
       <div>
-        Problems connecting to remote API (BRZ). Unexpected caught response with
-        status: {caught.status}.
+        Problems fetching data. Unexpected caught response with status:{" "}
+        {caught.status}.
       </div>
       <div>
-        Please contact
-        <a className="text-blue-600" href='mailTo="#"'>
+        Please try refreshing the browser or contact
+        <a className="text-sky-600 mx-2" href='mailTo="#"'>
           support
         </a>
         for assistance

@@ -4,7 +4,7 @@ export default function MatrikelBox() {
   const data = useLoaderData();
 
   return (
-    <div className="bg-white py-6 px-6 my-6 shadow border-slate-200 rounded-lg w-1/3 text-sm text-slate-500">
+    <>
       {data.matrikelStatusCode === 1 ? (
         <div className="flex justify-between items-center">
           <p>Keine Matrikelnummer gefunden</p>
@@ -25,6 +25,6 @@ export default function MatrikelBox() {
           <p>{data.matrikelNummer}</p>
         </div>
       )}
-    </div>
+    </>
   );
 }
