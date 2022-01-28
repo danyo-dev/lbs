@@ -1,187 +1,211 @@
-import { Form, json, LoaderFunction, useMatches, useParams } from "remix";
-import MatrikelBox from "~/components/MatrikelBox";
-import { requestBrzMatrikelNumber } from "~/services/brzService";
-
-export const loader: LoaderFunction = async ({ request }) => {
-  // get Student Data needed for matrikelNumber
-
-  // get MatrikelNumber infos
-  // TODO: fetch student data and pass as param
-  const matrikelData = await requestBrzMatrikelNumber(request);
-  const parseData = JSON.parse(matrikelData);
-
-  // Extract data needed by Client
-  const matrikelStatusCode = parseInt(
-    parseData.matrikelpruefungantwort.matrikelpruefergebnis.statuscode._text
-  );
-  const matrikelNummer =
-    parseData.matrikelpruefungantwort.matrikelpruefergebnis.matrikelliste
-      .extendedstudierendenkey?.matrikelnummer._text;
-
-  return json({ matrikelStatusCode, matrikelNummer });
-};
+import { Form, useFetcher } from "remix";
+import BrzStammDatenBox from "~/components/BrzStammDatenBox";
 
 export default function StudentGeneralRoute() {
-  const data = useMatches().find((m) => m.pathname === "/admin/students")?.data;
-  const params = useParams();
-
-  const pathName = useMatches().find(
-    (m) => m.pathname === "/admin/students"
-  )?.pathname;
-
-  const student = data?.find((student) => student.id === params.studentId);
+  const brzData = useFetcher();
+  // TODO: clean up components and reduce code in file
   return (
-    <div>
-      <div className="bg-white py-6 px-6 my-6 shadow border-slate-200 rounded-lg w-1/2 text-sm text-slate-500">
-        <MatrikelBox />
-      </div>
-      <div className="w-full grid grid-cols-2">
-        <section className="shadow overflow-hidden rounded-lg border-slate-200 gap-6">
-          <Form action="#" method="post">
-            <div className="px-6 py-5 bg-white col-span-6">
-              <div className="grid grid-cols-6 gap-6">
-                <div className="col-span-3">
-                  <label
-                    htmlFor="first-name"
-                    className="block text-sm font-medium text-slate-600"
-                  >
-                    First name
-                  </label>
-                  <input
-                    type="text"
-                    name="first-name"
-                    defaultValue={student.name}
-                    id="first-name"
-                    autoComplete="given-name"
-                    className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg"
-                  />
-                </div>
+    <div className="w-3/4 my-12">
+      <section className=" border-slate-200 gap-6 ">
+        <h2 className="text-xl text-slate-600 my-2 ml-2">Academy 5 Daten</h2>
+        <brzData.Form
+          method="get"
+          action={`/admin/requests/brz/general-data`}
+          className=" bg-white col-span-6 shadow overflow-hidden rounded-lg"
+        >
+          <div className="px-6 py-5 bg-white col-span-6 shadow overflow-hidden ">
+            <div className="grid grid-cols-8 gap-6">
+              <div className="col-span-2">
+                <label
+                  htmlFor="first-name"
+                  className="block text-sm font-medium text-slate-600"
+                >
+                  Vorname
+                </label>
+                <input
+                  type="text"
+                  name="first-name"
+                  defaultValue="Anna"
+                  id="first-name"
+                  autoComplete="given-name"
+                  className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg"
+                />
+              </div>
 
-                <div className="col-span-3">
-                  <label
-                    htmlFor="last-name"
-                    className="block text-sm font-medium text-slate-600"
-                  >
-                    Last name
-                  </label>
-                  <input
-                    type="text"
-                    name="last-name"
-                    defaultValue={student.name}
-                    id="last-name"
-                    autoComplete="family-name"
-                    className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                </div>
+              <div className="col-span-2">
+                <label
+                  htmlFor="last-name"
+                  className="block text-sm font-medium text-slate-600"
+                >
+                  Nachname
+                </label>
+                <input
+                  type="text"
+                  name="last-name"
+                  defaultValue="Burtakova"
+                  id="last-name"
+                  autoComplete="family-name"
+                  className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                />
+              </div>
 
-                <div className="col-span-6 sm:col-span-6">
-                  <label
-                    htmlFor="email-address"
-                    className="block text-sm font-medium text-slate-600"
-                  >
-                    Email address
-                  </label>
-                  <input
-                    type="text"
-                    name="email-address"
-                    id="email-address"
-                    autoComplete="email"
-                    className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                </div>
-
-                <div className="col-span-6 sm:col-span-6">
-                  <label
-                    htmlFor="country"
-                    className="block text-sm font-medium text-slate-600"
-                  >
-                    Country
-                  </label>
-                  <input
-                    type="text"
-                    id="country"
-                    name="country"
-                    autoComplete="country-name"
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm"
-                  />
-                </div>
-
-                <div className="col-span-6">
-                  <label
-                    htmlFor="street-address"
-                    className="block text-sm font-medium text-slate-600"
-                  >
-                    Street address
-                  </label>
-                  <input
-                    type="text"
-                    name="street-address"
-                    id="street-address"
-                    autoComplete="street-address"
-                    className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                </div>
-
-                <div className="col-span-2 ">
-                  <label
-                    htmlFor="city"
-                    className="block text-sm font-medium text-slate-600"
-                  >
-                    City
-                  </label>
-                  <input
-                    type="text"
-                    name="city"
-                    id="city"
-                    autoComplete="address-level2"
-                    className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label
-                    htmlFor="region"
-                    className="block text-sm font-medium text-slate-600"
-                  >
-                    State / Province
-                  </label>
-                  <input
-                    type="text"
-                    name="region"
-                    id="region"
-                    autoComplete="address-level1"
-                    className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label
-                    htmlFor="postal-code"
-                    className="block text-sm font-medium text-slate-600"
-                  >
-                    ZIP / Postal code
-                  </label>
-                  <input
-                    type="text"
-                    name="postal-code"
-                    id="postal-code"
-                    autoComplete="postal-code"
-                    className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                </div>
+              <div className="col-span-2">
+                <label
+                  htmlFor="email-address"
+                  className="block text-sm font-medium text-slate-600"
+                >
+                  Geburtsdatum
+                </label>
+                <input
+                  type="text"
+                  name="birthdate"
+                  defaultValue="1995-07-03"
+                  id="email-address"
+                  autoComplete="email"
+                  className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                />
+              </div>
+              <div className="col-span-2">
+                <label
+                  htmlFor="email-address"
+                  className="block text-sm font-medium text-slate-600"
+                >
+                  Svnr:
+                </label>
+                <input
+                  type="text"
+                  name="svnr"
+                  id="svnr"
+                  className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                />
               </div>
             </div>
-            <div className="px-4 py-3 bg-gray-50 text-right">
-              <button
-                type="submit"
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
+          </div>
+          <div className="px-4 py-3 bg-slate-50 text-right">
+            <button
+              disabled={brzData.state === "submitting" ? true : false}
+              type="submit"
+              className="disabled:opacity-50 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
+            >
+              BRZ Stammdaten Abfragen
+            </button>
+          </div>
+        </brzData.Form>
+      </section>
+      <section className="border-slate-200 gap-6 mt-6">
+        <h2 className="text-xl text-slate-600 my-2 ml-2">BRZ Matrikeldaten</h2>
+        <div className="bg-white py-6 px-6 shadow border-slate-200 rounded-lg text-sm ">
+          <>
+            {brzData.state === "submitting" && (
+              <svg
+                className="animate-spin -ml-1 mr-3 h-5 w-5 text-sky-500"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
               >
-                Save
-              </button>
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            )}
+          </>
+          {brzData.type === "done" && (
+            <>
+              {brzData.data.matrikelStatusCode === 1 ? (
+                <div className="flex justify-between items-center">
+                  <p>Keine Matrikelnummer gefunden</p>
+                  <Form method="post">
+                    <button
+                      type="submit"
+                      className=" justify-center py-2 px-4 border border-transparent shadow-sm font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      Reservieren
+                    </button>
+                  </Form>
+                </div>
+              ) : (
+                <div className="grid grid-cols-4">
+                  <div>
+                    <p className="text-slate-500">Matrikelnummer</p>
+                    <div className="block text-2xl font-medium text-sky-600">
+                      {brzData.data.matrikelStudentData.matrikelnummer._text}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-slate-500">Semester</p>
+                    <div className="block text-2xl font-medium text-sky-600">
+                      {brzData.data.matrikelStudentData.semester._text}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-slate-500">Bildungseinrichtung</p>
+                    <div className="block text-2xl font-medium text-sky-600">
+                      {brzData.data.matrikelStudentData.be._text}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-slate-500">Matrikelstatus</p>
+                    <div className="block text-2xl font-medium text-sky-600">
+                      {brzData.data.matrikelStudentData.matrikelstatus._text}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+          {brzData.state === "idle" && brzData.type !== "done" && (
+            <div className="text-slate-600">
+              Ergebnisse werden nach abrufen der Daten angezeigt.
             </div>
-          </Form>
-        </section>
-      </div>
+          )}
+        </div>
+        <h2 className="text-xl text-slate-600 mt-6 mb-2 ml-2">
+          BRZ Stammdaten
+        </h2>
+        <div className="px-6 py-5 bg-white shadow overflow-hidden rounded-lg text-sm">
+          <>
+            {brzData.state === "submitting" && (
+              <svg
+                className="animate-spin -ml-1 mr-3 h-5 w-5 text-sky-500"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            )}
+          </>
+
+          {brzData.type === "done" && (
+            <BrzStammDatenBox stammDaten={brzData.data.stammDaten} />
+          )}
+          {brzData.state === "idle" && brzData.type !== "done" && (
+            <div>Bitte BRZ Abfrage betätigen um Ergebnisse anzuzeigen!</div>
+          )}
+        </div>
+      </section>
     </div>
   );
 }

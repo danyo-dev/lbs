@@ -68,18 +68,45 @@ async function authenticate(request: Request): Promise<Session> {
  * @param request
  * @returns a xml to JSON converted string as Promise
  */
-export async function requestBrzMatrikelNumber(
-  request: Request
-): Promise<string> {
-  const session = await brzAuthenticationHandler(request);
+export async function requestBrzStammdaten(session: Session): Promise<string> {
   const token = session.get("brz_auth").access_token;
 
   const uuid = v4();
 
   const headers = new Headers();
   headers.set("Authorization", `Bearer ${token}`);
+  const requestURL = `${process.env.BRZ_STAMMDATEN_URL}?be=FL&matrikelnummer=01329196&semester=2021W&uuid=${uuid}`;
+  const response = await fetch(requestURL, {
+    method: "get",
+    headers,
+  });
+  if (!response.ok) {
+    throw new Response("error occured", {
+      status: response.status,
+    });
+  }
+  const XMLResponse = await response.text();
 
-  const requestURL = `${process.env.BRZ_MATRIKEL_CHECK_URL}?geburtsdatum=1995-07-03&nachname=Burtakova&vorname=Anna&uuid=${uuid}`;
+  return converter.xml2json(XMLResponse, { compact: true });
+}
+/**
+ *
+ * @param request
+ * @returns a xml to JSON converted string as Promise
+ */
+export async function requestBrzMatrikelNumber(
+  session: Session,
+  userData
+): Promise<string> {
+  const token = session.get("brz_auth").access_token;
+  const { birthdate, vorname, nachname } = userData;
+  const uuid = v4();
+
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${token}`);
+
+  const requestURL = `${process.env.BRZ_MATRIKEL_CHECK_URL}?geburtsdatum=${birthdate}&nachname=${nachname}&vorname=${vorname}&uuid=${uuid}`;
+
   const response = await fetch(requestURL, {
     method: "get",
     headers,

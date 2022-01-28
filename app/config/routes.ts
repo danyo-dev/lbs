@@ -24,11 +24,11 @@ export const routes = [
 export const studentDetailRoutes = [
   {
     path: "general",
-    name: "Studiendaten",
+    name: "Stammdaten",
   },
   {
-    path: "personal",
-    name: "Stammdaten",
+    path: "study",
+    name: "Studiendaten",
   },
   {
     path: "payment",

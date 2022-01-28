@@ -3,26 +3,19 @@ import { Link, NavLink, Outlet, useMatches, useParams } from "remix";
 import { studentDetailRoutes } from "~/config/routes";
 
 export default function EditStudent() {
-  const data = useMatches().find((m) => m.pathname === "/admin/students")?.data;
   const params = useParams();
+  const data = useMatches().find((m) => m.pathname === "/admin/students")?.data;
 
-  const pathName = useMatches().find(
-    (m) => m.pathname === "/admin/students"
-  )?.pathname;
-
-  const student = data?.find((student) => student.id === params.studentId);
+  // Demo Data -> will use Academy 5 data in future
+  const student = data?.find((student: any) => student.id === params.studentId);
 
   return (
     <>
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center">
+      <div className="flex items-center mb-6">
+        <div className="flex items-center mr-6">
           <Link to="/admin/students">
             <ArrowLeftIcon className="h-5 w-5 text-slate-600" />
           </Link>
-
-          <h1 className=" font-extrabold text-slate-800 ml-10 ">
-            Details zu {student.name}
-          </h1>
         </div>
 
         <ul className="text-slate-600 flex ">
