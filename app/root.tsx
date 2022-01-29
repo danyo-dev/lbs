@@ -10,7 +10,7 @@ import {
 } from "remix";
 import type { MetaFunction, LoaderFunction } from "remix";
 import { EnvVars } from "~/types/envTypes";
-import styles from "./tailwind.css";
+import styles from "~/styles/tailwind-build.css";
 
 export const loader: LoaderFunction = () => {
   return {

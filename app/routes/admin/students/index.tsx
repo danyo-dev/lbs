@@ -2,22 +2,29 @@ import { useState } from "react";
 import { Link, useLoaderData } from "remix";
 import type { LoaderFunction } from "remix";
 import SearchBar from "~/components/SearchBar";
-import { people } from "~/data/students";
+import { fetchStudentProfiles } from "~/services/academy5Service";
+import { StudentProfile } from "~/types/responseTypes";
 
-export const loader: LoaderFunction = () => {
-  return people;
+export const loader: LoaderFunction = async () => {
+  const studentProfiles = await fetchStudentProfiles();
+
+  return studentProfiles;
 };
 
 // simulating API Student data to intgrate search fuction -> needs to be adjusted when actual data is received
 export default function StudentsIndex() {
-  const data = useLoaderData<any>();
+  const studentProfiles = useLoaderData<Array<StudentProfile>>();
   const [filterBy, setFilterBy] = useState("");
 
-  const filteredStudents = data.filter((entry: any) => {
-    return filterBy
-      ? entry.name.toLowerCase().startsWith(filterBy.toLowerCase())
-      : data;
-  });
+  // only filter when filterBy is set
+  const students = filterBy
+    ? studentProfiles.filter(({ firstname, lastname }) =>
+        // other search options can be added here
+        [firstname, lastname].some((entry) =>
+          entry.toLowerCase().includes(filterBy.toLowerCase())
+        )
+      )
+    : studentProfiles;
 
   return (
     <>
@@ -31,27 +38,33 @@ export default function StudentsIndex() {
               <tr>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider"
+                  className="tableHeader"
+                >
+                  Student ID
+                </th>
+                <th
+                  scope="col"
+                  className="tableHeader"
                 >
                   Name
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider"
+                  className="tableHeader"
+                >
+                  eMail
+                </th>
+                <th
+                  scope="col"
+                  className="tableHeader"
                 >
                   Semester
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider"
+                  className="tableHeader"
                 >
                   Payment Status
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider"
-                >
-                  Student Number
                 </th>
                 <th scope="col" className="relative px-6 py-3">
                   <span className="sr-only">Edit</span>
@@ -59,44 +72,32 @@ export default function StudentsIndex() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-slate-200">
-              {filteredStudents.map((person, idx) => (
-                <tr key={`${person.email}-${idx}`}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10">
-                        <img
-                          className="h-10 w-10 rounded-full"
-                          src={person.image}
-                          alt="image"
-                        />
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-slate-900">
-                          {person.name}
-                        </div>
-                        <div className="text-sm text-slate-500">
-                          {person.email}
-                        </div>
-                      </div>
-                    </div>
+              {students.map((student) => (
+                <tr key={student?.id}>
+                  <td className="tableCell">
+                    <p className="tableContent text-slate-900">
+                      {student.id}
+                    </p>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-slate-900">{person.title}</div>
-                    <div className="text-sm text-slate-500">
-                      {person.department}
-                    </div>
+                  <td className="tableCell">
+                    <p className="tableContent text-slate-900">
+                      {student.title} {student.firstname} {student.lastname}
+                    </p>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="tableCell">
+                    <p className="text-sm text-slate-500">{student.email}</p>
+                  </td>
+                  <td className="tableCell">
+                    <p className="text-sm text-slate-500 text-center">-</p>
+                  </td>
+                  <td className="tableCell">
                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                       Active
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                    {person.role}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <td className="tableCell text-right text-sm font-medium">
                     <Link
-                      to={person.id}
+                      to={student.id}
                       className="text-indigo-600 hover:text-indigo-900"
                     >
                       Edit
