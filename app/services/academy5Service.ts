@@ -1,8 +1,19 @@
 import soapRequest from "easy-soap-request";
 import convert from "xml-js";
-import { getAuthXML, getPersonIdXML } from "~/utils/xmlUtils";
+import {
+  getAuthXML,
+  getPersonIdXML,
+  getStudentProfilesXML,
+  handleSoapResponseError
+} from "~/utils/soapUtils";
 
-import { SoapAuthResponse, SoapProfileResponse } from "~/types/responseTypes";
+import { cleanupStudentAttributes } from "~/utils/studentUtils";
+
+import {
+  SoapAuthResponse,
+  SoapProfileResponse,
+  SoapStudentResponse,
+} from "~/types/responseTypes";
 
 // all authentication has to happen with this endpoint
 const coreAuthEndpoint = `${process.env.ACADEMY5_BASE_URL}/core`;
@@ -28,11 +39,14 @@ export async function authenticateSoap() {
       );
     }
 
-    const { response } = await soapRequest({
+    const request = await soapRequest({
       url: coreAuthEndpoint,
       headers,
       xml: getAuthXML(username, password),
     });
+
+    const { response } = handleSoapResponseError(request);
+
     // convert response to json
     const responseBody = convert.xml2js(response.body, {
       compact: true,
@@ -57,7 +71,7 @@ export async function fetchProfileSoap(profileId = 5555) {
   try {
     const authToken = await authenticateSoap();
 
-    const { response } = await soapRequest({
+    const request = await soapRequest({
       url: profileEndpoint,
       headers: {
         ...headers,
@@ -65,6 +79,8 @@ export async function fetchProfileSoap(profileId = 5555) {
       },
       xml: getPersonIdXML(profileId),
     });
+
+    const { response } = handleSoapResponseError(request);
 
     // convert response to json
     const responseBody = convert.xml2js(response.body, {
@@ -74,6 +90,41 @@ export async function fetchProfileSoap(profileId = 5555) {
     return responseBody["SOAP-ENV:Envelope"]["SOAP-ENV:Body"][
       "ns1:fetchProfileByIdResponse"
     ].fetchProfileByIdResponse._attributes;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function fetchStudentProfiles() {
+  try {
+    const authToken = await authenticateSoap();
+
+    const request = await soapRequest({
+      url: profileEndpoint,
+      headers: {
+        ...headers,
+        Cookie: `PHPSESSID=${authToken}`,
+      },
+      xml: getStudentProfilesXML(),
+    });
+
+    const { response } = handleSoapResponseError(request);
+    // convert response to json
+    const responseBody = convert.xml2js(response.body, {
+      compact: true,
+    }) as SoapStudentResponse;
+
+    /**
+     * cleanup response and remove unwanted soap key
+     * send back only necessary profile data
+     */
+    const students = responseBody["SOAP-ENV:Envelope"]["SOAP-ENV:Body"][
+      "ns1:fetchProfileByAccessGroupIdsResponse"
+    ].fetchProfileByAccessGroupIdsResponse.profile
+      .slice(0, 50) // strip them down to 50 for now
+      .map(cleanupStudentAttributes);
+
+    return students;
   } catch (error) {
     console.log(error);
   }
