@@ -2,10 +2,10 @@ import { LogoutIcon, BellIcon } from "@heroicons/react/outline";
 import { Form, LoaderFunction, Outlet, useLoaderData } from "remix";
 import type { Auth0Profile } from "remix-auth-auth0";
 import Sidebar from "~/components/Sidebar";
-import { authenticator } from "~/services/auth.server";
+import { requireAuthentication } from "~/services/auth.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  return await authenticator.isAuthenticated(request, { failureRedirect: "/" });
+  return await requireAuthentication(request);
 };
 
 export default function Admin() {
