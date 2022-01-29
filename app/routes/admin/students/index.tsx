@@ -1,19 +1,14 @@
 import { useState } from "react";
-import { Link, useLoaderData } from "remix";
-import type { LoaderFunction } from "remix";
+import { Link, useLoaderData, useMatches } from "remix";
 import SearchBar from "~/components/SearchBar";
-import { people } from "~/data/students";
-
-export const loader: LoaderFunction = () => {
-  return people;
-};
 
 // simulating API Student data to intgrate search fuction -> needs to be adjusted when actual data is received
 export default function StudentsIndex() {
-  const data = useLoaderData<any>();
+  const data = useMatches().find((m) => m.pathname === "/admin/students")?.data;
+
   const [filterBy, setFilterBy] = useState("");
 
-  const filteredStudents = data.filter((entry: any) => {
+  const filteredStudents = data?.filter((entry: any) => {
     return filterBy
       ? entry.name.toLowerCase().startsWith(filterBy.toLowerCase())
       : data;
@@ -96,7 +91,7 @@ export default function StudentsIndex() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <Link
-                      to={person.id}
+                      to={`${person.id}/general`}
                       className="text-indigo-600 hover:text-indigo-900"
                     >
                       Edit

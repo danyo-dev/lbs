@@ -21,3 +21,21 @@ export const routes = [
     name: "Logs",
   },
 ];
+export const studentDetailRoutes = [
+  {
+    path: "general",
+    name: "Stammdaten",
+  },
+  {
+    path: "study",
+    name: "Studiendaten",
+  },
+  {
+    path: "payment",
+    name: "Zahlungsdaten",
+  },
+  {
+    path: "exams",
+    name: "Prüfungsdaten",
+  },
+];

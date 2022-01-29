@@ -97,7 +97,6 @@ export async function requestBrzStammdaten(session: Session): Promise<string> {
 
   const headers = new Headers();
   headers.set("Authorization", `Bearer ${token}`);
-
   const requestURL = `${process.env.BRZ_STAMMDATEN_URL}?be=FL&matrikelnummer=01329196&semester=2021W&uuid=${uuid}`;
   const response = await fetch(requestURL, {
     method: "get",

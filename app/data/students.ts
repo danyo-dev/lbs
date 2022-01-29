@@ -11,7 +11,7 @@ export const people = [
   },
   {
     id: "2",
-    name: "jill",
+    name: "Jill Cooper",
     title: "Master",
     department: "Semester: 7",
     role: "234567",
@@ -21,7 +21,7 @@ export const people = [
   },
   {
     id: "3",
-    name: "Max",
+    name: "Max Musterman",
     title: "Master",
     department: "Semester: 7",
     role: "345678",
@@ -31,7 +31,7 @@ export const people = [
   },
   {
     id: "4",
-    name: "Robert",
+    name: "Robert Alberto",
     title: "Bachelor",
     department: "Semester: 4",
     role: "123456",

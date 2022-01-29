@@ -1,5 +1,5 @@
 import { ArrowLeftIcon } from "@heroicons/react/outline";
-import { Link, NavLink, Outlet, useCatch, useMatches, useParams } from "remix";
+import { Link, NavLink, Outlet, useMatches, useParams } from "remix";
 import { studentDetailRoutes } from "~/config/routes";
 
 export default function EditStudent() {
