@@ -22,5 +22,7 @@ const auth0Strategy = new Auth0Strategy(
 authenticator.use(auth0Strategy);
 
 export async function requireAuthentication(request: Request) {
-  return await authenticator.isAuthenticated(request, { failureRedirect: "/" });
+  return await authenticator.isAuthenticated(request, {
+    failureRedirect: "/",
+  });
 }

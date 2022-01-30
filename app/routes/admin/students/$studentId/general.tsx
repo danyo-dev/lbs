@@ -1,5 +1,5 @@
 import { Form, useCatch, useFetcher } from "remix";
-import BrzStammDatenBox from "~/components/BrzStammDatenBox";
+import BrzGeneralDataBox from "~/components/BrzGeneralDataBox";
 
 export default function StudentGeneralRoute() {
   const brzDataFetcher = useFetcher();
@@ -17,57 +17,60 @@ export default function StudentGeneralRoute() {
             <div className="grid grid-cols-8 gap-6">
               <div className="col-span-2">
                 <label
-                  htmlFor="first-name"
+                  htmlFor="vorname"
                   className="block text-sm font-medium text-slate-600"
                 >
                   Vorname
                 </label>
                 <input
                   type="text"
-                  name="first-name"
+                  name="vorname"
                   defaultValue="Anna"
-                  id="first-name"
+                  id="vorname"
+                  required
                   autoComplete="given-name"
-                  className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg"
+                  className="mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm  border-gray-300 rounded-lg"
                 />
               </div>
 
               <div className="col-span-2">
                 <label
-                  htmlFor="last-name"
+                  htmlFor="nachname"
                   className="block text-sm font-medium text-slate-600"
                 >
                   Nachname
                 </label>
                 <input
                   type="text"
-                  name="last-name"
+                  name="nachname"
                   defaultValue="Burtakova"
-                  id="last-name"
+                  id="nachname"
+                  required
                   autoComplete="family-name"
-                  className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  className="mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                 />
               </div>
 
               <div className="col-span-2">
                 <label
-                  htmlFor="email-address"
+                  htmlFor="geburtsdatum"
                   className="block text-sm font-medium text-slate-600"
                 >
                   Geburtsdatum
                 </label>
                 <input
                   type="text"
-                  name="birthdate"
+                  name="geburtsdatum"
                   defaultValue="1995-07-03"
-                  id="email-address"
+                  id="geburtsdatum"
+                  required
                   autoComplete="email"
-                  className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  className="mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                 />
               </div>
               <div className="col-span-2">
                 <label
-                  htmlFor="email-address"
+                  htmlFor="svnr"
                   className="block text-sm font-medium text-slate-600"
                 >
                   Svnr:
@@ -76,7 +79,8 @@ export default function StudentGeneralRoute() {
                   type="text"
                   name="svnr"
                   id="svnr"
-                  className="mt-1 focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  defaultValue=""
+                  className="mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                 />
               </div>
             </div>
@@ -207,7 +211,7 @@ export default function StudentGeneralRoute() {
           </>
 
           {brzDataFetcher.type === "done" && (
-            <BrzStammDatenBox stammDaten={brzDataFetcher.data.stammDaten} />
+            <BrzGeneralDataBox generalData={brzDataFetcher.data.generalData} />
           )}
           {brzDataFetcher.state === "idle" &&
             brzDataFetcher.type !== "done" && (

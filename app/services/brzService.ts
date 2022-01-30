@@ -1,5 +1,4 @@
 import { v4 } from "uuid";
-import { BrzLoginResponse } from "~/types/brzTypes";
 import { getSession } from "./session.server";
 import converter from "xml-js";
 import { Session } from "remix";
@@ -85,6 +84,7 @@ async function authenticate(request: Request): Promise<Session> {
 }
 
 // TODO: accept user data to create fetch rURL dynamically
+// test data atm
 /**
  *
  * @param request
@@ -97,20 +97,23 @@ export async function requestBrzStammdaten(session: Session): Promise<string> {
 
   const headers = new Headers();
   headers.set("Authorization", `Bearer ${token}`);
+
   const requestURL = `${process.env.BRZ_STAMMDATEN_URL}?be=FL&matrikelnummer=01329196&semester=2021W&uuid=${uuid}`;
+
   const response = await fetch(requestURL, {
     method: "get",
     headers,
   });
   const XMLResponse = await response.text();
-  const StringResponse = handleXMLResponse(XMLResponse);
+  const stringResponse = handleXMLResponse(XMLResponse);
 
   if (!response.ok) {
-    handleErrors(response.status, StringResponse);
+    handleErrors(response.status, stringResponse);
   }
 
-  return StringResponse;
+  return stringResponse;
 }
+
 /**
  *
  * @param request
@@ -118,28 +121,27 @@ export async function requestBrzStammdaten(session: Session): Promise<string> {
  */
 export async function requestBrzMatrikelNumber(
   session: Session,
-  userData
+  queryString: string
 ): Promise<string> {
   const token = session.get("brz_auth").access_token;
-  const { birthdate, vorname, nachname } = userData;
+
   const uuid = v4();
 
   const headers = new Headers();
   headers.set("Authorization", `Bearer ${token}`);
 
-  const requestURL = `${process.env.BRZ_MATRIKEL_CHECK_URL}?geburtsdatum=${birthdate}&nachname=${nachname}&vorname=${vorname}&uuid=${uuid}`;
-
+  const requestURL = `${process.env.BRZ_MATRIKEL_CHECK_URL}${queryString}uuid=${uuid}`;
+  console.log(requestURL);
   const response = await fetch(requestURL, {
     method: "get",
     headers,
   });
 
   const XMLResponse = await response.text();
-  const StringResponse = handleXMLResponse(XMLResponse);
+  const stringResponse = handleXMLResponse(XMLResponse);
 
   if (!response.ok) {
-    handleErrors(response.status, StringResponse);
+    handleErrors(response.status, stringResponse);
   }
-
-  return StringResponse;
+  return stringResponse;
 }
