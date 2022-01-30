@@ -18,7 +18,7 @@ export default function StudentGeneralRoute() {
 
       <section className="border-slate-200 gap-6 mt-6">
         <BrzMatrikelDataBox state={state} type={type} data={data} />
-        <BrzGeneralDataBox state={state} type={type} data={data} />
+        {/* <BrzGeneralDataBox state={state} type={type} data={data} /> */}
       </section>
     </div>
   );
