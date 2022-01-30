@@ -16,19 +16,19 @@ export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
 
   if (url.search === "") {
-    return null;
+    throw Error("Bad Request");
   }
 
   const queryString = buildQueryString(url.searchParams);
 
   const brzSession = await brzAuthenticationHandler(request);
   const matrikelData = await requestBrzMatrikelNumber(brzSession, queryString);
-  const stammDatenData = await requestBrzStammdaten(brzSession);
+  //const stammDatenData = await requestBrzStammdaten(brzSession);
 
   const { matrikelStudentData, matrikelStatusCode } =
     convertMatrikelStudentData(matrikelData);
+  console.log(matrikelStudentData);
+  //const { generalData } = convertGeneralStudentData(stammDatenData);
 
-  const { generalData } = convertGeneralStudentData(stammDatenData);
-
-  return json({ matrikelStatusCode, matrikelStudentData, generalData });
+  return json({ matrikelStatusCode, matrikelStudentData });
 };
