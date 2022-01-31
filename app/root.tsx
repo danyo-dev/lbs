@@ -11,9 +11,10 @@ import {
 } from "remix";
 import type { MetaFunction, LoaderFunction } from "remix";
 import { EnvVars } from "~/types/envTypes";
-import styles from "./tailwind.css";
+
 import { brzAuthenticationHandler } from "./services/brzService";
 import { commitSession } from "./services/session.server";
+import styles from "~/styles/tailwind-build.css";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const brzSession = await brzAuthenticationHandler(request);

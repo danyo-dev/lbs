@@ -5,7 +5,6 @@ import { studentDetailRoutes } from "~/config/routes";
 export default function EditStudent() {
   const params = useParams();
   const data = useMatches().find((m) => m.pathname === "/admin/students")?.data;
-
   // Demo Data -> will use Academy 5 data in future
   const student = data?.find((student: any) => student.id === params.studentId);
 

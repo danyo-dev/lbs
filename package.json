@@ -5,9 +5,9 @@
   "license": "",
   "scripts": {
     "build": "npm run build:css && remix build",
-    "build:css": "tailwindcss -o ./app/tailwind.css",
     "dev": "concurrently \"npm run dev:css\" \"node -r dotenv/config node_modules/.bin/remix dev\"",
-    "dev:css": "tailwindcss -o ./app/tailwind.css --watch",
+    "dev:css": "tailwindcss -i app/styles/tailwind.css -o app/styles/tailwind-build.css --watch",
+    "build:css": "tailwindcss -i app/styles/tailwind.css -o app/styles/tailwind-build.css --minify",
     "postinstall": "remix setup node",
     "start": "remix-serve build"
   },
@@ -17,15 +17,18 @@
     "@remix-run/react": "^1.1.1",
     "@remix-run/serve": "^1.1.1",
     "@tailwindcss/typography": "^0.5.0",
+    "@types/easy-soap-request": "^4.1.1",
+    "dotenv": "^14.2.0",
+    "easy-soap-request": "^4.6.0",
     "firebase": "^9.6.3",
     "@tailwindcss/forms": "^0.4.0",
-    "dotenv": "^14.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "remix": "^1.1.1",
     "remix-auth": "^3.2.1",
     "remix-auth-auth0": "^1.1.0",
     "uuid": "^8.3.2",
+    "soap": "^0.43.0",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
