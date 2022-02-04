@@ -1,11 +1,20 @@
 import { ForwardRefExoticComponent, RefAttributes } from "react";
-import { FormProps } from "remix";
+import { FormProps, useMatches, useParams } from "remix";
+import { StudentProfile } from "~/types/responseTypes";
 
 interface Props {
   Form: ForwardRefExoticComponent<FormProps & RefAttributes<HTMLFormElement>>;
   state: string;
 }
 export default function BrzGeneralDataForm({ Form, state }: Props) {
+  const params = useParams();
+  const data = useMatches().find((m) => m.pathname === "/admin/students")?.data;
+
+  const student = data?.find(
+    (student: StudentProfile) => student.id === params.studentId
+  );
+
+  const { firstname, lastname, birthdate } = student;
   return (
     <Form
       method="get"
@@ -24,7 +33,7 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
             <input
               type="text"
               name="vorname"
-              defaultValue="Anna"
+              defaultValue={firstname}
               id="vorname"
               required
               autoComplete="given-name"
@@ -42,11 +51,11 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
             <input
               type="text"
               name="nachname"
-              defaultValue="Burtakova"
+              defaultValue={lastname}
               id="nachname"
               required
               autoComplete="family-name"
-              className="mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+              className="mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg"
             />
           </div>
 
@@ -60,11 +69,11 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
             <input
               type="text"
               name="geburtsdatum"
-              defaultValue="1995-07-03"
+              defaultValue={birthdate}
               id="geburtsdatum"
               required
               autoComplete="email"
-              className="mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+              className="mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg"
             />
           </div>
           <div className="col-span-2">
@@ -79,7 +88,7 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
               name="svnr"
               id="svnr"
               defaultValue=""
-              className="mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+              className="mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg"
             />
           </div>
         </div>

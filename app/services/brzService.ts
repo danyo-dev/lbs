@@ -90,7 +90,10 @@ async function authenticate(request: Request): Promise<Session> {
  * @param request
  * @returns a xml to JSON converted string as Promise
  */
-export async function requestBrzStammdaten(session: Session): Promise<string> {
+export async function requestBrzStammdaten(
+  session: Session,
+  queryString: string
+): Promise<string> {
   const token = session.get("brz_auth").access_token;
 
   const uuid = v4();

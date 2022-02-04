@@ -23,12 +23,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const brzSession = await brzAuthenticationHandler(request);
   const matrikelData = await requestBrzMatrikelNumber(brzSession, queryString);
-  //const stammDatenData = await requestBrzStammdaten(brzSession);
+  const stammDatenData = await requestBrzStammdaten(brzSession, queryString);
 
   const { matrikelStudentData, matrikelStatusCode } =
     convertMatrikelStudentData(matrikelData);
-  console.log(matrikelStudentData);
-  //const { generalData } = convertGeneralStudentData(stammDatenData);
 
-  return json({ matrikelStatusCode, matrikelStudentData });
+  const generalData = convertGeneralStudentData(stammDatenData);
+
+  return json({ matrikelStatusCode, matrikelStudentData, generalData });
 };

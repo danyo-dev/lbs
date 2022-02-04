@@ -1,22 +1,12 @@
 import { BrzGeneralDataBoxItem } from "~/types/brzTypes";
-
+import { BrzMatrikelStudent } from "~/types/brzTypes";
 interface Props {
-  data: BrzGeneralDataBoxItem;
+  data: BrzMatrikelStudent & { generalData: BrzGeneralDataBoxItem };
   type: string;
   state: string;
 }
+
 export default function BrzGeneralDataBox({ state, type, data }: Props) {
-  const { generalData } = data;
-
-  const mapTextToItem: BrzGeneralDataBoxItem = {
-    vorname: "Vorname",
-    nachname: "Nachname",
-    geburtsdatum: "Geburtsdatum",
-    svnr: "Svnr",
-    geschlecht: "Geschlecht",
-    staatsbuergerschaft: "Staat",
-  };
-
   return (
     <>
       <h2 className="text-xl text-slate-600 mt-6 mb-2 ml-2">BRZ Stammdaten</h2>
@@ -44,19 +34,22 @@ export default function BrzGeneralDataBox({ state, type, data }: Props) {
           </svg>
         )}
         {type === "done" && (
-          <ul className="text-slate-500 text-sm ">
-            {Object.keys(generalData).map((dataItem, idx) => {
-              return (
-                <li
-                  key={`${idx}-${dataItem}`}
-                  className="grid grid-cols-4 py-1"
-                >
-                  <div className="mr-2 text-slate-600 font-medium">{`${mapTextToItem[dataItem]}:`}</div>
-                  {`${dataItem}._text`}
-                </li>
-              );
-            })}
-          </ul>
+          <>
+            {data.matrikelStatusCode !== 1 ? (
+              <ul className="text-slate-500 text-sm ">
+                {Object.entries(data.generalData).map(([key, value]) => {
+                  return (
+                    <li key={`${key}`} className="grid grid-cols-4 py-1">
+                      <div className="mr-2 text-slate-600 font-medium">{`${key}:`}</div>
+                      {value._text}
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <p>Keine Stammdaten gefunden</p>
+            )}
+          </>
         )}
         {state === "idle" && type !== "done" && (
           <div className="text-slate-600">

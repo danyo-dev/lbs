@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Form } from "remix";
 import { BrzMatrikelStudent } from "~/types/brzTypes";
 

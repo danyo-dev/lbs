@@ -1,13 +1,12 @@
-import { RouteData } from "@remix-run/react/routeData";
 import { useState } from "react";
-import { Link, LoaderFunction, useLoaderData, useMatches } from "remix";
+import { Link, useMatches } from "remix";
 import SearchBar from "~/components/SearchBar";
-import { fetchStudentProfiles } from "~/services/academy5Service";
+import { StudentProfile } from "~/types/responseTypes";
+
 export default function StudentsIndex() {
   const studentProfiles = useMatches().find(
     (m) => m.pathname === "/admin/students"
   )?.data;
-
   const [filterBy, setFilterBy] = useState("");
 
   // only filter when filterBy is set
@@ -52,7 +51,7 @@ export default function StudentsIndex() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-slate-200">
-              {students.map((student) => (
+              {students.map((student: StudentProfile) => (
                 <tr key={student?.id}>
                   <td className="tableCell">
                     <p className="tableContent text-slate-900">{student.id}</p>

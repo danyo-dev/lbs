@@ -5,7 +5,6 @@ import BrzMatrikelDataBox from "~/components/BrzMatrikelDataBox";
 
 export default function StudentGeneralRoute() {
   const fetcherData = useFetcher();
-  // TODO: clean up components and reduce code in file
 
   const { state, type, data, Form } = fetcherData;
 
@@ -18,7 +17,7 @@ export default function StudentGeneralRoute() {
 
       <section className="border-slate-200 gap-6 mt-6">
         <BrzMatrikelDataBox state={state} type={type} data={data} />
-        {/* <BrzGeneralDataBox state={state} type={type} data={data} /> */}
+        <BrzGeneralDataBox state={state} type={type} data={data} />
       </section>
     </div>
   );

@@ -15,7 +15,7 @@ export function convertGeneralStudentData(stammDatenData: string) {
   const parseStammDatenData = JSON.parse(stammDatenData);
   const generalData = parseStammDatenData.stammdatenanfrage.stammdaten;
 
-  return { generalData };
+  return generalData;
 }
 
 export function buildQueryString(searchParams: URLSearchParams) {
