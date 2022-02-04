@@ -28,22 +28,22 @@ export interface BrzMatrikelStudentData {
   matrikelstatus: { _text: string };
   fullstudentlink: { _text: string };
 }
-
-export interface ObjKey {
-  [key: string]: string;
-}
 export interface BrzGeneralDataBoxItem {
-  vorname: { _text: string };
-  nachname: { _text: string };
-  geburtsdatum: { _text: string };
-  svnr: { _text: string };
-  geschlecht: { _text: string };
-  staatsbuergerschaft: { _text: string };
-  akadnach: { _text: string };
-  bpk: { _text: string };
-  adressen: { _text: string };
-  beitragstatus: { _text: string };
-  zaehlungPePn: { _text: string };
-  zaehlungPo: { _text: string };
-  emailliste: { _text: string };
+  generalData: {
+    vorname: { _text: string };
+    nachname: { _text: string };
+    geburtsdatum: { _text: string };
+    svnr: { _text: string };
+    geschlecht: { _text: string };
+    staatsbuergerschaft: { _text: string };
+    akadnach: { _text: string };
+    bpk: { _text: string };
+    adressen: { _text: string };
+    beitragstatus: { _text: string };
+    zaehlungPePn: { _text: string };
+    zaehlungPo: { _text: string };
+    emailliste: { _text: string };
+  };
 }
+
+export type BrzGeneralData = BrzMatrikelStudent & BrzGeneralDataBoxItem;

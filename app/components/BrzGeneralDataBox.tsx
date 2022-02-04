@@ -1,12 +1,12 @@
-import { BrzGeneralDataBoxItem } from "~/types/brzTypes";
-import { BrzMatrikelStudent } from "~/types/brzTypes";
-interface Props {
-  data: BrzMatrikelStudent & { generalData: BrzGeneralDataBoxItem };
-  type: string;
-  state: string;
-}
+import { BrzGeneralData } from "~/types/brzTypes";
 
-export default function BrzGeneralDataBox({ state, type, data }: Props) {
+import { FetcherTypes } from "~/types/generalTypes";
+
+export default function BrzGeneralDataBox({
+  state,
+  type,
+  data,
+}: FetcherTypes<BrzGeneralData>) {
   return (
     <>
       <h2 className="text-xl text-slate-600 mt-6 mb-2 ml-2">BRZ Stammdaten</h2>
