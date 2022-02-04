@@ -11,7 +11,7 @@ export default function BrzGeneralDataBox({
     <>
       <h2 className="text-xl text-slate-600 mt-6 mb-2 ml-2">BRZ Stammdaten</h2>
       <div className="px-6 py-5 bg-white shadow overflow-hidden rounded-lg text-sm">
-        {state === "submitting" && (
+        {type === "loaderSubmission" && (
           <svg
             className="animate-spin -ml-1 mr-3 h-5 w-5 text-sky-500"
             xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +51,7 @@ export default function BrzGeneralDataBox({
             )}
           </>
         )}
-        {state === "idle" && type !== "done" && (
+        {type === "init" && (
           <div className="text-slate-600">
             Ergebnisse werden nach abrufen der Daten angezeigt.
           </div>
