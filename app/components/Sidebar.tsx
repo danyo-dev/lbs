@@ -4,8 +4,6 @@ import logo from "~/assets/logo.svg";
 import PendingLink from "./PendingLink";
 
 export default function Sidebar() {
-  let transition = useTransition();
-  console.log(transition);
   return (
     <aside>
       <div className="pb-4 flex flex-col">
