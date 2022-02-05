@@ -1,4 +1,4 @@
-export interface FetcherTypes<T> {
+export interface Fetcher<T> {
   data: T;
   type:
     | "done"
