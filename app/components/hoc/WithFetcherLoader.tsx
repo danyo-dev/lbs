@@ -2,7 +2,7 @@ import React from "react";
 import { BrzGeneralData, BrzMatrikelStudent } from "~/types/brzTypes";
 import { Fetcher, FetcherTypes } from "~/types/generalTypes";
 
-export function WithFetcherLoader(
+export function withFetcherLoader(
   WrappedComponent: React.ElementType,
   type: FetcherTypes
 ) {

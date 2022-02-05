@@ -23,6 +23,10 @@ export const routes = [
 ];
 export const studentDetailRoutes = [
   {
+    path: "matrikel",
+    name: "Matrikeldaten",
+  },
+  {
     path: "general",
     name: "Stammdaten",
   },

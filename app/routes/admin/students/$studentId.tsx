@@ -26,9 +26,7 @@ export default function EditStudent() {
               <NavLink
                 to={`/admin/students/${student.id}/${route.path}`}
                 className={({ isActive }) =>
-                  isActive
-                    ? "bg-sky-600 inline-flex w-full rounded-lg text-sm font-medium transition-colors duration-150 px-6 py-2 text-white shadow"
-                    : "inline-flex w-full rounded-lg text-sm font-medium transition-colors duration-150 px-6 py-2 text-slate-600 hover:text-white hover:bg-sky-600 "
+                  isActive ? "activeLink" : "inactiveLink "
                 }
               >
                 {route.name}
