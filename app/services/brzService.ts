@@ -112,9 +112,7 @@ export async function requestBrzStammdaten(
   const XMLResponse = await response.text();
   const stringResponse = handleXMLResponse(XMLResponse);
 
-  if (!response.ok) {
-    handleErrors(response, stringResponse);
-  }
+  handleErrors(response, stringResponse);
 
   return stringResponse;
 }
@@ -145,8 +143,7 @@ export async function requestBrzMatrikelNumber(
   const XMLResponse = await response.text();
   const stringResponse = handleXMLResponse(XMLResponse);
 
-  if (!response.ok) {
-    handleErrors(response, stringResponse);
-  }
+  handleErrors(response, stringResponse);
+
   return stringResponse;
 }
