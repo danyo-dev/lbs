@@ -1,11 +1,13 @@
 export interface Fetcher<T> {
+  type?: FetcherTypes;
   data: T;
-  type:
-    | "done"
-    | "init"
-    | "actionSubmission"
-    | "loaderSubmission"
-    | "actionReload"
-    | "normalLoad";
-  state: "submitting" | "idle" | "loading";
+  state?: "submitting" | "idle" | "loading";
 }
+
+export type FetcherTypes =
+  | "done"
+  | "init"
+  | "actionSubmission"
+  | "loaderSubmission"
+  | "actionReload"
+  | "normalLoad";

@@ -37,7 +37,7 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
               id="vorname"
               required
               autoComplete="given-name"
-              className="mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm  border-gray-300 rounded-lg"
+              className="inputField"
             />
           </div>
 
@@ -55,7 +55,7 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
               id="nachname"
               required
               autoComplete="family-name"
-              className="mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg"
+              className="inputField"
             />
           </div>
 
@@ -73,7 +73,7 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
               id="geburtsdatum"
               required
               autoComplete="email"
-              className="mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg"
+              className="inputField"
             />
           </div>
           <div className="col-span-2">
@@ -88,7 +88,7 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
               name="svnr"
               id="svnr"
               defaultValue=""
-              className="mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg"
+              className="inputField"
             />
           </div>
         </div>

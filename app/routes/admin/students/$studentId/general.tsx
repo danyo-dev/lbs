@@ -2,12 +2,20 @@ import { useCatch, useFetcher } from "remix";
 import BrzGeneralDataBox from "~/components/BrzGeneralDataBox";
 import BrzGeneralDataForm from "~/components/BrzGeneralDataForm";
 import BrzMatrikelDataBox from "~/components/BrzMatrikelDataBox";
+import { WithFetcherLoader } from "~/components/hoc/withFetcherLoader";
 
 export default function StudentGeneralRoute() {
   const fetcherData = useFetcher();
 
   const { state, type, data, Form } = fetcherData;
-
+  const BrzMatrikelDataBoxWithLoader = WithFetcherLoader(
+    BrzMatrikelDataBox,
+    type
+  );
+  const BrzGeneralDataBoxWithLoader = WithFetcherLoader(
+    BrzGeneralDataBox,
+    type
+  );
   return (
     <div className="w-3/4 my-12">
       <section className=" border-slate-200 gap-6 ">
@@ -16,8 +24,12 @@ export default function StudentGeneralRoute() {
       </section>
 
       <section className="border-slate-200 gap-6 mt-6">
-        <BrzMatrikelDataBox state={state} type={type} data={data} />
-        <BrzGeneralDataBox state={state} type={type} data={data} />
+        <h2 className="text-xl text-slate-600 my-2 ml-2">BRZ Matrikeldaten</h2>
+        <BrzMatrikelDataBoxWithLoader data={data} />
+        <h2 className="text-xl text-slate-600 mt-6 mb-2 ml-2">
+          BRZ Stammdaten
+        </h2>
+        <BrzGeneralDataBoxWithLoader data={data} />
       </section>
     </div>
   );
