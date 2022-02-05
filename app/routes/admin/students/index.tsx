@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Link, useLoaderData } from "remix";
 import type { LoaderFunction } from "remix";
 import SearchBar from "~/components/SearchBar";
-import { fetchStudentProfiles } from "~/services/academy5Service";
+import { getStudentProfiles } from "~/services/academy5Service";
 import { StudentProfile } from "~/types/responseTypes";
 
 export const loader: LoaderFunction = async () => {
-  const studentProfiles = await fetchStudentProfiles();
+  const studentProfiles = await getStudentProfiles();
 
   return studentProfiles;
 };
@@ -19,11 +19,11 @@ export default function StudentsIndex() {
   // only filter when filterBy is set
   const students = filterBy
     ? studentProfiles.filter(({ firstname, lastname }) =>
-        // other search options can be added here
-        [firstname, lastname].some((entry) =>
-          entry.toLowerCase().includes(filterBy.toLowerCase())
-        )
+      // other search options can be added here
+      [firstname, lastname].some((entry) =>
+        entry.toLowerCase().includes(filterBy.toLowerCase())
       )
+    )
     : studentProfiles;
 
   return (

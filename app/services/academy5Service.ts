@@ -6,8 +6,8 @@ import {
   getStudentProfilesXML,
   handleSoapResponseError
 } from "~/utils/soapUtils";
-
 import { cleanupStudentAttributes } from "~/utils/studentUtils";
+import { handleCache } from '~/utils/cacheUtils';
 
 import {
   SoapAuthResponse,
@@ -63,69 +63,77 @@ export async function authenticateSoap() {
 }
 
 /**
- * fetch person by id from academy 5, authenticate first
+ * get student profile by id from cache or fetched from academy 5
  * @param profileId number
  * @returns
  */
-export async function fetchProfileSoap(profileId = 5555) {
-  try {
-    const authToken = await authenticateSoap();
+export async function getStudentProfileById(profileId = 5555) {
+  return handleCache(`studentProfile ${profileId}`, async () => {
+    try {
+      const authToken = await authenticateSoap();
 
-    const request = await soapRequest({
-      url: profileEndpoint,
-      headers: {
-        ...headers,
-        Cookie: `PHPSESSID=${authToken}`,
-      },
-      xml: getPersonIdXML(profileId),
-    });
+      const request = await soapRequest({
+        url: profileEndpoint,
+        headers: {
+          ...headers,
+          Cookie: `PHPSESSID=${authToken}`,
+        },
+        xml: getPersonIdXML(profileId),
+      });
 
-    const { response } = handleSoapResponseError(request);
+      const { response } = handleSoapResponseError(request);
 
-    // convert response to json
-    const responseBody = convert.xml2js(response.body, {
-      compact: true,
-    }) as SoapProfileResponse;
+      // convert response to json
+      const responseBody = convert.xml2js(response.body, {
+        compact: true,
+      }) as SoapProfileResponse;
 
-    return responseBody["SOAP-ENV:Envelope"]["SOAP-ENV:Body"][
-      "ns1:fetchProfileByIdResponse"
-    ].fetchProfileByIdResponse._attributes;
-  } catch (error) {
-    console.log(error);
-  }
+      return responseBody["SOAP-ENV:Envelope"]["SOAP-ENV:Body"][
+        "ns1:fetchProfileByIdResponse"
+      ].fetchProfileByIdResponse._attributes;
+    } catch (error) {
+      console.log(error);
+    }
+  })
 }
 
-export async function fetchStudentProfiles() {
-  try {
-    const authToken = await authenticateSoap();
+/**
+ * get studentProfiles from cache or fetched from academy 5
+ */
+export async function getStudentProfiles() {
+  return handleCache('studentProfiles', async () => {
+    try {
+      const authToken = await authenticateSoap();
 
-    const request = await soapRequest({
-      url: profileEndpoint,
-      headers: {
-        ...headers,
-        Cookie: `PHPSESSID=${authToken}`,
-      },
-      xml: getStudentProfilesXML(),
-    });
+      const request = await soapRequest({
+        url: profileEndpoint,
+        headers: {
+          ...headers,
+          Cookie: `PHPSESSID=${authToken}`,
+        },
+        xml: getStudentProfilesXML(),
+      });
 
-    const { response } = handleSoapResponseError(request);
-    // convert response to json
-    const responseBody = convert.xml2js(response.body, {
-      compact: true,
-    }) as SoapStudentResponse;
+      const { response } = handleSoapResponseError(request);
+      // convert response to json
+      const responseBody = convert.xml2js(response.body, {
+        compact: true,
+      }) as SoapStudentResponse;
 
-    /**
-     * cleanup response and remove unwanted soap key
-     * send back only necessary profile data
-     */
-    const students = responseBody["SOAP-ENV:Envelope"]["SOAP-ENV:Body"][
-      "ns1:fetchProfileByAccessGroupIdsResponse"
-    ].fetchProfileByAccessGroupIdsResponse.profile
-      .slice(0, 50) // strip them down to 50 for now
-      .map(cleanupStudentAttributes);
+      /**
+       * cleanup response and remove unwanted soap key
+       * send back only necessary profile data
+       */
+      const students = responseBody["SOAP-ENV:Envelope"]["SOAP-ENV:Body"][
+        "ns1:fetchProfileByAccessGroupIdsResponse"
+      ].fetchProfileByAccessGroupIdsResponse.profile
+        .slice(0, 50) // strip them down to 50 for now
+        .map(cleanupStudentAttributes);
 
-    return students;
-  } catch (error) {
-    console.log(error);
-  }
+      return students;
+    } catch (error) {
+      console.log(error);
+    }
+  });
 }
+
