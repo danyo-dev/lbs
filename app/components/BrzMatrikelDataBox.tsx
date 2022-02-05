@@ -1,13 +1,11 @@
 import { Form } from "remix";
 import { BrzMatrikelStudent } from "~/types/brzTypes";
+import { Fetcher } from "~/types/generalTypes";
 
-interface Props {
-  state: string;
-  type: string;
-  data: BrzMatrikelStudent;
-}
-
-export default function BrzMatrikelDataBox({ state, type, data }: Props) {
+export default function BrzMatrikelDataBox({
+  type,
+  data,
+}: Fetcher<BrzMatrikelStudent>) {
   return (
     <>
       <h2 className="text-xl text-slate-600 my-2 ml-2">BRZ Matrikeldaten</h2>

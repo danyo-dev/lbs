@@ -1,12 +1,10 @@
 import { BrzGeneralData } from "~/types/brzTypes";
-
-import { FetcherTypes } from "~/types/generalTypes";
+import { Fetcher } from "~/types/generalTypes";
 
 export default function BrzGeneralDataBox({
-  state,
   type,
   data,
-}: FetcherTypes<BrzGeneralData>) {
+}: Fetcher<BrzGeneralData>) {
   return (
     <>
       <h2 className="text-xl text-slate-600 mt-6 mb-2 ml-2">BRZ Stammdaten</h2>
