@@ -135,7 +135,7 @@ export async function requestBrzMatrikelNumber(
   const headers = new Headers();
   headers.set("Authorization", `Bearer ${token}`);
 
-  const requestURL = `${process.env.BRZ_MATRIKEL_CHECK_URL}${queryString}uuid=${uuid}`;
+  const requestURL = `${process.env.BRZ_MATRIKEL_CHECK_URL}?${queryString}&uuid=${uuid}`;
 
   const response = await fetch(requestURL, {
     method: "get",

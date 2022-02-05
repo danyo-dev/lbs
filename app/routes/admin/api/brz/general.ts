@@ -2,7 +2,6 @@ import { LoaderFunction, json } from "remix";
 import {
   convertMatrikelStudentData,
   convertGeneralStudentData,
-  buildQueryString,
 } from "~/utils/brzUtils";
 import { requireAuthentication } from "~/services/auth.server";
 import {
@@ -19,11 +18,24 @@ export const loader: LoaderFunction = async ({ request }) => {
     throw Error("Bad Request");
   }
 
-  const queryString = buildQueryString(url.searchParams);
+  const params = new URLSearchParams(url.search);
+
+  [...params.entries()].forEach(([key, value]) => {
+    if (!value) {
+      params.delete(key);
+    }
+  });
+  const cleanedQueryString = String(params);
 
   const brzSession = await brzAuthenticationHandler(request);
-  const matrikelData = await requestBrzMatrikelNumber(brzSession, queryString);
-  const stammDatenData = await requestBrzStammdaten(brzSession, queryString);
+  const matrikelData = await requestBrzMatrikelNumber(
+    brzSession,
+    cleanedQueryString
+  );
+  const stammDatenData = await requestBrzStammdaten(
+    brzSession,
+    cleanedQueryString
+  );
 
   const { matrikelStudentData, matrikelStatusCode } =
     convertMatrikelStudentData(matrikelData);

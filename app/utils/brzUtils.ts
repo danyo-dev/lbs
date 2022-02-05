@@ -17,13 +17,3 @@ export function convertGeneralStudentData(stammDatenData: string) {
 
   return generalData;
 }
-
-export function buildQueryString(searchParams: URLSearchParams) {
-  let paramQuery = "?";
-  searchParams.forEach((value, key) => {
-    if (value !== "") {
-      paramQuery += `${key}=${value}&`;
-    }
-  });
-  return paramQuery;
-}
