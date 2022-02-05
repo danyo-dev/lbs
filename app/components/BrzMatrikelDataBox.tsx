@@ -13,7 +13,7 @@ export default function BrzMatrikelDataBox({ state, type, data }: Props) {
       <h2 className="text-xl text-slate-600 my-2 ml-2">BRZ Matrikeldaten</h2>
       <div className="bg-white py-6 px-6 shadow border-slate-200 rounded-lg text-sm ">
         <>
-          {state === "submitting" && (
+          {type === "loaderSubmission" && (
             <svg
               className="animate-spin -ml-1 mr-3 h-5 w-5 text-sky-500"
               xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +80,7 @@ export default function BrzMatrikelDataBox({ state, type, data }: Props) {
             )}
           </>
         )}
-        {state === "idle" && type !== "done" && (
+        {type === "init" && (
           <div className="text-slate-600">
             Ergebnisse werden nach abrufen der Daten angezeigt.
           </div>

@@ -20,9 +20,13 @@ function handleXMLResponse(response: string) {
  * @param status
  * @param statusText
  */
-function handleErrors(status: number, statusText: string) {
-  throw new Response(statusText, {
-    status,
+
+function handleErrors(response: Response, responseMsg = "error occured") {
+  if (response.ok) {
+    return;
+  }
+  throw new Response(responseMsg, {
+    status: response.status,
   });
 }
 
@@ -67,11 +71,9 @@ async function authenticate(request: Request): Promise<Session> {
     method: "post",
     headers,
   });
-  if (!response.ok) {
-    throw new Response("error occured", {
-      status: response.status,
-    });
-  }
+
+  handleErrors(response);
+
   const responseData = await response.json();
 
   session.set("brz_auth", responseData);
@@ -111,7 +113,7 @@ export async function requestBrzStammdaten(
   const stringResponse = handleXMLResponse(XMLResponse);
 
   if (!response.ok) {
-    handleErrors(response.status, stringResponse);
+    handleErrors(response, stringResponse);
   }
 
   return stringResponse;
@@ -144,7 +146,7 @@ export async function requestBrzMatrikelNumber(
   const stringResponse = handleXMLResponse(XMLResponse);
 
   if (!response.ok) {
-    handleErrors(response.status, stringResponse);
+    handleErrors(response, stringResponse);
   }
   return stringResponse;
 }
