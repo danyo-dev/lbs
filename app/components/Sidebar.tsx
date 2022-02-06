@@ -1,4 +1,3 @@
-import { NavLink, useTransition } from "remix";
 import { routes } from "~/config/routes";
 import logo from "~/assets/logo.svg";
 import PendingLink from "./PendingLink";

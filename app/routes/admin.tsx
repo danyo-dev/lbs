@@ -15,12 +15,12 @@ export default function Admin() {
   const { displayName } = useLoaderData<Auth0Profile>();
 
   return (
-    <div className="flex bg-slate-100">
-      <div className="w-1/6 h-screen overflow-y-auto bg-white p-6 shadow-lg z-10">
+    <div className="flex min-h-screen">
+      <div className="w-80 overflow-y-auto bg-white p-6 z-10 fixed">
         <Sidebar />
       </div>
-      <div className="w-5/6">
-        <div className=" px-10 h-20 flex items-center justify-between bg-white shadow-md">
+      <div className="w-5/6 ml-80 bg-slate-100">
+        <div className=" px-10 h-20 flex items-center justify-between bg-white ">
           <div>
             <p className=" text-slate-700">Willkommen {displayName}</p>
           </div>
