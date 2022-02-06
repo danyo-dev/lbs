@@ -65,9 +65,9 @@ export async function authenticateSoap() {
 /**
  * get student profile by id from cache or fetched from academy 5
  * @param profileId number
- * @returns
+ * @returns student profile data
  */
-export async function getStudentProfileById(profileId = 5555) {
+export async function getStudentProfileById(profileId: number) {
   return handleCache(`studentProfile ${profileId}`, async () => {
     try {
       const authToken = await authenticateSoap();
