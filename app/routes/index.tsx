@@ -29,7 +29,7 @@ export default function Index() {
           <div className="mt-12">
             <Form action="/auth/login" method="post">
               <button className="h-10 px-5 w-6/12 text-stone-50 transition-colors duration-150 bg-blue-500 rounded-lg focus:shadow-outline hover:bg-blue-400">
-                Sign in with Auth0
+                Sign in
               </button>
             </Form>
           </div>

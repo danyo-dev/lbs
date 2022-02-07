@@ -1,7 +1,7 @@
 import { createCookieSessionStorage, Session } from "remix";
 
 // export the whole sessionStorage object
-export let sessionStorage = createCookieSessionStorage({
+export const sessionStorage = createCookieSessionStorage({
   cookie: {
     name: "_session", // use any name you want here
     sameSite: "lax", // this helps with CSRF
@@ -17,4 +17,4 @@ export function getSession(request: Request): Promise<Session> {
 }
 
 // you can also export the methods individually for your own usage
-export let { commitSession, destroySession } = sessionStorage;
+export const { commitSession, destroySession } = sessionStorage;

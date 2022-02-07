@@ -21,3 +21,25 @@ export const routes = [
     name: "Logs",
   },
 ];
+export const studentDetailRoutes = [
+  {
+    path: "matrikel",
+    name: "Matrikeldaten",
+  },
+  {
+    path: "general",
+    name: "Stammdaten",
+  },
+  {
+    path: "study",
+    name: "Studiendaten",
+  },
+  {
+    path: "payment",
+    name: "Zahlungsdaten",
+  },
+  {
+    path: "exams",
+    name: "Prüfungsdaten",
+  },
+];
