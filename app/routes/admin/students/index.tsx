@@ -1,28 +1,22 @@
 import { useState } from "react";
-import { Link, useLoaderData } from "remix";
-import type { LoaderFunction } from "remix";
+import { Link, useMatches } from "remix";
 import SearchBar from "~/components/SearchBar";
-import { fetchStudentProfiles } from "~/services/academy5Service";
 import { StudentProfile } from "~/types/responseTypes";
 
-export const loader: LoaderFunction = async () => {
-  const studentProfiles = await fetchStudentProfiles();
-
-  return studentProfiles;
-};
-
-// simulating API Student data to intgrate search fuction -> needs to be adjusted when actual data is received
 export default function StudentsIndex() {
-  const studentProfiles = useLoaderData<Array<StudentProfile>>();
+  const studentProfiles = useMatches().find(
+    (m) => m.pathname === "/admin/students"
+  )?.data;
   const [filterBy, setFilterBy] = useState("");
 
   // only filter when filterBy is set
   const students = filterBy
-    ? studentProfiles.filter(({ firstname, lastname }) =>
-        // other search options can be added here
-        [firstname, lastname].some((entry) =>
-          entry.toLowerCase().includes(filterBy.toLowerCase())
-        )
+    ? studentProfiles?.filter(
+        ({ firstname, lastname }: { firstname: string; lastname: string }) =>
+          // other search options can be added here
+          [firstname, lastname].some((entry) =>
+            entry.toLowerCase().includes(filterBy.toLowerCase())
+          )
       )
     : studentProfiles;
 
@@ -36,34 +30,19 @@ export default function StudentsIndex() {
           <table className="min-w-full divide-y divide-slate-200">
             <thead className="bg-white">
               <tr>
-                <th
-                  scope="col"
-                  className="tableHeader"
-                >
+                <th scope="col" className="tableHeader">
                   Student ID
                 </th>
-                <th
-                  scope="col"
-                  className="tableHeader"
-                >
+                <th scope="col" className="tableHeader">
                   Name
                 </th>
-                <th
-                  scope="col"
-                  className="tableHeader"
-                >
+                <th scope="col" className="tableHeader">
                   eMail
                 </th>
-                <th
-                  scope="col"
-                  className="tableHeader"
-                >
+                <th scope="col" className="tableHeader">
                   Semester
                 </th>
-                <th
-                  scope="col"
-                  className="tableHeader"
-                >
+                <th scope="col" className="tableHeader">
                   Payment Status
                 </th>
                 <th scope="col" className="relative px-6 py-3">
@@ -72,12 +51,10 @@ export default function StudentsIndex() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-slate-200">
-              {students.map((student) => (
+              {students.map((student: StudentProfile) => (
                 <tr key={student?.id}>
                   <td className="tableCell">
-                    <p className="tableContent text-slate-900">
-                      {student.id}
-                    </p>
+                    <p className="tableContent text-slate-900">{student.id}</p>
                   </td>
                   <td className="tableCell">
                     <p className="tableContent text-slate-900">
@@ -97,7 +74,7 @@ export default function StudentsIndex() {
                   </td>
                   <td className="tableCell text-right text-sm font-medium">
                     <Link
-                      to={student.id}
+                      to={`${student.id}/general`}
                       className="text-indigo-600 hover:text-indigo-900"
                     >
                       Edit

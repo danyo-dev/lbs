@@ -20,3 +20,9 @@ const auth0Strategy = new Auth0Strategy(
 );
 
 authenticator.use(auth0Strategy);
+
+export function requireAuthentication(request: Request) {
+  return authenticator.isAuthenticated(request, {
+    failureRedirect: "/",
+  });
+}

@@ -3,13 +3,23 @@
 @tailwind utilities;
 
 .tableHeader {
-  @apply px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider
+  @apply px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider;
 }
 
 .tableCell {
-  @apply px-6 py-4 whitespace-nowrap
+  @apply px-6 py-4 whitespace-nowrap;
 }
 
 .tableContent {
-  @apply text-sm font-medium
+  @apply text-sm font-medium;
+}
+
+.inputField {
+  @apply mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm  border-gray-300 rounded-lg;
+}
+.activeLink {
+  @apply bg-sky-600 inline-flex w-full rounded-lg text-sm font-medium transition-colors duration-150 px-6 py-2 text-white shadow;
+}
+.inactiveLink {
+  @apply inline-flex w-full rounded-lg text-sm font-medium transition-colors duration-150 px-6 py-2 text-slate-600 hover:text-white hover:bg-sky-600;
 }

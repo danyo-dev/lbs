@@ -1,6 +1,6 @@
-import { NavLink } from "remix";
 import { routes } from "~/config/routes";
 import logo from "~/assets/logo.svg";
+import PendingLink from "./PendingLink";
 
 export default function Sidebar() {
   return (
@@ -12,17 +12,17 @@ export default function Sidebar() {
       <ul className="text-slate-600 ">
         {routes.map((route, idx) => (
           <li className="relative" key={idx}>
-            <NavLink
+            <PendingLink
               to={route.path}
-              className={({ isActive }) =>
+              className={({ isActive }: { isActive: boolean }) =>
                 `inline-flex w-full text-sm font-medium transition-colors duration-150 hover:text-slate-800 px-3 py-3 ${
                   isActive && "bg-slate-100 rounded-lg text-slate-800 "
                 }`
               }
             >
               <route.icon className="h-5 w-5" />
-              <span className="ml-4">{route.name}</span>
-            </NavLink>
+              <span className="mx-4">{route.name}</span>
+            </PendingLink>
           </li>
         ))}
       </ul>
