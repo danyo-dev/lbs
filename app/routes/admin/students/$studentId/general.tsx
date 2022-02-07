@@ -1,33 +1,34 @@
-import { useCatch, useFetcher } from "remix";
+import { useCatch, useFetcher, useMatches, useParams } from "remix";
 import BrzGeneralDataBox from "~/components/BrzGeneralDataBox";
 import BrzGeneralDataForm from "~/components/BrzGeneralDataForm";
-import BrzMatrikelDataBox from "~/components/BrzMatrikelDataBox";
 import { withFetcherLoader } from "~/components/hoc/withFetcherLoader";
+import { StudentProfile } from "~/types/responseTypes";
 
 export default function StudentGeneralRoute() {
   const fetcherData = useFetcher();
 
   const { state, type, data, Form } = fetcherData;
 
-  const BrzMatrikelDataBoxWithLoader = withFetcherLoader(
-    BrzMatrikelDataBox,
-    type
-  );
   const BrzGeneralDataBoxWithLoader = withFetcherLoader(
     BrzGeneralDataBox,
     type
   );
+
+  const params = useParams();
+  const studentData = useMatches().find(
+    (m) => m.pathname === "/admin/students"
+  )?.data;
+
+  const student = studentData?.find(
+    (student: StudentProfile) => student.id === params.studentId
+  );
+
   return (
     <div className="w-3/4 my-12">
       <section className=" border-slate-200 gap-6 ">
-        <h2 className="text-xl text-slate-600 my-2 ml-2">Academy 5 Daten</h2>
-        <BrzGeneralDataForm Form={Form} state={state} />
+        <BrzGeneralDataForm Form={Form} state={state} student={student} />
       </section>
 
-      <section className="border-slate-200 gap-6 mt-6">
-        <h2 className="text-xl text-slate-600 my-2 ml-2">BRZ Matrikeldaten</h2>
-        <BrzMatrikelDataBoxWithLoader data={data} />
-      </section>
       <section className="border-slate-200 gap-6 mt-6">
         <h2 className="text-xl text-slate-600 mt-6 mb-2 ml-2">
           BRZ Stammdaten

@@ -1,20 +1,14 @@
 import { ForwardRefExoticComponent, RefAttributes } from "react";
-import { FormProps, useMatches, useParams } from "remix";
+import { FormProps } from "remix";
+import { StateTypes } from "~/types/generalTypes";
 import { StudentProfile } from "~/types/responseTypes";
 
 interface Props {
   Form: ForwardRefExoticComponent<FormProps & RefAttributes<HTMLFormElement>>;
-  state: string;
+  state: StateTypes;
+  student?: Partial<StudentProfile>;
 }
-export default function BrzGeneralDataForm({ Form, state }: Props) {
-  const params = useParams();
-  const data = useMatches().find((m) => m.pathname === "/admin/students")?.data;
-
-  const student = data?.find(
-    (student: StudentProfile) => student.id === params.studentId
-  );
-
-  const { firstname, lastname, birthdate } = student;
+export default function BrzGeneralDataForm({ Form, state, student }: Props) {
   return (
     <Form
       method="get"
@@ -33,7 +27,7 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
             <input
               type="text"
               name="vorname"
-              defaultValue={firstname}
+              defaultValue={student?.firstname || ""}
               id="vorname"
               required
               autoComplete="given-name"
@@ -51,7 +45,7 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
             <input
               type="text"
               name="nachname"
-              defaultValue={lastname}
+              defaultValue={student?.lastname || ""}
               id="nachname"
               required
               autoComplete="family-name"
@@ -67,9 +61,9 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
               Geburtsdatum
             </label>
             <input
-              type="text"
+              type="date"
               name="geburtsdatum"
-              defaultValue={birthdate}
+              defaultValue={student?.birthdate || ""}
               id="geburtsdatum"
               required
               autoComplete="email"

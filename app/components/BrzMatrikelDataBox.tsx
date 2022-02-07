@@ -1,12 +1,19 @@
+import { useState } from "react";
 import { Form } from "remix";
 import { BrzMatrikelStudent } from "~/types/brzTypes";
 import { Fetcher } from "~/types/generalTypes";
-import { WithFetcherLoader } from "./hoc/withFetcherLoader";
+import { DuplicateIcon, CheckIcon } from "@heroicons/react/outline";
 
 export default function BrzMatrikelDataBox({
-  type,
   data,
 }: Fetcher<BrzMatrikelStudent>) {
+  const [textIsCopied, setTextIsCopied] = useState(false);
+  function handleCopy() {
+    navigator.clipboard.writeText(
+      `${data.matrikelStudentData.matrikelnummer._text}`
+    );
+    setTextIsCopied(true);
+  }
   return (
     <>
       {data.matrikelStatusCode === 1 ? (
@@ -28,17 +35,32 @@ export default function BrzMatrikelDataBox({
             <div className="block text-2xl font-medium text-sky-600">
               {data.matrikelStudentData.matrikelnummer._text}
             </div>
+
+            {textIsCopied ? (
+              <div className=" text-slate-500 flex">
+                <CheckIcon
+                  className="w-5 h-5"
+                  data-tooltip-target="tooltip-default"
+                />
+                <span>copied</span>
+              </div>
+            ) : (
+              <DuplicateIcon
+                onClick={handleCopy}
+                className="w-5 h-5 text-slate-500 hover:text-slate-700 cursor-pointer"
+              />
+            )}
           </div>
           <div>
             <p className="text-slate-500">Semester</p>
             <div className="block text-2xl font-medium text-sky-600">
-              {data.matrikelStudentData.semester._text}
+              {data.matrikelStudentData?.semester?._text || "-"}
             </div>
           </div>
           <div>
             <p className="text-slate-500">Bildungseinrichtung</p>
             <div className="block text-2xl font-medium text-sky-600">
-              {data.matrikelStudentData.be._text}
+              {data.matrikelStudentData?.be?._text || "-"}
             </div>
           </div>
           <div>
