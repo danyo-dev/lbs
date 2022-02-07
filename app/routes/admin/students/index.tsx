@@ -1,7 +1,16 @@
 import { useState } from "react";
 import { Link, useMatches } from "remix";
 import SearchBar from "~/components/SearchBar";
+import { getStudentProfiles } from "~/services/academy5Service";
 import { StudentProfile } from "~/types/responseTypes";
+
+export const loader: LoaderFunction = async () => {
+  const studentProfiles = await getStudentProfiles();
+
+  return studentProfiles;
+};
+
+// simulating API Student data to intgrate search fuction -> needs to be adjusted when actual data is received
 
 export default function StudentsIndex() {
   const studentProfiles = useMatches().find(
@@ -11,13 +20,13 @@ export default function StudentsIndex() {
 
   // only filter when filterBy is set
   const students = filterBy
-    ? studentProfiles?.filter(
-        ({ firstname, lastname }: { firstname: string; lastname: string }) =>
-          // other search options can be added here
-          [firstname, lastname].some((entry) =>
-            entry.toLowerCase().includes(filterBy.toLowerCase())
-          )
+    ? studentProfiles.filter(({ firstname, lastname }) =>
+      // other search options can be added here
+      [firstname, lastname].some((entry) =>
+        entry.toLowerCase().includes(filterBy.toLowerCase())
+
       )
+    )
     : studentProfiles;
 
   return (
