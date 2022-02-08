@@ -103,18 +103,18 @@ export async function requestBrzStammdaten(
   const headers = new Headers();
   headers.set("Authorization", `Bearer ${token}`);
 
-  const requestURL = `${process.env.BRZ_STAMMDATEN_URL}?be=FL&matrikelnummer=01329196&semester=2021W&uuid=${uuid}`;
+  const requestURL = `${process.env.BRZ_STAMMDATEN_URL}?be=FL&${queryString}&uuid=${uuid}`;
 
   const response = await fetch(requestURL, {
     method: "get",
     headers,
   });
   const XMLResponse = await response.text();
-  const stringResponse = handleXMLResponse(XMLResponse);
+  const responseBody = handleXMLResponse(XMLResponse);
 
-  handleErrors(response, stringResponse);
+  handleErrors(response, responseBody);
 
-  return stringResponse;
+  return responseBody;
 }
 
 /**
@@ -141,9 +141,9 @@ export async function requestBrzMatrikelNumber(
   });
 
   const XMLResponse = await response.text();
-  const stringResponse = handleXMLResponse(XMLResponse);
+  const responseBody = handleXMLResponse(XMLResponse);
 
-  handleErrors(response, stringResponse);
+  handleErrors(response, responseBody);
 
-  return stringResponse;
+  return responseBody;
 }
