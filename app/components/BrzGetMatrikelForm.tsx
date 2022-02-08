@@ -8,16 +8,16 @@ interface Props {
   state: StateTypes;
   student?: Partial<StudentProfile>;
 }
-export default function BrzGeneralDataForm({ Form, state, student }: Props) {
+export default function BrzGetMatrikelForm({ Form, state, student }: Props) {
   return (
     <Form
       method="get"
-      action={`/admin/api/brz/general`}
-      className=" bg-white col-span-6 shadow overflow-hidden rounded-lg"
+      action={`/admin/api/brz/getMatrikel`}
+      className=" bg-white  shadow overflow-hidden rounded-lg"
     >
-      <div className="px-6 py-5 bg-white col-span-6 shadow overflow-hidden ">
-        <div className="grid grid-cols-8 gap-6">
-          <div className="col-span-2">
+      <div className="px-6 py-3 bg-white  shadow overflow-hidden ">
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-6">
             <label
               htmlFor="vorname"
               className="block text-sm font-medium text-slate-600"
@@ -35,7 +35,7 @@ export default function BrzGeneralDataForm({ Form, state, student }: Props) {
             />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-6">
             <label
               htmlFor="nachname"
               className="block text-sm font-medium text-slate-600"
@@ -53,7 +53,7 @@ export default function BrzGeneralDataForm({ Form, state, student }: Props) {
             />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-6">
             <label
               htmlFor="geburtsdatum"
               className="block text-sm font-medium text-slate-600"
@@ -70,7 +70,7 @@ export default function BrzGeneralDataForm({ Form, state, student }: Props) {
               className="inputField"
             />
           </div>
-          <div className="col-span-2">
+          <div className="col-span-6">
             <label
               htmlFor="svnr"
               className="block text-sm font-medium text-slate-600"
