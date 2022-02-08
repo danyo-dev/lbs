@@ -57,7 +57,7 @@ export default function BrzGeneralDataForm({ Form, state, student }: Props) {
           type="submit"
           className="submitBtn"
         >
-          Abfrage Starten
+          Abfragen
         </button>
       </div>
     </Form>

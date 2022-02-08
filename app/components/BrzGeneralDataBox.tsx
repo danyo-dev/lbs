@@ -8,13 +8,13 @@ export default function BrzGeneralDataBox({
 }: Fetcher<BrzGeneralData>) {
   return (
     <div className="bg-white py-6 px-6 shadow border-slate-200 rounded-lg text-sm ">
-      {type === "loaderSubmission" && <LoadingIcon />}
       {type === "init" && (
         <div className="text-slate-600">
           Ergebnisse werden nach überprüfung der Daten geladen.
         </div>
       )}
-      {type === "done" && (
+      {type === "loaderSubmission" && <LoadingIcon />}
+      {type === "done" && data.generalData && (
         <ul className="text-slate-500 text-sm ">
           {Object.entries(data.generalData).map(([key, value]) => {
             return (
@@ -25,6 +25,9 @@ export default function BrzGeneralDataBox({
             );
           })}
         </ul>
+      )}
+      {type === "done" && !data.generalData && (
+        <div>Keine Stammdaten Gefunden</div>
       )}
     </div>
   );
