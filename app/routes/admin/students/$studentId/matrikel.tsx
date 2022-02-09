@@ -1,3 +1,51 @@
+import { useFetcher, useParams, useMatches, useCatch } from "remix";
+import BrzGetMatrikelForm from "~/components/BrzGetMatrikelForm";
+import BrzMatrikelDataBox from "~/components/BrzMatrikelDataBox";
+import { StudentProfile } from "~/types/responseTypes";
+
 export default function StudentMatrikelDataRoute() {
-  return <div>Matrikel</div>;
+  const fetcherData = useFetcher();
+  const { state, type, data, Form } = fetcherData;
+
+  const params = useParams();
+  const studentData = useMatches().find(
+    (m) => m.pathname === "/admin/students"
+  )?.data;
+
+  const student = studentData?.find(
+    (student: StudentProfile) => student.id === params.studentId
+  );
+
+  return (
+    <div className="w-full my-12 grid grid-cols-12 gap-6">
+      <section className=" border-slate-200 col-span-6">
+        <h2 className="text-xl text-slate-600 mb-2 ml-2">
+          BRZ Matrikeldaten Abfragen
+        </h2>
+        <BrzGetMatrikelForm Form={Form} state={state} student={student} />
+      </section>
+
+      <section className="border-slate-200 gap-6 col-span-6">
+        <h2 className="text-xl text-slate-600 mb-2 ml-2">BRZ Matrikeldaten</h2>
+        <BrzMatrikelDataBox data={data} type={type} />
+      </section>
+    </div>
+  );
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+  const parseData = JSON.parse(caught.data);
+
+  const errorMsg =
+    parseData.FehlerAntwort?.fehlerliste?.fehler?.massnahme?._text;
+
+  return (
+    <div className="error-container">
+      <div className="text-2xl font-bold mb-2">
+        Error: Status {caught.status}
+      </div>
+      <div className="text-slate-700 ">{errorMsg}</div>
+    </div>
+  );
 }

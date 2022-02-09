@@ -23,8 +23,8 @@ export interface BrzMatrikelStudent {
 }
 export interface BrzMatrikelStudentData {
   matrikelnummer: { _text: string };
-  be: { _text: string };
-  semester: { _text: string };
+  be?: { _text: string };
+  semester?: { _text: string };
   matrikelstatus: { _text: string };
   fullstudentlink: { _text: string };
 }

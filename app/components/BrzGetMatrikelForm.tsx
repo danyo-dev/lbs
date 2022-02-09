@@ -1,29 +1,23 @@
 import { ForwardRefExoticComponent, RefAttributes } from "react";
-import { FormProps, useMatches, useParams } from "remix";
+import { FormProps } from "remix";
+import { StateTypes } from "~/types/generalTypes";
 import { StudentProfile } from "~/types/responseTypes";
 
 interface Props {
   Form: ForwardRefExoticComponent<FormProps & RefAttributes<HTMLFormElement>>;
-  state: string;
+  state: StateTypes;
+  student?: Partial<StudentProfile>;
 }
-export default function BrzGeneralDataForm({ Form, state }: Props) {
-  const params = useParams();
-  const data = useMatches().find((m) => m.pathname === "/admin/students")?.data;
-
-  const student = data?.find(
-    (student: StudentProfile) => student.id === params.studentId
-  );
-
-  const { firstname, lastname, birthdate } = student;
+export default function BrzGetMatrikelForm({ Form, state, student }: Props) {
   return (
     <Form
       method="get"
-      action={`/admin/api/brz/general`}
-      className=" bg-white col-span-6 shadow overflow-hidden rounded-lg"
+      action={`/admin/api/brz/getMatrikel`}
+      className=" bg-white  shadow overflow-hidden rounded-lg"
     >
-      <div className="px-6 py-5 bg-white col-span-6 shadow overflow-hidden ">
-        <div className="grid grid-cols-8 gap-6">
-          <div className="col-span-2">
+      <div className="px-6 py-3 bg-white  shadow overflow-hidden ">
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-6">
             <label
               htmlFor="vorname"
               className="block text-sm font-medium text-slate-600"
@@ -33,7 +27,7 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
             <input
               type="text"
               name="vorname"
-              defaultValue={firstname}
+              defaultValue={student?.firstname || ""}
               id="vorname"
               required
               autoComplete="given-name"
@@ -41,7 +35,7 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
             />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-6">
             <label
               htmlFor="nachname"
               className="block text-sm font-medium text-slate-600"
@@ -51,7 +45,7 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
             <input
               type="text"
               name="nachname"
-              defaultValue={lastname}
+              defaultValue={student?.lastname || ""}
               id="nachname"
               required
               autoComplete="family-name"
@@ -59,7 +53,7 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
             />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-6">
             <label
               htmlFor="geburtsdatum"
               className="block text-sm font-medium text-slate-600"
@@ -67,16 +61,16 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
               Geburtsdatum
             </label>
             <input
-              type="text"
+              type="date"
               name="geburtsdatum"
-              defaultValue={birthdate}
+              defaultValue={student?.birthdate || ""}
               id="geburtsdatum"
               required
               autoComplete="email"
               className="inputField"
             />
           </div>
-          <div className="col-span-2">
+          <div className="col-span-6">
             <label
               htmlFor="svnr"
               className="block text-sm font-medium text-slate-600"
@@ -99,7 +93,7 @@ export default function BrzGeneralDataForm({ Form, state }: Props) {
           type="submit"
           className="disabled:opacity-50 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
         >
-          Abfrage Starten
+          Abfragen
         </button>
       </div>
     </Form>

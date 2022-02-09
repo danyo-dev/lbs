@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Link, useMatches } from "remix";
+import { Link, LoaderFunction, useMatches } from "remix";
 import SearchBar from "~/components/SearchBar";
 import { getStudentProfiles } from "~/services/academy5Service";
-import { StudentProfile } from "~/types/responseTypes";
+import type { StudentProfile } from "~/types/responseTypes";
 
 export const loader: LoaderFunction = async () => {
   const studentProfiles = await getStudentProfiles();
@@ -20,18 +20,18 @@ export default function StudentsIndex() {
 
   // only filter when filterBy is set
   const students = filterBy
-    ? studentProfiles.filter(({ firstname, lastname }) =>
-      // other search options can be added here
-      [firstname, lastname].some((entry) =>
-        entry.toLowerCase().includes(filterBy.toLowerCase())
-
+    ? studentProfiles?.filter(
+        ({ firstname, lastname, email }: StudentProfile) =>
+          // other search options can be added here
+          [firstname, lastname, email].some((entry) =>
+            entry.toLowerCase().includes(filterBy.toLowerCase())
+          )
       )
-    )
     : studentProfiles;
 
   return (
     <>
-      <h1 className="text-2xl font-extrabold text-slate-800 mb-6">Students</h1>
+      <h1 className="text-2xl font-extrabold text-slate-900 mb-6">Students</h1>
       <SearchBar setFilterBy={setFilterBy} />
 
       <div className="align-middle">
@@ -83,7 +83,7 @@ export default function StudentsIndex() {
                   </td>
                   <td className="tableCell text-right text-sm font-medium">
                     <Link
-                      to={`${student.id}/general`}
+                      to={`${student.id}/matrikel`}
                       className="text-indigo-600 hover:text-indigo-900"
                     >
                       Edit

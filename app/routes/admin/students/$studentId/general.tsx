@@ -1,38 +1,35 @@
-import { useCatch, useFetcher } from "remix";
+import { useCatch, useFetcher, useMatches, useParams } from "remix";
 import BrzGeneralDataBox from "~/components/BrzGeneralDataBox";
-import BrzGeneralDataForm from "~/components/BrzGeneralDataForm";
-import BrzMatrikelDataBox from "~/components/BrzMatrikelDataBox";
-import { withFetcherLoader } from "~/components/hoc/withFetcherLoader";
+
+import BrzGetStammdatenForm from "~/components/BrzGetStammdatenForm";
+import { StudentProfile } from "~/types/responseTypes";
 
 export default function StudentGeneralRoute() {
   const fetcherData = useFetcher();
 
   const { state, type, data, Form } = fetcherData;
 
-  const BrzMatrikelDataBoxWithLoader = withFetcherLoader(
-    BrzMatrikelDataBox,
-    type
+  const params = useParams();
+  const studentData = useMatches().find(
+    (m) => m.pathname === "/admin/students"
+  )?.data;
+
+  const student = studentData?.find(
+    (student: StudentProfile) => student.id === params.studentId
   );
-  const BrzGeneralDataBoxWithLoader = withFetcherLoader(
-    BrzGeneralDataBox,
-    type
-  );
+
   return (
-    <div className="w-3/4 my-12">
-      <section className=" border-slate-200 gap-6 ">
-        <h2 className="text-xl text-slate-600 my-2 ml-2">Academy 5 Daten</h2>
-        <BrzGeneralDataForm Form={Form} state={state} />
+    <div className="w-full my-12 grid grid-cols-12 gap-6">
+      <section className=" border-slate-200 col-span-6">
+        <h2 className="text-xl text-slate-600 mb-2 ml-2">
+          BRZ Stammdaten Abfragen
+        </h2>
+        <BrzGetStammdatenForm Form={Form} isSubmitting={state==='submitting'} student={student} />
       </section>
 
-      <section className="border-slate-200 gap-6 mt-6">
-        <h2 className="text-xl text-slate-600 my-2 ml-2">BRZ Matrikeldaten</h2>
-        <BrzMatrikelDataBoxWithLoader data={data} />
-      </section>
-      <section className="border-slate-200 gap-6 mt-6">
-        <h2 className="text-xl text-slate-600 mt-6 mb-2 ml-2">
-          BRZ Stammdaten
-        </h2>
-        <BrzGeneralDataBoxWithLoader data={data} />
+      <section className="border-slate-200 col-span-6 ">
+        <h2 className="text-xl text-slate-600 mb-2 ml-2">BRZ Stammdaten</h2>
+        <BrzGeneralDataBox data={data} type={type} />
       </section>
     </div>
   );
@@ -40,16 +37,20 @@ export default function StudentGeneralRoute() {
 export function CatchBoundary() {
   const caught = useCatch();
   const parseData = JSON.parse(caught.data);
+  const errors = parseData.FehlerAntwort?.fehlerliste?.fehler;
 
-  const errorMsg =
-    parseData.FehlerAntwort?.fehlerliste?.fehler?.massnahme?._text;
+  const isMultipleErrors = Array.isArray(errors);
 
   return (
     <div className="error-container">
       <div className="text-2xl font-bold mb-2">
         Error: Status {caught.status}
       </div>
-      <div className="text-slate-700 ">{errorMsg}</div>
+      {
+        errors?.map((e) => {
+          console.log(e);
+          return <div className="text-slate-700 ">{e.fehlertext._text}</div>;
+        }) || <div>{errors.fehlertext._text}</div>
     </div>
   );
 }

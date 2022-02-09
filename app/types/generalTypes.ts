@@ -1,7 +1,7 @@
-export interface Fetcher<T> {
+export interface Fetcher<DataType> {
   type?: FetcherTypes;
-  data: T;
-  state?: "submitting" | "idle" | "loading";
+  data: DataType;
+  state?: StateTypes;
 }
 
 export type FetcherTypes =
@@ -11,3 +11,5 @@ export type FetcherTypes =
   | "loaderSubmission"
   | "actionReload"
   | "normalLoad";
+
+export type StateTypes = "idle" | "submitting" | "loading";
