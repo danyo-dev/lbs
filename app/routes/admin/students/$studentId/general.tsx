@@ -46,14 +46,11 @@ export function CatchBoundary() {
       <div className="text-2xl font-bold mb-2">
         Error: Status {caught.status}
       </div>
-      {isMultipleErrors ? (
-        errors.map((e) => {
+      {
+        errors?.map((e) => {
           console.log(e);
           return <div className="text-slate-700 ">{e.fehlertext._text}</div>;
-        })
-      ) : (
-        <div>{errors.fehlertext._text}</div>
-      )}
+        }) || <div>{errors.fehlertext._text}</div>
     </div>
   );
 }
