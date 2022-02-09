@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   ActionFunction,
   Form,
@@ -6,18 +5,18 @@ import {
   useActionData,
   useLoaderData,
 } from "remix";
-import Snackbar from "~/components/shared/Snackbar";
-
 import { requireAuthentication } from "~/services/auth.server";
 import {
   brzAuthenticationHandler,
   requestGetReservedMatrikel,
   requestNewMatrikel,
 } from "~/services/brzService";
+import { BrzReservedMatrikel } from "~/types/brzTypes";
 import {
   convertNewMatrikelData,
   convertReservedMatrikelData,
 } from "~/utils/brzUtils";
+import Snackbar from "~/components/shared/Snackbar";
 
 export const action: ActionFunction = async ({ request }) => {
   await requireAuthentication(request);
@@ -33,13 +32,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const brzSession = await brzAuthenticationHandler(request);
   const reservedMatrikelResponse = await requestGetReservedMatrikel(brzSession);
-
+  console.log(convertReservedMatrikelData(reservedMatrikelResponse));
   return convertReservedMatrikelData(reservedMatrikelResponse);
 };
 
 export default function Matrikel() {
-  const matrikelData = useLoaderData();
-  const newReservedMatrikelData = useActionData();
+  const matrikelData = useLoaderData<BrzReservedMatrikel[]>();
+  const newReservedMatrikelData = useActionData<string>();
 
   return (
     <>
