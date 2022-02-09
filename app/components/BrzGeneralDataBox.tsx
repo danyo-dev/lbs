@@ -6,20 +6,8 @@ export default function BrzGeneralDataBox({
   data,
   type,
 }: Fetcher<BrzGeneralDataBoxItem>) {
-  function NoDataFound() {
-    return (
-      <div className="flex justify-between items-center">
-        <p>Keine Daten vorhanden</p>
-      </div>
-    );
-  }
-
   return (
-    <LbsLoader
-      type={type}
-      hasData={Boolean(data)}
-      noDataFound={<NoDataFound />}
-    >
+    <LbsLoader type={type} hasData={Boolean(data)}>
       <ul className="text-slate-500 text-sm ">
         {data &&
           Object.entries(data).map(([key, value]) => {
