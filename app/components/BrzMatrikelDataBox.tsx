@@ -3,7 +3,7 @@ import { Form } from "remix";
 import { BrzMatrikelStudent } from "~/types/brzTypes";
 import { Fetcher } from "~/types/generalTypes";
 import { DuplicateIcon, CheckIcon } from "@heroicons/react/outline";
-import LoadingIcon from "./shared/LoadingIcon";
+import { LoadingScreen } from '~/components/shared/LoadingScreen';
 
 export default function BrzMatrikelDataBox({
   data,
@@ -16,72 +16,65 @@ export default function BrzMatrikelDataBox({
     );
     setTextIsCopied(true);
   }
-  return (
-    <div className="bg-white py-6 px-6 shadow border-slate-200 rounded-lg text-sm ">
-      {type === "loaderSubmission" && <LoadingIcon />}
-      {type === "init" && (
-        <div className="text-slate-600">
-          Ergebnisse werden nach überprüfung der Daten geladen.
-        </div>
-      )}
-      {type === "done" && data.matrikelStudentData && (
-        <>
-          <div className="grid grid-cols-4">
-            <div>
-              <p className="text-slate-500">Matrikelnummer</p>
-              <div className="block text-2xl font-medium text-sky-600">
-                {data.matrikelStudentData.matrikelnummer._text}
-              </div>
 
-              {textIsCopied ? (
-                <div className=" text-slate-500 flex">
-                  <CheckIcon
-                    className="w-5 h-5"
-                    data-tooltip-target="tooltip-default"
-                  />
-                  <span>copied</span>
-                </div>
-              ) : (
-                <DuplicateIcon
-                  onClick={handleCopy}
-                  className="w-5 h-5 text-slate-500 hover:text-slate-700 cursor-pointer"
-                />
-              )}
-            </div>
-            <div>
-              <p className="text-slate-500">Semester</p>
-              <div className="block text-2xl font-medium text-sky-600">
-                {data.matrikelStudentData?.semester?._text || "-"}
-              </div>
-            </div>
-            <div>
-              <p className="text-slate-500">Bildungseinrichtung</p>
-              <div className="block text-2xl font-medium text-sky-600">
-                {data.matrikelStudentData?.be?._text || "-"}
-              </div>
-            </div>
-            <div>
-              <p className="text-slate-500">Matrikelstatus</p>
-              <div className="block text-2xl font-medium text-sky-600">
-                {data.matrikelStudentData.matrikelstatus._text}
-              </div>
-            </div>
+  function NoDataFound() {
+    return (
+      <div className="flex justify-between items-center">
+        <p>Keine Matrikelnummer gefunden</p>
+        <Form method="post">
+          <button
+            type="submit"
+            className=" justify-center py-2 px-4 border border-transparent shadow-sm font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Reservieren
+          </button>
+        </Form>
+      </div>
+    );
+  }
+
+  return (
+    <LoadingScreen type={type} hasData={Boolean(data.matrikelStudentData)} noData={<NoDataFound />}>
+      <div className="grid grid-cols-4">
+        <div>
+          <p className="text-slate-500">Matrikelnummer</p>
+          <div className="block text-2xl font-medium text-sky-600">
+            {data.matrikelStudentData.matrikelnummer._text}
           </div>
-        </>
-      )}
-      {type === "done" && !data.matrikelStudentData && (
-        <div className="flex justify-between items-center">
-          <p>Keine Matrikelnummer gefunden</p>
-          <Form method="post">
-            <button
-              type="submit"
-              className=" justify-center py-2 px-4 border border-transparent shadow-sm font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Reservieren
-            </button>
-          </Form>
+          {textIsCopied ? (
+            <div className=" text-slate-500 flex">
+              <CheckIcon
+                className="w-5 h-5"
+                data-tooltip-target="tooltip-default"
+              />
+              <span>copied</span>
+            </div>
+          ) : (
+            <DuplicateIcon
+              onClick={handleCopy}
+              className="w-5 h-5 text-slate-500 hover:text-slate-700 cursor-pointer"
+            />
+          )}
         </div>
-      )}
-    </div>
+        <div>
+          <p className="text-slate-500">Semester</p>
+          <div className="block text-2xl font-medium text-sky-600">
+            {data.matrikelStudentData?.semester?._text || "-"}
+          </div>
+        </div>
+        <div>
+          <p className="text-slate-500">Bildungseinrichtung</p>
+          <div className="block text-2xl font-medium text-sky-600">
+            {data.matrikelStudentData?.be?._text || "-"}
+          </div>
+        </div>
+        <div>
+          <p className="text-slate-500">Matrikelstatus</p>
+          <div className="block text-2xl font-medium text-sky-600">
+            {data.matrikelStudentData.matrikelstatus._text}
+          </div>
+        </div>
+      </div>
+    </LoadingScreen>
   );
 }

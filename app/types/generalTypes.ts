@@ -1,6 +1,6 @@
-export interface Fetcher<T> {
+export interface Fetcher<DataType> {
   type?: FetcherTypes;
-  data: T;
+  data: DataType;
   state?: StateTypes;
 }
 
