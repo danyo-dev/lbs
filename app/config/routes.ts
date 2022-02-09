@@ -2,6 +2,7 @@ import {
   AcademicCapIcon,
   ClipboardListIcon,
   HomeIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/outline";
 
 export const routes = [
@@ -14,6 +15,11 @@ export const routes = [
     path: "students",
     icon: AcademicCapIcon,
     name: "Students",
+  },
+  {
+    path: "matrikel",
+    icon: DocumentTextIcon,
+    name: "Reservierte Matrikelnummern",
   },
   {
     path: "logs",

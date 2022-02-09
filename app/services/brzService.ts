@@ -9,7 +9,7 @@ import { Session } from "remix";
  * @returns JSON string
  */
 
-function handleXMLResponse(response: string) {
+export function handleXMLResponse(response: string) {
   return converter.xml2json(response, {
     compact: true,
   });
@@ -21,7 +21,10 @@ function handleXMLResponse(response: string) {
  * @param statusText
  */
 
-function handleErrors(response: Response, responseMsg = "error occured") {
+export function handleErrors(
+  response: Response,
+  responseMsg = "error occured"
+) {
   if (response.ok) {
     return;
   }
@@ -44,7 +47,9 @@ export async function brzAuthenticationHandler(
     !session.has("brz_auth_expiration") ||
     session.get("brz_auth_expiration") <= Date.now()
   ) {
-    return await authenticate(request);
+    const authenticateRequest = await authenticate(request);
+
+    return authenticateRequest;
   }
   return session;
 }
@@ -120,7 +125,7 @@ export async function requestBrzStammdaten(
 /**
  *
  * @param request
- * @returns a xml to JSON converted string as Promise
+ * @returns Promise
  */
 export async function requestBrzMatrikelNumber(
   session: Session,
@@ -138,6 +143,62 @@ export async function requestBrzMatrikelNumber(
   const response = await fetch(requestURL, {
     method: "get",
     headers,
+  });
+
+  const XMLResponse = await response.text();
+  const responseBody = handleXMLResponse(XMLResponse);
+
+  handleErrors(response, responseBody);
+
+  return responseBody;
+}
+
+/**
+ *
+ * @param session
+ * @returns Promise
+ */
+
+export async function requestGetReservedMatrikel(
+  session: Session
+): Promise<string> {
+  const token = session.get("brz_auth").access_token;
+  const uuid = v4();
+
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${token}`);
+
+  const requestURL = `${process.env.BRZ_RESERVED_MATRIKEL_URL}?be=FL&sj=2021&uuid=${uuid}`;
+
+  const response = await fetch(requestURL, {
+    method: "get",
+    headers,
+  });
+
+  const XMLResponse = await response.text();
+  const responseBody = handleXMLResponse(XMLResponse);
+
+  handleErrors(response, responseBody);
+
+  return responseBody;
+}
+
+export async function requestNewMatrikel(session: Session) {
+  const token = session.get("brz_auth").access_token;
+  const uuid = v4();
+
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${token}`);
+  headers.set("Content-Type", "application/xml");
+
+  const XMLdata = `<?xml version="1.0" encoding="UTF-8"?> <matrikelnummernanfrage><uuid>${uuid}</uuid><kontingentblock><anzahl>1</anzahl><be>FL</be><sj>2021</sj></kontingentblock></matrikelnummernanfrage>`;
+
+  const requestURL = `${process.env.BRZ_GET_NEW_MATRIKEL_URL}`;
+
+  const response = await fetch(requestURL, {
+    method: "post",
+    headers,
+    body: XMLdata,
   });
 
   const XMLResponse = await response.text();

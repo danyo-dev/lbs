@@ -21,3 +21,15 @@ export function convertGeneralStudentData(stammDatenData: string) {
 
   return parseStammDatenData.stammdatenanfrage.stammdaten;
 }
+
+export function convertReservedMatrikelData(reservedMatrikelData: string) {
+  const parseReservedMatrikel = JSON.parse(reservedMatrikelData);
+  return parseReservedMatrikel.matrikelnummernantwort.matrikelnummernliste
+    .matrikelnummer;
+}
+
+export function convertNewMatrikelData(newMatrikelNumberResponse: string) {
+  const parseData = JSON.parse(newMatrikelNumberResponse);
+  return parseData.matrikelnummernantwort.matrikelnummernliste.matrikelnummer
+    ._text;
+}
