@@ -1,11 +1,12 @@
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { FormProps } from "remix";
-import { StateTypes } from "~/types/generalTypes";
+import { getCurrentSemester, getSemesterSelection } from "~/utils/dateUtils";
 
 interface Props {
   Form: ForwardRefExoticComponent<FormProps & RefAttributes<HTMLFormElement>>;
   isSubmitting: Boolean;
 }
+
 export default function BrzGeneralDataForm({ Form, isSubmitting }: Props) {
   return (
     <Form
@@ -38,11 +39,19 @@ export default function BrzGeneralDataForm({ Form, isSubmitting }: Props) {
             >
               Semester
             </label>
-            <select className="dropDown" name="semester" defaultValue="2021W">
-              <option value="2021W">2021W</option>
-              <option value="2021S">2021S</option>
-              <option value="2020W">2020W</option>
-              <option value="2020S">2020S</option>
+            <select
+              className="dropDown"
+              name="semester"
+              defaultValue={getCurrentSemester()}
+            >
+              {getSemesterSelection().map((el) => {
+                return (
+                  <>
+                    <option value={`${el}S`}>{`${el}S`}</option>
+                    <option value={`${el}W`}>{`${el}W`}</option>
+                  </>
+                );
+              })}
             </select>
           </div>
         </div>
