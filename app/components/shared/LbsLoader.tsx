@@ -1,18 +1,26 @@
-
-import { ReactChild, ReactNode } from 'react';
+import { ReactChild, ReactNode } from "react";
 import { FetcherTypes } from "~/types/generalTypes";
 import LoadingIcon from "~/components/shared/LoadingIcon";
 
 interface Props {
-  type?: FetcherTypes,
-  hasData: boolean,
-  noDataFound?: ReactNode,
-  children: ReactChild
+  type?: FetcherTypes;
+  hasData: boolean;
+  noDataFound?: ReactNode;
+  children: ReactChild;
 }
 
-export function LbsLoader({ type, hasData = false, noDataFound, children }: Props) {
+export function LbsLoader({
+  type,
+  hasData = false,
+  noDataFound,
+  children,
+}: Props) {
   function Container({ children }: { children: ReactChild }) {
-    return <div className="bg-white py-6 px-6 shadow border-slate-200 rounded-lg text-sm ">{children}</div>
+    return (
+      <div className="bg-white py-6 px-6 shadow border-slate-200 rounded-lg text-sm ">
+        {children}
+      </div>
+    );
   }
 
   if (type === "loaderSubmission") {
@@ -20,7 +28,7 @@ export function LbsLoader({ type, hasData = false, noDataFound, children }: Prop
       <Container>
         <LoadingIcon />
       </Container>
-    )
+    );
   }
 
   if (type === "init") {
@@ -38,7 +46,7 @@ export function LbsLoader({ type, hasData = false, noDataFound, children }: Prop
       <Container>
         <>{noDataFound || <div>Keine Daten gefunden</div>}</>
       </Container>
-    )
+    );
   }
 
   return <Container>{children}</Container>;

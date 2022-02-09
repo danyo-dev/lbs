@@ -1,10 +1,11 @@
 import { useFetcher, useParams, useMatches, useCatch } from "remix";
 import BrzGetMatrikelForm from "~/components/BrzGetMatrikelForm";
 import BrzMatrikelDataBox from "~/components/BrzMatrikelDataBox";
+import { BrzMatrikelStudent } from "~/types/brzTypes";
 import { StudentProfile } from "~/types/responseTypes";
 
 export default function StudentMatrikelDataRoute() {
-  const fetcherData = useFetcher();
+  const fetcherData = useFetcher<BrzMatrikelStudent>();
   const { state, type, data, Form } = fetcherData;
 
   const params = useParams();

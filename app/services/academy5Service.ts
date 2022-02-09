@@ -4,10 +4,10 @@ import {
   getAuthXML,
   getPersonIdXML,
   getStudentProfilesXML,
-  handleSoapResponseError
+  handleSoapResponseError,
 } from "~/utils/soapUtils";
 import { cleanupStudentAttributes } from "~/utils/studentUtils";
-import { handleCache } from '~/utils/cacheUtils';
+import { handleCache } from "~/utils/cacheUtils";
 
 import {
   SoapAuthResponse,
@@ -94,14 +94,14 @@ export async function getStudentProfileById(profileId: number) {
     } catch (error) {
       console.log(error);
     }
-  })
+  });
 }
 
 /**
  * get studentProfiles from cache or fetched from academy 5
  */
 export async function getStudentProfiles() {
-  return handleCache('studentProfiles', async () => {
+  return handleCache("studentProfiles", async () => {
     try {
       const authToken = await authenticateSoap();
 
@@ -127,7 +127,7 @@ export async function getStudentProfiles() {
       const students = responseBody["SOAP-ENV:Envelope"]["SOAP-ENV:Body"][
         "ns1:fetchProfileByAccessGroupIdsResponse"
       ].fetchProfileByAccessGroupIdsResponse.profile
-        .slice(0, 50) // strip them down to 50 for now
+        .slice(0, 500) // strip them down to 500 for now
         .map(cleanupStudentAttributes);
 
       return students;
@@ -136,4 +136,3 @@ export async function getStudentProfiles() {
     }
   });
 }
-

@@ -1,14 +1,12 @@
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { FormProps } from "remix";
 import { StateTypes } from "~/types/generalTypes";
-import { StudentProfile } from "~/types/responseTypes";
 
 interface Props {
   Form: ForwardRefExoticComponent<FormProps & RefAttributes<HTMLFormElement>>;
-  state: StateTypes;
-  student?: Partial<StudentProfile>;
+  isSubmitting: Boolean;
 }
-export default function BrzGeneralDataForm({ Form, state, student }: Props) {
+export default function BrzGeneralDataForm({ Form, isSubmitting }: Props) {
   return (
     <Form
       method="get"
@@ -40,10 +38,8 @@ export default function BrzGeneralDataForm({ Form, state, student }: Props) {
             >
               Semester
             </label>
-            <select className="dropDown" name="semester">
-              <option selected value="2021W">
-                2021W
-              </option>
+            <select className="dropDown" name="semester" defaultValue="2021W">
+              <option value="2021W">2021W</option>
               <option value="2021S">2021S</option>
               <option value="2020W">2020W</option>
               <option value="2020S">2020S</option>
@@ -53,7 +49,7 @@ export default function BrzGeneralDataForm({ Form, state, student }: Props) {
       </div>
       <div className="px-4 py-3 bg-slate-50 text-right">
         <button
-          disabled={state === "submitting" ? true : false}
+          disabled={isSubmitting ? true : false}
           type="submit"
           className="submitBtn"
         >
