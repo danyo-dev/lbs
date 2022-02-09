@@ -16,8 +16,10 @@ export const loader: LoaderFunction = async ({ request }) => {
     brzSession,
     cleanedQueryString
   );
-
   const generalData = convertGeneralStudentData(stammDatenData);
 
-  return json({ generalData });
+  if (!generalData) {
+    return null;
+  }
+  return json(generalData);
 };

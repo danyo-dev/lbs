@@ -3,7 +3,7 @@ import { Form } from "remix";
 import { BrzMatrikelStudent } from "~/types/brzTypes";
 import { Fetcher } from "~/types/generalTypes";
 import { DuplicateIcon, CheckIcon } from "@heroicons/react/outline";
-import { LbsLoader } from '~/components/shared/LbsLoader';
+import { LbsLoader } from "~/components/shared/LbsLoader";
 
 export default function BrzMatrikelDataBox({
   data,
@@ -12,7 +12,7 @@ export default function BrzMatrikelDataBox({
   const [textIsCopied, setTextIsCopied] = useState(false);
   function handleCopy() {
     navigator.clipboard.writeText(
-      `${data.matrikelStudentData.matrikelnummer._text}`
+      `${data?.matrikelStudentData?.matrikelnummer._text}`
     );
     setTextIsCopied(true);
   }
@@ -20,7 +20,7 @@ export default function BrzMatrikelDataBox({
   function NoDataFound() {
     return (
       <div className="flex justify-between items-center">
-        <p>Keine Matrikelnummer gefunden</p>
+        <p>{data?.matrikelStatusText}</p>
         <Form method="post">
           <button
             type="submit"
@@ -34,12 +34,16 @@ export default function BrzMatrikelDataBox({
   }
 
   return (
-    <LbsLoader type={type} hasData={Boolean(data.matrikelStudentData)} noDataFound={<NoDataFound />}>
+    <LbsLoader
+      type={type}
+      hasData={Boolean(data?.matrikelStudentData)}
+      noDataFound={<NoDataFound />}
+    >
       <div className="grid grid-cols-4">
         <div>
           <p className="text-slate-500">Matrikelnummer</p>
           <div className="block text-2xl font-medium text-sky-600">
-            {data.matrikelStudentData.matrikelnummer._text}
+            {data?.matrikelStudentData?.matrikelnummer._text}
           </div>
           {textIsCopied ? (
             <div className=" text-slate-500 flex">
@@ -59,19 +63,19 @@ export default function BrzMatrikelDataBox({
         <div>
           <p className="text-slate-500">Semester</p>
           <div className="block text-2xl font-medium text-sky-600">
-            {data.matrikelStudentData?.semester?._text || "-"}
+            {data?.matrikelStudentData?.semester?._text || "-"}
           </div>
         </div>
         <div>
           <p className="text-slate-500">Bildungseinrichtung</p>
           <div className="block text-2xl font-medium text-sky-600">
-            {data.matrikelStudentData?.be?._text || "-"}
+            {data?.matrikelStudentData?.be?._text || "-"}
           </div>
         </div>
         <div>
           <p className="text-slate-500">Matrikelstatus</p>
           <div className="block text-2xl font-medium text-sky-600">
-            {data.matrikelStudentData.matrikelstatus._text}
+            {data?.matrikelStudentData?.matrikelstatus._text}
           </div>
         </div>
       </div>

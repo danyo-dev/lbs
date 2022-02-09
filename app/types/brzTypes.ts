@@ -18,8 +18,9 @@ export interface BrzMatrikelRequestType {
 }
 
 export interface BrzMatrikelStudent {
-  matrikelStudentData: BrzMatrikelStudentData;
+  matrikelStudentData?: BrzMatrikelStudentData;
   matrikelStatusCode: number;
+  matrikelStatusText: string;
 }
 export interface BrzMatrikelStudentData {
   matrikelnummer: { _text: string };
@@ -29,21 +30,19 @@ export interface BrzMatrikelStudentData {
   fullstudentlink: { _text: string };
 }
 export interface BrzGeneralDataBoxItem {
-  generalData: {
-    vorname: { _text: string };
-    nachname: { _text: string };
-    geburtsdatum: { _text: string };
-    svnr: { _text: string };
-    geschlecht: { _text: string };
-    staatsbuergerschaft: { _text: string };
-    akadnach: { _text: string };
-    bpk: { _text: string };
-    adressen: { _text: string };
-    beitragstatus: { _text: string };
-    zaehlungPePn: { _text: string };
-    zaehlungPo: { _text: string };
-    emailliste: { _text: string };
-  };
+  vorname: { _text: string };
+  nachname: { _text: string };
+  geburtsdatum: { _text: string };
+  svnr: { _text: string };
+  geschlecht: { _text: string };
+  staatsbuergerschaft: { _text: string };
+  akadnach: { _text: string };
+  bpk: { _text: string };
+  adressen: { _text: string };
+  beitragstatus: { _text: string };
+  zaehlungPePn: { _text: string };
+  zaehlungPo: { _text: string };
+  emailliste: { _text: string };
 }
 
 export type BrzGeneralData = BrzMatrikelStudent & BrzGeneralDataBoxItem;

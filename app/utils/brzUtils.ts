@@ -1,5 +1,6 @@
 export function convertMatrikelStudentData(matrikelData: string) {
   const parseMatrikelData = JSON.parse(matrikelData);
+
   const matrikelStudentData =
     parseMatrikelData.matrikelpruefungantwort.matrikelpruefergebnis
       .matrikelliste.extendedstudierendenkey;
@@ -8,12 +9,15 @@ export function convertMatrikelStudentData(matrikelData: string) {
       ._text
   );
 
-  return { matrikelStudentData, matrikelStatusCode };
+  const matrikelStatusText =
+    parseMatrikelData.matrikelpruefungantwort.matrikelpruefergebnis
+      .statusmeldung._text;
+
+  return { matrikelStudentData, matrikelStatusText, matrikelStatusCode };
 }
 
 export function convertGeneralStudentData(stammDatenData: string) {
   const parseStammDatenData = JSON.parse(stammDatenData);
-  const generalData = parseStammDatenData.stammdatenanfrage.stammdaten;
 
-  return generalData;
+  return parseStammDatenData.stammdatenanfrage.stammdaten;
 }

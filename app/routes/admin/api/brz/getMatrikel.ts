@@ -18,8 +18,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     cleanedQueryString
   );
 
-  const { matrikelStudentData, matrikelStatusCode } =
+  const { matrikelStudentData, matrikelStatusCode, matrikelStatusText } =
     convertMatrikelStudentData(matrikelData);
 
-  return json({ matrikelStatusCode, matrikelStudentData });
+  return json({ matrikelStatusCode, matrikelStudentData, matrikelStatusText });
 };
