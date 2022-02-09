@@ -3,7 +3,7 @@ import { Form } from "remix";
 import { BrzMatrikelStudent } from "~/types/brzTypes";
 import { Fetcher } from "~/types/generalTypes";
 import { DuplicateIcon, CheckIcon } from "@heroicons/react/outline";
-import { LoadingScreen } from '~/components/shared/LoadingScreen';
+import { LbsLoader } from '~/components/shared/LbsLoader';
 
 export default function BrzMatrikelDataBox({
   data,
@@ -34,7 +34,7 @@ export default function BrzMatrikelDataBox({
   }
 
   return (
-    <LoadingScreen type={type} hasData={Boolean(data.matrikelStudentData)} noData={<NoDataFound />}>
+    <LbsLoader type={type} hasData={Boolean(data.matrikelStudentData)} noDataFound={<NoDataFound />}>
       <div className="grid grid-cols-4">
         <div>
           <p className="text-slate-500">Matrikelnummer</p>
@@ -75,6 +75,6 @@ export default function BrzMatrikelDataBox({
           </div>
         </div>
       </div>
-    </LoadingScreen>
+    </LbsLoader>
   );
 }

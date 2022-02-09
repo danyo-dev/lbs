@@ -6,11 +6,11 @@ import LoadingIcon from "~/components/shared/LoadingIcon";
 interface Props {
   type?: FetcherTypes,
   hasData: boolean,
-  noData?: ReactNode,
+  noDataFound?: ReactNode,
   children: ReactChild
 }
 
-export function LoadingScreen({ type, hasData = false, noData, children }: Props) {
+export function LbsLoader({ type, hasData = false, noDataFound, children }: Props) {
   function Container({ children }: { children: ReactChild }) {
     return <div className="bg-white py-6 px-6 shadow border-slate-200 rounded-lg text-sm ">{children}</div>
   }
@@ -36,7 +36,7 @@ export function LoadingScreen({ type, hasData = false, noData, children }: Props
   if (type === "done" && !hasData) {
     return (
       <Container>
-        <>{noData || <div>Keine Daten gefunden</div>}</>
+        <>{noDataFound || <div>Keine Daten gefunden</div>}</>
       </Container>
     )
   }
