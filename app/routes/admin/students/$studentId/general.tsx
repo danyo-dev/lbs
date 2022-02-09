@@ -24,7 +24,7 @@ export default function StudentGeneralRoute() {
         <h2 className="text-xl text-slate-600 mb-2 ml-2">
           BRZ Stammdaten Abfragen
         </h2>
-        <BrzGetStammdatenForm Form={Form} state={state} student={student} />
+        <BrzGetStammdatenForm Form={Form} isSubmitting={state==='submitting'} student={student} />
       </section>
 
       <section className="border-slate-200 col-span-6 ">
