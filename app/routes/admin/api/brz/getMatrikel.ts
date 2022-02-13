@@ -5,12 +5,18 @@ import {
   brzAuthenticationHandler,
   requestBrzMatrikelNumber,
 } from "~/services/brzService";
-import useQueryString from "~/hooks/useQueryString";
+import getCleanQueryString from "~/utils/getCleanQueryString";
 
 export const loader: LoaderFunction = async ({ request }) => {
   await requireAuthentication(request);
 
-  const { cleanedQueryString } = useQueryString(request);
+  const url = new URL(request.url);
+
+  if (url.search === "") {
+    throw Error("Bad Request");
+  }
+
+  const { cleanedQueryString } = getCleanQueryString(url);
 
   const brzSession = await brzAuthenticationHandler(request);
   const matrikelData = await requestBrzMatrikelNumber(

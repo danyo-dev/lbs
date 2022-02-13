@@ -2,9 +2,10 @@ import { v4 } from "uuid";
 import { getSession } from "./session.server";
 import converter from "xml-js";
 import { Session } from "remix";
+import { currentYear } from "~/utils/dateUtils";
 
 /**
- * handelrr for XML 2 JSON conversion
+ * Handle XML Response
  * @param response
  * @returns JSON string
  */
@@ -16,7 +17,7 @@ export function handleXMLResponse(response: string) {
 }
 
 /**
- * handler for responses from BRZ
+ * Handle Errors
  * @param status
  * @param statusText
  */
@@ -34,7 +35,7 @@ export function handleErrors(
 }
 
 /**
- * Check if Authentication needs to be run
+ * Handle Authentication
  * @param request
  * @returns Session as Promise
  */
@@ -56,6 +57,7 @@ export async function brzAuthenticationHandler(
 
 /**
  * Authenticates BRZ user against API
+ * https://stubei-q.portal.at/dvb/oauth/token?grant_type=client_credentials
  * @param request
  * @returns Promise
  */
@@ -91,7 +93,8 @@ async function authenticate(request: Request): Promise<Session> {
 }
 
 /**
- *
+ * Get Stammdaten for a student
+ * https://stubei-q.portal.at/rws/0.6/stammdaten.xml
  * @param request
  * @returns promise
  */
@@ -121,7 +124,8 @@ export async function requestBrzStammdaten(
 }
 
 /**
- *
+ * Check if matrikel number exists
+ * https://stubei-q.portal.at/rws/0.6/matrikelpruefung.xml
  * @param request
  * @returns Promise
  */
@@ -152,13 +156,15 @@ export async function requestBrzMatrikelNumber(
 }
 
 /**
- *
+ * Get reserved matrikel numbers
+ * https://stubei-q.portal.at/rws/0.6/matrikelreservierung.xml
  * @param session
  * @returns Promise
  */
 
 export async function requestGetReservedMatrikel(
-  session: Session
+  session: Session,
+  year: string
 ): Promise<string | void> {
   const token = session.get("brz_auth").access_token;
   const uuid = v4();
@@ -166,7 +172,7 @@ export async function requestGetReservedMatrikel(
   const headers = new Headers();
   headers.set("Authorization", `Bearer ${token}`);
 
-  const requestURL = `${process.env.BRZ_RESERVED_MATRIKEL_URL}?be=FL&sj=2021&uuid=${uuid}`;
+  const requestURL = `${process.env.BRZ_RESERVED_MATRIKEL_URL}?be=FL&sj=${year}&uuid=${uuid}`;
 
   const response = await fetch(requestURL, {
     method: "get",
@@ -182,12 +188,14 @@ export async function requestGetReservedMatrikel(
 }
 
 /**
- *
+ * Request new matrikel number
+ * https://stubei-q.portal.at/rws/matrikelnummern/1.0/reservierung.xml
  * @param session
  * @returns Promise
  */
 export async function requestNewMatrikel(
-  session: Session
+  session: Session,
+  year: FormDataEntryValue
 ): Promise<string | void> {
   const token = session.get("brz_auth").access_token;
   const uuid = v4();
@@ -196,7 +204,7 @@ export async function requestNewMatrikel(
   headers.set("Authorization", `Bearer ${token}`);
   headers.set("Content-Type", "application/xml");
 
-  const XMLdata = `<?xml version="1.0" encoding="UTF-8"?> <matrikelnummernanfrage><uuid>${uuid}</uuid><kontingentblock><anzahl>1</anzahl><be>FL</be><sj>2021</sj></kontingentblock></matrikelnummernanfrage>`;
+  const XMLdata = `<?xml version="1.0" encoding="UTF-8"?> <matrikelnummernanfrage><uuid>${uuid}</uuid><kontingentblock><anzahl>1</anzahl><be>FL</be><sj>${year}</sj></kontingentblock></matrikelnummernanfrage>`;
 
   const requestURL = `${process.env.BRZ_GET_NEW_MATRIKEL_URL}`;
 

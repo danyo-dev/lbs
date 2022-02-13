@@ -1,4 +1,4 @@
-const currentYear = new Date().getFullYear();
+export const currentYear = new Date().getFullYear();
 
 export function getSemesterSelection() {
   return [...Array(4)].map((_, idx) => currentYear - idx);
