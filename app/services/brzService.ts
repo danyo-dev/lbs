@@ -2,7 +2,6 @@ import { v4 } from "uuid";
 import { getSession } from "./session.server";
 import converter from "xml-js";
 import { Session } from "remix";
-import { currentYear } from "~/utils/dateUtils";
 
 /**
  * Handle XML Response
