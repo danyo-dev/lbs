@@ -6,6 +6,7 @@ import {
   useActionData,
   useCatch,
   useLoaderData,
+  useSearchParams,
   useSubmit,
 } from "remix";
 import { toast } from "react-toastify";
@@ -19,17 +20,15 @@ import {
   getParsedNewMatrikelData,
   getParsedReservedMatrikelData,
 } from "~/utils/brzUtils";
-
 import { useEffect } from "react";
 import { toastConfig } from "~/config/settings";
-
 import { currentYear, getSemesterSelection } from "~/utils/dateUtils";
 
 export const action: ActionFunction = async ({ request }) => {
   await requireAuthentication(request);
+
   const body = await request.formData();
   const year = body.get("year") || currentYear.toString();
-
   const brzSession = await brzAuthenticationHandler(request);
   const newMatrikelNumberResponse = await requestNewMatrikel(brzSession, year);
 
@@ -43,10 +42,8 @@ export const loader: LoaderFunction = async ({ request }) => {
   await requireAuthentication(request);
 
   const brzSession = await brzAuthenticationHandler(request);
-
   const url = new URL(request.url);
   const params = new URLSearchParams(url.search);
-
   const year = params.get("year") || currentYear.toString();
 
   const reservedMatrikelResponse = await requestGetReservedMatrikel(
@@ -63,6 +60,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Matrikel() {
   const data = useLoaderData();
   const newMatrikelNumber = useActionData();
+  const [searchParams] = useSearchParams();
 
   let submit = useSubmit();
 
@@ -83,7 +81,11 @@ export default function Matrikel() {
         </h2>
 
         <Form method="get" onChange={(e) => submit(e.currentTarget)}>
-          <select className="dropDown" name="year" defaultValue={currentYear}>
+          <select
+            className="dropDown"
+            name="year"
+            defaultValue={searchParams.get("year") || currentYear}
+          >
             {getSemesterSelection().map((el) => {
               return (
                 <>
@@ -94,7 +96,7 @@ export default function Matrikel() {
           </select>
         </Form>
 
-        <ul className="bg-white py-4 mb-4 px-6 shadow border-slate-200 rounded-lg text-sm mt-6 divide-y divide-gray-100  max-h-96 overflow-y-auto">
+        <ul className="listWithOverflow">
           {data.length ? (
             data.map((matrikelNumber: { _text: string }) => (
               <li key={matrikelNumber._text} className="py-2">
@@ -126,10 +128,7 @@ export default function Matrikel() {
               );
             })}
           </select>
-          <button
-            type="submit"
-            className="mt-4 py-2 px-4 border border-transparent shadow-sm font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
+          <button type="submit" className="submitBtn mt-4">
             Matrikelnummer reservieren
           </button>
         </Form>
