@@ -30,7 +30,7 @@ export const action: ActionFunction = async ({ request }) => {
   const newMatrikelNumberResponse = await requestNewMatrikel(brzSession);
   try {
     if (newMatrikelNumberResponse) {
-      return json(convertNewMatrikelData('{"result":true, "count":42}'));
+      return json(convertNewMatrikelData(newMatrikelNumberResponse));
     }
   } catch {
     throw json("Problem converting response", {
