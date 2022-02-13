@@ -78,10 +78,10 @@ export default function Matrikel() {
   }, [newMatrikelNumber]);
 
   return (
-    <div className="grid grid-cols-12 gap-6">
+    <div className="grid grid-cols-12 gap-24">
       <div className="col-span-6">
-        <h2 className="text-2xl font-extrabold text-slate-900 ">
-          Reservierte Matrikelnummern anzeigen
+        <h2 className="text-2xl font-extrabold text-slate-900 mb-4">
+          Reservierte Matrikelnummern
         </h2>
 
         <Form method="get" onChange={(e) => submit(e.currentTarget)}>
@@ -111,7 +111,7 @@ export default function Matrikel() {
         </ul>
       </div>
       <div className="col-span-6">
-        <h2 className="text-2xl font-extrabold text-slate-900 ">
+        <h2 className="text-2xl font-extrabold text-slate-900 mb-4">
           Neue Matrikelnummer reservieren
         </h2>
         <Form method="post">
