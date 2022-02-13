@@ -50,7 +50,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       return json(convertReservedMatrikelData(reservedMatrikelResponse));
     }
   } catch {
-    throw json("Problem handling request", {
+    throw json("Problem converting response", {
       status: 500,
     });
   }
