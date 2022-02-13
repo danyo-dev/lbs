@@ -3,6 +3,7 @@ import {
   Form,
   json,
   LoaderFunction,
+  redirect,
   useActionData,
   useCatch,
   useLoaderData,
@@ -38,13 +39,11 @@ export const action: ActionFunction = async ({ request }) => {
   return json(getParsedNewMatrikelData(newMatrikelNumberResponse));
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
   await requireAuthentication(request);
 
   const brzSession = await brzAuthenticationHandler(request);
-  const url = new URL(request.url);
-  const params = new URLSearchParams(url.search);
-  const year = params.get("year") || currentYear.toString();
+  const year = params.year || currentYear.toString();
 
   const reservedMatrikelResponse = await requestGetReservedMatrikel(
     brzSession,
@@ -67,7 +66,9 @@ export default function Matrikel() {
   useEffect(() => {
     if (newMatrikelNumber) {
       toast.success(
-        `Matrikelnummer ${newMatrikelNumber} erfolgreich reserviert`,
+        `Matrikelnummer ${newMatrikelNumber} für das Jahr ${searchParams.get(
+          "year"
+        )} erfolgreich reserviert`,
         toastConfig
       );
     }
