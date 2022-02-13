@@ -1,5 +1,8 @@
 import { LoaderFunction, json } from "remix";
-import { convertGeneralStudentData } from "~/utils/brzUtils";
+import {
+  getParsedGeneralStudentData,
+  handleParsingData,
+} from "~/utils/brzUtils";
 import { requireAuthentication } from "~/services/auth.server";
 import {
   brzAuthenticationHandler,
@@ -16,10 +19,6 @@ export const loader: LoaderFunction = async ({ request }) => {
     brzSession,
     cleanedQueryString
   );
-  const generalData = convertGeneralStudentData(stammDatenData);
 
-  if (!generalData) {
-    return null;
-  }
-  return json(generalData);
+  return handleParsingData(getParsedGeneralStudentData, stammDatenData);
 };

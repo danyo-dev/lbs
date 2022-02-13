@@ -1,36 +1,59 @@
-export function convertMatrikelStudentData(matrikelData: string) {
-  const parseMatrikelData = JSON.parse(matrikelData);
+import { json } from "remix";
+
+export function getParsedMatrikelStudentData(matrikelData: string) {
+  const parsedData = JSON.parse(matrikelData);
 
   const matrikelStudentData =
-    parseMatrikelData.matrikelpruefungantwort.matrikelpruefergebnis
-      .matrikelliste.extendedstudierendenkey;
+    parsedData.matrikelpruefungantwort.matrikelpruefergebnis.matrikelliste
+      .extendedstudierendenkey;
   const matrikelStatusCode = parseInt(
-    parseMatrikelData.matrikelpruefungantwort.matrikelpruefergebnis.statuscode
-      ._text
+    parsedData.matrikelpruefungantwort.matrikelpruefergebnis.statuscode._text
   );
 
   const matrikelStatusText =
-    parseMatrikelData.matrikelpruefungantwort.matrikelpruefergebnis
-      .statusmeldung._text;
+    parsedData.matrikelpruefungantwort.matrikelpruefergebnis.statusmeldung
+      ._text;
 
   return { matrikelStudentData, matrikelStatusText, matrikelStatusCode };
 }
 
-export function convertGeneralStudentData(stammDatenData: string) {
-  const parseStammDatenData = JSON.parse(stammDatenData);
-
-  return parseStammDatenData.stammdatenanfrage.stammdaten;
+export function getParsedGeneralStudentData(stammDatenData: string) {
+  const parsedData = JSON.parse(stammDatenData);
+  const stammDaten = parsedData.stammdatenanfrage.stammdaten;
+  return stammDaten;
 }
 
-export function convertReservedMatrikelData(reservedMatrikelData: string) {
-  const parseReservedMatrikel = JSON.parse(reservedMatrikelData);
-  return parseReservedMatrikel.matrikelnummernantwort.matrikelnummernliste
-    .matrikelnummer;
+export function getParsedReservedMatrikelData(
+  reservedMatrikelData: string
+): { _text: string }[] {
+  const parsedData = JSON.parse(reservedMatrikelData);
+  const reservedMatrikelNumbersList =
+    parsedData.matrikelnummernantwort.matrikelnummernliste.matrikelnummer;
+  return reservedMatrikelNumbersList;
 }
 
-export function convertNewMatrikelData(newMatrikelNumberResponse: string) {
-  const parseData = JSON.parse(newMatrikelNumberResponse);
+export function getParsedNewMatrikelData(
+  newMatrikelNumberResponse: string
+): string {
+  const parsedData = JSON.parse(newMatrikelNumberResponse);
+  const reservedMatrikelNumber =
+    parsedData.matrikelnummernantwort.matrikelnummernliste.matrikelnummer._text;
+  return reservedMatrikelNumber;
+}
 
-  return parseData.matrikelnummernantwort.matrikelnummernliste.matrikelnummer
-    ._text;
+export function handleParsingData(
+  parseFn: Function,
+  dataToParse: string | void,
+  error: { message: string; code: number } = {
+    message: "Problem parsing response",
+    code: 500,
+  }
+) {
+  try {
+    return json(parseFn(dataToParse));
+  } catch {
+    throw json(error.message, {
+      status: error.code,
+    });
+  }
 }

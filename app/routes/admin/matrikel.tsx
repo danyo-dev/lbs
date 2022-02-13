@@ -1,7 +1,6 @@
 import {
   ActionFunction,
   Form,
-  json,
   LoaderFunction,
   useActionData,
   useCatch,
@@ -16,8 +15,9 @@ import {
   requestNewMatrikel,
 } from "~/services/brzService";
 import {
-  convertNewMatrikelData,
-  convertReservedMatrikelData,
+  getParsedNewMatrikelData,
+  getParsedReservedMatrikelData,
+  handleParsingData,
 } from "~/utils/brzUtils";
 
 import { useEffect } from "react";
@@ -28,15 +28,8 @@ export const action: ActionFunction = async ({ request }) => {
 
   const brzSession = await brzAuthenticationHandler(request);
   const newMatrikelNumberResponse = await requestNewMatrikel(brzSession);
-  try {
-    if (newMatrikelNumberResponse) {
-      return json(convertNewMatrikelData(newMatrikelNumberResponse));
-    }
-  } catch {
-    throw json("Problem converting response", {
-      status: 500,
-    });
-  }
+
+  return handleParsingData(getParsedNewMatrikelData, newMatrikelNumberResponse);
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -45,15 +38,10 @@ export const loader: LoaderFunction = async ({ request }) => {
   const brzSession = await brzAuthenticationHandler(request);
   const reservedMatrikelResponse = await requestGetReservedMatrikel(brzSession);
 
-  try {
-    if (reservedMatrikelResponse) {
-      return json(convertReservedMatrikelData(reservedMatrikelResponse));
-    }
-  } catch {
-    throw json("Problem converting response", {
-      status: 500,
-    });
-  }
+  return handleParsingData(
+    getParsedReservedMatrikelData,
+    reservedMatrikelResponse
+  );
 };
 
 export default function Matrikel() {
@@ -73,8 +61,6 @@ export default function Matrikel() {
   const ButtonText =
     transition.state === "submitting"
       ? "Anfrage wird ausgeführt..."
-      : transition.state === "loading"
-      ? "Anfrage wird bearbeitet..."
       : "Matrikelnummer reservieren";
 
   return (
@@ -95,7 +81,7 @@ export default function Matrikel() {
         </div>
       </div>
 
-      <ul className="bg-white py-4 mb-4 px-6 shadow border-slate-200 rounded-lg text-sm mt-6 divide-y divide-gray-100 w-1/4 max-h-80 overflow-y-auto">
+      <ul className="bg-white py-4 mb-4 px-6 shadow border-slate-200 rounded-lg text-sm mt-6 divide-y divide-gray-100 w-1/4 max-h-96 overflow-y-auto">
         {data.map((matrikelNumber: { _text: string }) => (
           <li key={matrikelNumber._text} className="py-2">
             {matrikelNumber._text}
