@@ -100,7 +100,7 @@ async function authenticate(request: Request): Promise<Session> {
 export async function requestBrzStammdaten(
   session: Session,
   queryString: string
-): Promise<string> {
+): Promise<string | void> {
   const token = session.get("brz_auth").access_token;
 
   const uuid = v4();
@@ -130,7 +130,7 @@ export async function requestBrzStammdaten(
 export async function requestBrzMatrikelNumber(
   session: Session,
   queryString: string
-): Promise<string> {
+): Promise<string | void> {
   const token = session.get("brz_auth").access_token;
 
   const uuid = v4();
@@ -161,7 +161,7 @@ export async function requestBrzMatrikelNumber(
 
 export async function requestGetReservedMatrikel(
   session: Session
-): Promise<string> {
+): Promise<string | void> {
   const token = session.get("brz_auth").access_token;
   const uuid = v4();
 
@@ -183,7 +183,9 @@ export async function requestGetReservedMatrikel(
   return responseBody;
 }
 
-export async function requestNewMatrikel(session: Session) {
+export async function requestNewMatrikel(
+  session: Session
+): Promise<string | void> {
   const token = session.get("brz_auth").access_token;
   const uuid = v4();
 

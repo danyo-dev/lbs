@@ -1,30 +1,42 @@
 import {
   ActionFunction,
   Form,
+  json,
   LoaderFunction,
   useActionData,
+  useCatch,
   useLoaderData,
+  useTransition,
 } from "remix";
+import { toast } from "react-toastify";
 import { requireAuthentication } from "~/services/auth.server";
 import {
   brzAuthenticationHandler,
   requestGetReservedMatrikel,
   requestNewMatrikel,
 } from "~/services/brzService";
-import { BrzReservedMatrikel } from "~/types/brzTypes";
 import {
   convertNewMatrikelData,
   convertReservedMatrikelData,
 } from "~/utils/brzUtils";
-import Snackbar from "~/components/shared/Snackbar";
+
+import { useEffect } from "react";
+import { toastConfig } from "~/config/settings";
 
 export const action: ActionFunction = async ({ request }) => {
   await requireAuthentication(request);
 
   const brzSession = await brzAuthenticationHandler(request);
   const newMatrikelNumberResponse = await requestNewMatrikel(brzSession);
-
-  return convertNewMatrikelData(newMatrikelNumberResponse);
+  try {
+    if (newMatrikelNumberResponse) {
+      return json(convertNewMatrikelData('{"result":true, "count":42}'));
+    }
+  } catch {
+    throw json("Problem converting response", {
+      status: 500,
+    });
+  }
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -32,13 +44,38 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const brzSession = await brzAuthenticationHandler(request);
   const reservedMatrikelResponse = await requestGetReservedMatrikel(brzSession);
-  console.log(convertReservedMatrikelData(reservedMatrikelResponse));
-  return convertReservedMatrikelData(reservedMatrikelResponse);
+
+  try {
+    if (reservedMatrikelResponse) {
+      return json(convertReservedMatrikelData(reservedMatrikelResponse));
+    }
+  } catch {
+    throw json("Problem handling request", {
+      status: 500,
+    });
+  }
 };
 
 export default function Matrikel() {
-  const matrikelData = useLoaderData<BrzReservedMatrikel[]>();
-  const newReservedMatrikelData = useActionData<string>();
+  const data = useLoaderData();
+  const newMatrikelNumber = useActionData();
+  const transition = useTransition();
+
+  useEffect(() => {
+    if (newMatrikelNumber) {
+      toast.success(
+        `Matrikelnummer ${newMatrikelNumber} erfolgreich reserviert`,
+        toastConfig
+      );
+    }
+  }, [newMatrikelNumber]);
+
+  const ButtonText =
+    transition.state === "submitting"
+      ? "Anfrage wird ausgeführt..."
+      : transition.state === "loading"
+      ? "Anfrage wird bearbeitet..."
+      : "Matrikelnummer reservieren";
 
   return (
     <>
@@ -52,25 +89,39 @@ export default function Matrikel() {
               type="submit"
               className=" justify-center py-2 px-4 border border-transparent shadow-sm font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Reservieren
+              {ButtonText}
             </button>
           </Form>
         </div>
       </div>
 
       <ul className="bg-white py-4 mb-4 px-6 shadow border-slate-200 rounded-lg text-sm mt-6 divide-y divide-gray-100 w-1/4 max-h-80 overflow-y-auto">
-        {matrikelData.map((matrikelNumber: { _text: string }) => (
+        {data.map((matrikelNumber: { _text: string }) => (
           <li key={matrikelNumber._text} className="py-2">
             {matrikelNumber._text}
           </li>
         ))}
       </ul>
-
-      <Snackbar hasData={Boolean(newReservedMatrikelData)}>
-        <span className="font-medium">
-          Matrikelnummer {newReservedMatrikelData} erfolgreich reserviert!
-        </span>
-      </Snackbar>
     </>
+  );
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+
+  function renderErrorMessage() {
+    try {
+      const parsedData = JSON.parse(caught.data);
+      return parsedData.FehlerAntwort.fehlerliste.fehler.fehlertext._text;
+    } catch {
+      return caught.data;
+    }
+  }
+
+  return (
+    <div className="error-container">
+      <div className="text-2xl font-bold mb-2">{renderErrorMessage()}</div>
+      <div className="text-xl font-bold mb-2">Error: {caught.status}</div>
+    </div>
   );
 }

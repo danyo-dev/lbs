@@ -30,6 +30,7 @@ export function convertReservedMatrikelData(reservedMatrikelData: string) {
 
 export function convertNewMatrikelData(newMatrikelNumberResponse: string) {
   const parseData = JSON.parse(newMatrikelNumberResponse);
+
   return parseData.matrikelnummernantwort.matrikelnummernliste.matrikelnummer
     ._text;
 }

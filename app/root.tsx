@@ -10,8 +10,9 @@ import {
   useLoaderData,
 } from "remix";
 import type { MetaFunction, LoaderFunction } from "remix";
+import { ToastContainer } from "react-toastify";
+import toastStyles from "react-toastify/dist/ReactToastify.css";
 import { EnvVars } from "~/types/envTypes";
-
 import { brzAuthenticationHandler } from "./services/brzService";
 import { commitSession } from "./services/session.server";
 import styles from "~/styles/tailwind-build.css";
@@ -33,7 +34,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
+  return [
+    { rel: "stylesheet", href: styles },
+    {
+      rel: "stylesheet",
+      href: toastStyles,
+    },
+  ];
 };
 
 export const meta: MetaFunction = () => {
@@ -53,6 +60,17 @@ export default function App() {
       </head>
       <body>
         <Outlet />
+        <ToastContainer
+          position="bottom-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <ScrollRestoration />
         <script
           dangerouslySetInnerHTML={{
