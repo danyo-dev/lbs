@@ -57,7 +57,7 @@ export async function brzAuthenticationHandler(
 /**
  * Authenticates BRZ user against API
  * @param request
- * @returns Session as Promise
+ * @returns Promise
  */
 async function authenticate(request: Request): Promise<Session> {
   const session = await getSession(request);
@@ -90,12 +90,10 @@ async function authenticate(request: Request): Promise<Session> {
   return session;
 }
 
-// TODO: accept user data to create fetch rURL dynamically
-// test data atm
 /**
  *
  * @param request
- * @returns a xml to JSON converted string as Promise
+ * @returns promise
  */
 export async function requestBrzStammdaten(
   session: Session,
@@ -183,6 +181,11 @@ export async function requestGetReservedMatrikel(
   return responseBody;
 }
 
+/**
+ *
+ * @param session
+ * @returns Promise
+ */
 export async function requestNewMatrikel(
   session: Session
 ): Promise<string | void> {
