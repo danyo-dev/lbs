@@ -5,10 +5,8 @@ import {
   LoaderFunction,
   useActionData,
   useCatch,
-  useFetcher,
   useLoaderData,
   useSubmit,
-  useTransition,
 } from "remix";
 import { toast } from "react-toastify";
 import { requireAuthentication } from "~/services/auth.server";
@@ -65,7 +63,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Matrikel() {
   const data = useLoaderData();
   const newMatrikelNumber = useActionData();
-  const transition = useTransition();
+
   let submit = useSubmit();
 
   useEffect(() => {
