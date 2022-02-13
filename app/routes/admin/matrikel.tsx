@@ -1,6 +1,7 @@
 import {
   ActionFunction,
   Form,
+  json,
   LoaderFunction,
   useActionData,
   useCatch,
@@ -17,7 +18,6 @@ import {
 import {
   getParsedNewMatrikelData,
   getParsedReservedMatrikelData,
-  handleParsingData,
 } from "~/utils/brzUtils";
 
 import { useEffect } from "react";
@@ -29,7 +29,10 @@ export const action: ActionFunction = async ({ request }) => {
   const brzSession = await brzAuthenticationHandler(request);
   const newMatrikelNumberResponse = await requestNewMatrikel(brzSession);
 
-  return handleParsingData(getParsedNewMatrikelData, newMatrikelNumberResponse);
+  if (!newMatrikelNumberResponse) {
+    throw json("this should not be possible", { status: 500 });
+  }
+  return json(getParsedNewMatrikelData(newMatrikelNumberResponse));
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -38,10 +41,10 @@ export const loader: LoaderFunction = async ({ request }) => {
   const brzSession = await brzAuthenticationHandler(request);
   const reservedMatrikelResponse = await requestGetReservedMatrikel(brzSession);
 
-  return handleParsingData(
-    getParsedReservedMatrikelData,
-    reservedMatrikelResponse
-  );
+  if (!reservedMatrikelResponse) {
+    throw json("this should not be possible", { status: 500 });
+  }
+  return json(getParsedReservedMatrikelData(reservedMatrikelResponse));
 };
 
 export default function Matrikel() {

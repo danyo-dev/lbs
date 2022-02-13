@@ -1,8 +1,5 @@
 import { LoaderFunction, json } from "remix";
-import {
-  getParsedMatrikelStudentData,
-  handleParsingData,
-} from "~/utils/brzUtils";
+import { getParsedMatrikelStudentData } from "~/utils/brzUtils";
 import { requireAuthentication } from "~/services/auth.server";
 import {
   brzAuthenticationHandler,
@@ -21,5 +18,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     cleanedQueryString
   );
 
-  return handleParsingData(getParsedMatrikelStudentData, matrikelData);
+  if (!matrikelData) {
+    throw json("this should not be possible", { status: 500 });
+  }
+  return json(getParsedMatrikelStudentData(matrikelData));
 };

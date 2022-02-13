@@ -1,11 +1,15 @@
 import { json } from "remix";
+import { BrzMatrikelStudent } from "~/types/brzTypes";
 
-export function getParsedMatrikelStudentData(matrikelData: string) {
+export function getParsedMatrikelStudentData(
+  matrikelData: string
+): BrzMatrikelStudent {
   const parsedData = JSON.parse(matrikelData);
 
   const matrikelStudentData =
     parsedData.matrikelpruefungantwort.matrikelpruefergebnis.matrikelliste
       .extendedstudierendenkey;
+
   const matrikelStatusCode = parseInt(
     parsedData.matrikelpruefungantwort.matrikelpruefergebnis.statuscode._text
   );
@@ -39,21 +43,4 @@ export function getParsedNewMatrikelData(
   const reservedMatrikelNumber =
     parsedData.matrikelnummernantwort.matrikelnummernliste.matrikelnummer._text;
   return reservedMatrikelNumber;
-}
-
-export function handleParsingData(
-  parseFn: Function,
-  dataToParse: string | void,
-  error: { message: string; code: number } = {
-    message: "Problem parsing response",
-    code: 500,
-  }
-) {
-  try {
-    return json(parseFn(dataToParse));
-  } catch {
-    throw json(error.message, {
-      status: error.code,
-    });
-  }
 }
