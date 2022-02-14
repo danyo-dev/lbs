@@ -39,12 +39,14 @@ export const action: ActionFunction = async ({ request }) => {
   return json(getParsedNewMatrikelData(newMatrikelNumberResponse));
 };
 
-export const loader: LoaderFunction = async ({ request, params }) => {
+export const loader: LoaderFunction = async ({ request }) => {
   await requireAuthentication(request);
 
   const brzSession = await brzAuthenticationHandler(request);
-  const year = params.year || currentYear.toString();
+  const url = new URL(request.url);
+  const year = url.searchParams.get("year") || currentYear.toString();
 
+  console.log(year);
   const reservedMatrikelResponse = await requestGetReservedMatrikel(
     brzSession,
     year
