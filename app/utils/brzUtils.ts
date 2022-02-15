@@ -22,9 +22,7 @@ export function getParsedMatrikelStudentData(
 }
 
 export function getParsedGeneralStudentData(stammDatenData: string) {
-  const parsedData = JSON.parse(stammDatenData);
-  const stammDaten = parsedData.stammdatenanfrage.stammdaten;
-  return stammDaten;
+  return JSON.parse(stammDatenData);
 }
 
 export function getParsedReservedMatrikelData(
