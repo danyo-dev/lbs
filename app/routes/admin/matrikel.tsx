@@ -46,7 +46,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const year = url.searchParams.get("year") || currentYear.toString();
 
-  console.log(year);
   const reservedMatrikelResponse = await requestGetReservedMatrikel(
     brzSession,
     year

@@ -27,5 +27,12 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (!stammDatenData) {
     throw json("this should not be possible", { status: 500 });
   }
-  return json(getParsedGeneralStudentData(stammDatenData));
+
+  const parsedStammdaten = getParsedGeneralStudentData(stammDatenData);
+  const stammDaten = parsedStammdaten.stammdatenanfrage.stammdaten;
+
+  if (stammDaten) {
+    return json(stammDaten);
+  }
+  return null;
 };
