@@ -1,16 +1,22 @@
 import { LoaderFunction, json } from "remix";
-import { convertMatrikelStudentData } from "~/utils/brzUtils";
+import { getParsedMatrikelStudentData } from "~/utils/brzUtils";
 import { requireAuthentication } from "~/services/auth.server";
 import {
   brzAuthenticationHandler,
   requestBrzMatrikelNumber,
 } from "~/services/brzService";
-import useQueryString from "~/hooks/useQueryString";
+import getCleanQueryString from "~/utils/getCleanQueryString";
 
 export const loader: LoaderFunction = async ({ request }) => {
   await requireAuthentication(request);
 
-  const { cleanedQueryString } = useQueryString(request);
+  const url = new URL(request.url);
+
+  if (url.search === "") {
+    throw Error("Bad Request");
+  }
+
+  const { cleanedQueryString } = getCleanQueryString(url);
 
   const brzSession = await brzAuthenticationHandler(request);
   const matrikelData = await requestBrzMatrikelNumber(
@@ -18,8 +24,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     cleanedQueryString
   );
 
-  const { matrikelStudentData, matrikelStatusCode, matrikelStatusText } =
-    convertMatrikelStudentData(matrikelData);
-
-  return json({ matrikelStatusCode, matrikelStudentData, matrikelStatusText });
+  if (!matrikelData) {
+    throw json("this should not be possible", { status: 500 });
+  }
+  return json(getParsedMatrikelStudentData(matrikelData));
 };

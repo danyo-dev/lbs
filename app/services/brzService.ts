@@ -4,24 +4,27 @@ import converter from "xml-js";
 import { Session } from "remix";
 
 /**
- * handelrr for XML 2 JSON conversion
+ * Handle XML Response
  * @param response
  * @returns JSON string
  */
 
-function handleXMLResponse(response: string) {
+export function handleXMLResponse(response: string) {
   return converter.xml2json(response, {
     compact: true,
   });
 }
 
 /**
- * handler for responses from BRZ
+ * Handle Errors
  * @param status
  * @param statusText
  */
 
-function handleErrors(response: Response, responseMsg = "error occured") {
+export function handleErrors(
+  response: Response,
+  responseMsg = "error occured"
+) {
   if (response.ok) {
     return;
   }
@@ -31,7 +34,7 @@ function handleErrors(response: Response, responseMsg = "error occured") {
 }
 
 /**
- * Check if Authentication needs to be run
+ * Handle Authentication
  * @param request
  * @returns Session as Promise
  */
@@ -44,15 +47,18 @@ export async function brzAuthenticationHandler(
     !session.has("brz_auth_expiration") ||
     session.get("brz_auth_expiration") <= Date.now()
   ) {
-    return await authenticate(request);
+    const authenticateRequest = await authenticate(request);
+
+    return authenticateRequest;
   }
   return session;
 }
 
 /**
  * Authenticates BRZ user against API
+ * https://stubei-q.portal.at/dvb/oauth/token?grant_type=client_credentials
  * @param request
- * @returns Session as Promise
+ * @returns Promise
  */
 async function authenticate(request: Request): Promise<Session> {
   const session = await getSession(request);
@@ -85,17 +91,16 @@ async function authenticate(request: Request): Promise<Session> {
   return session;
 }
 
-// TODO: accept user data to create fetch rURL dynamically
-// test data atm
 /**
- *
+ * Get Stammdaten for a student
+ * https://stubei-q.portal.at/rws/0.6/stammdaten.xml
  * @param request
- * @returns a xml to JSON converted string as Promise
+ * @returns promise
  */
 export async function requestBrzStammdaten(
   session: Session,
   queryString: string
-): Promise<string> {
+): Promise<string | void> {
   const token = session.get("brz_auth").access_token;
 
   const uuid = v4();
@@ -118,14 +123,15 @@ export async function requestBrzStammdaten(
 }
 
 /**
- *
+ * Check if matrikel number exists
+ * https://stubei-q.portal.at/rws/0.6/matrikelpruefung.xml
  * @param request
- * @returns a xml to JSON converted string as Promise
+ * @returns Promise
  */
 export async function requestBrzMatrikelNumber(
   session: Session,
   queryString: string
-): Promise<string> {
+): Promise<string | void> {
   const token = session.get("brz_auth").access_token;
 
   const uuid = v4();
@@ -138,6 +144,73 @@ export async function requestBrzMatrikelNumber(
   const response = await fetch(requestURL, {
     method: "get",
     headers,
+  });
+
+  const XMLResponse = await response.text();
+  const responseBody = handleXMLResponse(XMLResponse);
+
+  handleErrors(response, responseBody);
+
+  return responseBody;
+}
+
+/**
+ * Get reserved matrikel numbers
+ * https://stubei-q.portal.at/rws/0.6/matrikelreservierung.xml
+ * @param session
+ * @returns Promise
+ */
+
+export async function requestGetReservedMatrikel(
+  session: Session,
+  year: string
+): Promise<string | void> {
+  const token = session.get("brz_auth").access_token;
+  const uuid = v4();
+
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${token}`);
+
+  const requestURL = `${process.env.BRZ_RESERVED_MATRIKEL_URL}?be=FL&sj=${year}&uuid=${uuid}`;
+
+  const response = await fetch(requestURL, {
+    method: "get",
+    headers,
+  });
+
+  const XMLResponse = await response.text();
+  const responseBody = handleXMLResponse(XMLResponse);
+
+  handleErrors(response, responseBody);
+
+  return responseBody;
+}
+
+/**
+ * Request new matrikel number
+ * https://stubei-q.portal.at/rws/matrikelnummern/1.0/reservierung.xml
+ * @param session
+ * @returns Promise
+ */
+export async function requestNewMatrikel(
+  session: Session,
+  year: FormDataEntryValue
+): Promise<string | void> {
+  const token = session.get("brz_auth").access_token;
+  const uuid = v4();
+
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${token}`);
+  headers.set("Content-Type", "application/xml");
+
+  const XMLdata = `<?xml version="1.0" encoding="UTF-8"?> <matrikelnummernanfrage><uuid>${uuid}</uuid><kontingentblock><anzahl>1</anzahl><be>FL</be><sj>${year}</sj></kontingentblock></matrikelnummernanfrage>`;
+
+  const requestURL = `${process.env.BRZ_GET_NEW_MATRIKEL_URL}`;
+
+  const response = await fetch(requestURL, {
+    method: "post",
+    headers,
+    body: XMLdata,
   });
 
   const XMLResponse = await response.text();

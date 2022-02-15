@@ -17,6 +17,8 @@ export interface BrzMatrikelRequestType {
   svnr?: string | null;
 }
 
+export type BrzReservedMatrikel = { _text: string };
+
 export interface BrzMatrikelStudent {
   matrikelStudentData?: BrzMatrikelStudentData;
   matrikelStatusCode: number;

@@ -1,23 +1,46 @@
-export function convertMatrikelStudentData(matrikelData: string) {
-  const parseMatrikelData = JSON.parse(matrikelData);
+import { json } from "remix";
+import { BrzMatrikelStudent } from "~/types/brzTypes";
+
+export function getParsedMatrikelStudentData(
+  matrikelData: string
+): BrzMatrikelStudent {
+  const parsedData = JSON.parse(matrikelData);
 
   const matrikelStudentData =
-    parseMatrikelData.matrikelpruefungantwort.matrikelpruefergebnis
-      .matrikelliste.extendedstudierendenkey;
+    parsedData.matrikelpruefungantwort.matrikelpruefergebnis.matrikelliste
+      .extendedstudierendenkey;
+
   const matrikelStatusCode = parseInt(
-    parseMatrikelData.matrikelpruefungantwort.matrikelpruefergebnis.statuscode
-      ._text
+    parsedData.matrikelpruefungantwort.matrikelpruefergebnis.statuscode._text
   );
 
   const matrikelStatusText =
-    parseMatrikelData.matrikelpruefungantwort.matrikelpruefergebnis
-      .statusmeldung._text;
+    parsedData.matrikelpruefungantwort.matrikelpruefergebnis.statusmeldung
+      ._text;
 
   return { matrikelStudentData, matrikelStatusText, matrikelStatusCode };
 }
 
-export function convertGeneralStudentData(stammDatenData: string) {
-  const parseStammDatenData = JSON.parse(stammDatenData);
+export function getParsedGeneralStudentData(stammDatenData: string) {
+  const parsedData = JSON.parse(stammDatenData);
+  const stammDaten = parsedData.stammdatenanfrage.stammdaten;
+  return stammDaten;
+}
 
-  return parseStammDatenData.stammdatenanfrage.stammdaten;
+export function getParsedReservedMatrikelData(
+  reservedMatrikelData: string
+): { _text: string }[] {
+  const parsedData = JSON.parse(reservedMatrikelData);
+  const reservedMatrikelNumbersList =
+    parsedData.matrikelnummernantwort.matrikelnummernliste.matrikelnummer;
+  return reservedMatrikelNumbersList;
+}
+
+export function getParsedNewMatrikelData(
+  newMatrikelNumberResponse: string
+): string {
+  const parsedData = JSON.parse(newMatrikelNumberResponse);
+  const reservedMatrikelNumber =
+    parsedData.matrikelnummernantwort.matrikelnummernliste.matrikelnummer._text;
+  return reservedMatrikelNumber;
 }

@@ -47,8 +47,8 @@ export default function BrzGeneralDataForm({ Form, isSubmitting }: Props) {
               {getSemesterSelection().map((el) => {
                 return (
                   <>
-                    <option value={`${el}S`}>{`${el}S`}</option>
-                    <option value={`${el}W`}>{`${el}W`}</option>
+                    <option value={`${el}S`} key={`${el}S`}>{`${el}S`}</option>
+                    <option value={`${el}W`} key={`${el}W`}>{`${el}W`}</option>
                   </>
                 );
               })}

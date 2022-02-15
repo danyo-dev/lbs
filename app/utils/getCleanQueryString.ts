@@ -1,10 +1,4 @@
-export default function useQueryString(request: Request) {
-  const url = new URL(request.url);
-
-  if (url.search === "") {
-    throw Error("Bad Request");
-  }
-
+export default function getCleanQueryString(url: URL) {
   const params = new URLSearchParams(url.search);
 
   [...params.entries()].forEach(([key, value]) => {
