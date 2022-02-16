@@ -33,3 +33,6 @@
 .listWithOverflow {
   @apply bg-white py-4 mb-4 px-6 shadow border-slate-200 rounded-lg text-sm mt-6 divide-y divide-gray-100  max-h-96 overflow-y-auto;
 }
+.list {
+  @apply bg-white py-2 px-2 text-sm divide-y divide-gray-100;
+}

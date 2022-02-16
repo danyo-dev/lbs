@@ -40,11 +40,22 @@ export interface BrzGeneralDataBoxItem {
   staatsbuergerschaft: { _text: string };
   akadnach: { _text: string };
   bpk: { _text: string };
-  adressen: { _text: string };
+  adressen: {
+    adresse: {
+      strasse: { _text: string };
+      plz: { _text: string };
+      ort: { _text: string };
+      staat: { _text: string };
+      typ: { _text: string };
+    }[];
+  };
   beitragstatus: { _text: string };
   zaehlungPePn: { _text: string };
   zaehlungPo: { _text: string };
-  emailliste: { _text: string };
+  emailliste: { email: { emailadresse: { _text: string } } };
 }
+
+export type EmailList = BrzGeneralDataBoxItem["emailliste"];
+export type Addresses = BrzGeneralDataBoxItem["adressen"];
 
 export type BrzGeneralData = BrzMatrikelStudent & BrzGeneralDataBoxItem;
