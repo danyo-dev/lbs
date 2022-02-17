@@ -1,11 +1,12 @@
 import { LoaderFunction, json } from "remix";
-import { getParsedStammdaten } from "~/utils/brzUtils";
+import { getParsedStudiendaten } from "~/utils/brzUtils";
 import { requireAuthentication } from "~/services/auth.server";
 import {
   brzAuthenticationHandler,
-  requestBrzStammdaten,
+  requestBrzStudiendaten,
 } from "~/services/brzService";
 import getCleanQueryString from "~/utils/getCleanQueryString";
+import { BrzStudienDaten } from "~/types/brzTypes";
 
 export const loader: LoaderFunction = async ({ request }) => {
   await requireAuthentication(request);
@@ -19,20 +20,20 @@ export const loader: LoaderFunction = async ({ request }) => {
   const { cleanedQueryString } = getCleanQueryString(url);
 
   const brzSession = await brzAuthenticationHandler(request);
-  const stammDatenData = await requestBrzStammdaten(
+  const studienDatenData = await requestBrzStudiendaten(
     brzSession,
     cleanedQueryString
   );
 
-  if (!stammDatenData) {
+  if (!studienDatenData) {
     throw json("this should not be possible", { status: 500 });
   }
 
-  const parsedStammdaten = getParsedStammdaten(stammDatenData);
-  const stammDaten = parsedStammdaten.stammdatenanfrage.stammdaten;
+  const parsedData = getParsedStudiendaten(studienDatenData);
 
-  if (stammDaten) {
-    return json(stammDaten);
+  if (parsedData) {
+    return json(parsedData);
   }
+
   return null;
 };

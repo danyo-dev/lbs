@@ -92,6 +92,37 @@ async function authenticate(request: Request): Promise<Session> {
 }
 
 /**
+ * Get Studiendaten for a student
+ * https://stubei-q.portal.at/rws/0.6/studium.xml
+ * @param request
+ * @returns promise
+ */
+export async function requestBrzStudiendaten(
+  session: Session,
+  queryString: string
+): Promise<string | void> {
+  const token = session.get("brz_auth").access_token;
+
+  const uuid = v4();
+
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${token}`);
+
+  const requestURL = `${process.env.BRZ_STUDIENDATEN}?be=FL&${queryString}&uuid=${uuid}`;
+
+  const response = await fetch(requestURL, {
+    method: "get",
+    headers,
+  });
+  const XMLResponse = await response.text();
+  const responseBody = handleXMLResponse(XMLResponse);
+
+  handleErrors(response, responseBody);
+
+  return responseBody;
+}
+
+/**
  * Get Stammdaten for a student
  * https://stubei-q.portal.at/rws/0.6/stammdaten.xml
  * @param request

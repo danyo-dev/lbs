@@ -55,6 +55,26 @@ export interface BrzGeneralDataBoxItem {
   emailliste: { email: { emailadresse: { _text: string } } };
 }
 
+export interface BrzStudienDaten {
+  studiengang: {
+    stgkz: { _text: string };
+    orgformcode: { _text: string };
+    ausbildungssemester: { _text: string };
+    perskz: { _text: string };
+    studstatuscode: { _text: string };
+    meldestatus: { _text: string };
+    standortcode: { _text: string };
+    zulassungsdatum: { _text: string };
+    zugangsberechtigung: {
+      voraussetzung: { _text: string };
+      datum: { _text: string };
+      staat: { _text: string };
+    };
+    studstatuscodestichtag: { _text: string };
+    bmwfwfoerderrelevant: { _text: string };
+  };
+}
+
 export type EmailList = BrzGeneralDataBoxItem["emailliste"];
 export type Addresses = BrzGeneralDataBoxItem["adressen"];
 

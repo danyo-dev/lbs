@@ -1,5 +1,5 @@
 import { useCatch, useFetcher } from "remix";
-import BrzGeneralDataBox from "~/components/BrzGeneralDataBox";
+import BrzStammdatenBox from "~/components/BrzStammdatenBox";
 import BrzGetStammdatenForm from "~/components/BrzGetStammdatenForm";
 import { BrzGeneralDataBoxItem } from "~/types/brzTypes";
 
@@ -24,7 +24,7 @@ export default function StudentGeneralRoute() {
 
       <section className="border-slate-200 col-span-6 mt-4">
         <h2 className="text-xl text-slate-600 mb-2 ml-2">BRZ Stammdaten</h2>
-        <BrzGeneralDataBox data={data} type={type} />
+        <BrzStammdatenBox data={data} type={type} />
       </section>
     </div>
   );
