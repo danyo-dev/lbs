@@ -1,5 +1,5 @@
-import { json } from "remix";
 import { BrzMatrikelStudent } from "~/types/brzTypes";
+import { cleanupStudiendaten } from "./studiendatenUtils";
 
 export function getParsedMatrikelStudentData(
   matrikelData: string
@@ -21,23 +21,30 @@ export function getParsedMatrikelStudentData(
   return { matrikelStudentData, matrikelStatusText, matrikelStatusCode };
 }
 
-export function getParsedGeneralStudentData(stammDatenData: string) {
-  return JSON.parse(stammDatenData);
+export function getParsedStammdaten(data: string) {
+  return JSON.parse(data);
+}
+
+export function getParsedStudiendaten(data: string) {
+  const parsedData = JSON.parse(data);
+  const cleanedStudiendaten = cleanupStudiendaten(
+    parsedData.studienantwort.studienliste.studiengang
+  );
+
+  return cleanedStudiendaten;
 }
 
 export function getParsedReservedMatrikelData(
-  reservedMatrikelData: string
+  data: string
 ): { _text: string }[] {
-  const parsedData = JSON.parse(reservedMatrikelData);
+  const parsedData = JSON.parse(data);
   const reservedMatrikelNumbersList =
     parsedData.matrikelnummernantwort.matrikelnummernliste.matrikelnummer;
   return reservedMatrikelNumbersList;
 }
 
-export function getParsedNewMatrikelData(
-  newMatrikelNumberResponse: string
-): string {
-  const parsedData = JSON.parse(newMatrikelNumberResponse);
+export function getParsedNewMatrikelData(data: string): string {
+  const parsedData = JSON.parse(data);
   const reservedMatrikelNumber =
     parsedData.matrikelnummernantwort.matrikelnummernliste.matrikelnummer._text;
   return reservedMatrikelNumber;

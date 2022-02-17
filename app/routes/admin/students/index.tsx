@@ -83,7 +83,7 @@ export default function StudentsIndex() {
                   </td>
                   <td className="tableCell text-right text-sm font-medium">
                     <Link
-                      to={`${student.id}/matrikel`}
+                      to={`${student.id}/matrikeldaten`}
                       className="text-indigo-600 hover:text-indigo-900"
                     >
                       Edit
