@@ -6,14 +6,14 @@ interface Props {
   isSubmitting: Boolean;
 }
 
-export default function BrzGeneralDataForm({
+export default function BrzGetStudiendatenForm({
   FetcherForm,
   isSubmitting,
 }: Props) {
   return (
     <FetcherForm
       method="get"
-      action={`/admin/api/brz/getStammdaten`}
+      action={`/admin/api/brz/getStudiendaten`}
       className=" bg-white shadow overflow-hidden rounded-lg"
     >
       <div className="px-6 py-3 bg-white  shadow overflow-hidden ">

@@ -29,15 +29,15 @@ export const routes = [
 ];
 export const studentDetailRoutes = [
   {
-    path: "matrikel",
+    path: "matrikeldaten",
     name: "Matrikeldaten",
   },
   {
-    path: "general",
+    path: "stammdaten",
     name: "Stammdaten",
   },
   {
-    path: "study",
+    path: "studiendaten",
     name: "Studiendaten",
   },
   {

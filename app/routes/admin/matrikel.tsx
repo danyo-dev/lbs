@@ -123,11 +123,7 @@ export default function Matrikel() {
             defaultValue={currentYear}
           >
             {getSemesterSelection().map((el) => {
-              return (
-                <>
-                  <option value={`${el}`} key={`${el}`}>{`${el}`}</option>
-                </>
-              );
+              return <option value={`${el}`} key={`${el}`}>{`${el}`}</option>;
             })}
           </select>
           <button type="submit" className="submitBtn mt-4">
