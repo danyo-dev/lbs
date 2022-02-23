@@ -1,5 +1,4 @@
-import { ForwardRefExoticComponent, RefAttributes } from "react";
-import { FormProps, useFetcher } from "remix";
+import { useFetcher } from "remix";
 import { getCurrentSemester, getSemesterSelection } from "~/utils/dateUtils";
 
 interface Props {

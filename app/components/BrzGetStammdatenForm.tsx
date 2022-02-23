@@ -1,15 +1,17 @@
-import { ForwardRefExoticComponent, RefAttributes } from "react";
-import { FormProps } from "remix";
+import { useFetcher } from "remix";
 import { getCurrentSemester, getSemesterSelection } from "~/utils/dateUtils";
 
 interface Props {
-  Form: ForwardRefExoticComponent<FormProps & RefAttributes<HTMLFormElement>>;
+  FetcherForm: ReturnType<typeof useFetcher>["Form"];
   isSubmitting: Boolean;
 }
 
-export default function BrzGeneralDataForm({ Form, isSubmitting }: Props) {
+export default function BrzGeneralDataForm({
+  FetcherForm,
+  isSubmitting,
+}: Props) {
   return (
-    <Form
+    <FetcherForm
       method="get"
       action={`/admin/api/brz/getStammdaten`}
       className=" bg-white shadow overflow-hidden rounded-lg"
@@ -65,6 +67,6 @@ export default function BrzGeneralDataForm({ Form, isSubmitting }: Props) {
           Abfragen
         </button>
       </div>
-    </Form>
+    </FetcherForm>
   );
 }

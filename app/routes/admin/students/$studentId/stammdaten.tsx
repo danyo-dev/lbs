@@ -16,7 +16,7 @@ export default function StudentGeneralRoute() {
             BRZ Stammdaten Abfragen
           </h2>
           <BrzGetStammdatenForm
-            Form={Form}
+            FetcherForm={Form}
             isSubmitting={state === "submitting"}
           />
         </div>
