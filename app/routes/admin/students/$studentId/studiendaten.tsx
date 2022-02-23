@@ -16,7 +16,7 @@ export default function StudiendatenRoute() {
             BRZ Studiendaten Abfragen
           </h2>
           <BrzGetStudiendatenForm
-            Form={Form}
+            FetcherForm={Form}
             isSubmitting={state === "submitting"}
           />
         </div>
