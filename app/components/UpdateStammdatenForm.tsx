@@ -11,19 +11,17 @@ interface Props {
 }
 
 export default function UpdateStammdatenForm({ data }: Props) {
-  const fetcher = useFetcher<BrzGeneralDataBoxItem>();
+  const fetcher = useFetcher();
 
-  console.log(fetcher.data);
-  // useEffect(() => {
-  //   if (updatedForm) {
-  //     console.log('what?');
-  //     const { vorname, nachname } = updatedForm;
-  //     toast.success(
-  //       `Stammdaten für ${vorname._text} ${nachname._text} erfolgreich aktualisiert`,
-  //       toastConfig
-  //     );
-  //   }
-  // }, [updatedForm]);
+  useEffect(() => {
+    if (fetcher.data) {
+      const { vorname, nachname } = fetcher.data._fields;
+      toast.success(
+        `Stammdaten für ${vorname[0]} ${nachname[0]} erfolgreich aktualisiert`,
+        toastConfig
+      );
+    }
+  }, [fetcher.data]);
 
   if (!data) {
     return <>Ergebnisse werden nach überprüfung der Daten geladen.</>
@@ -32,7 +30,7 @@ export default function UpdateStammdatenForm({ data }: Props) {
   return (
     <fetcher.Form
       method="post"
-      action="/api/academy5/updateStammdaten"
+      action="/admin/api/academy5/updateStammdaten"
       className="bg-white shadow overflow-hidden rounded-lg p-4"
     >
       {Object.entries(data).map(([label, value], idxA) => {
