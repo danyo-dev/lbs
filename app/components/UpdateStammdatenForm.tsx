@@ -7,7 +7,7 @@ import { BrzGeneralDataBoxItem } from "~/types/brzTypes";
 import { InputField } from '~/components/InputField';
 
 interface Props {
-  data: BrzGeneralDataBoxItem;
+  data: BrzGeneralDataBoxItem | undefined;
 }
 
 export default function UpdateStammdatenForm({ data }: Props) {
