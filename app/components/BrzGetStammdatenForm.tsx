@@ -1,3 +1,4 @@
+import React from 'react';
 import { useFetcher } from "remix";
 import { getCurrentSemester, getSemesterSelection } from "~/utils/dateUtils";
 
@@ -46,12 +47,12 @@ export default function BrzGeneralDataForm({
               name="semester"
               defaultValue={getCurrentSemester()}
             >
-              {getSemesterSelection().map((el) => {
+              {getSemesterSelection().map((el, idx) => {
                 return (
-                  <>
+                  <React.Fragment key={`el-${idx}`}>
                     <option value={`${el}S`} key={`${el}S`}>{`${el}S`}</option>
                     <option value={`${el}W`} key={`${el}W`}>{`${el}W`}</option>
-                  </>
+                  </React.Fragment>
                 );
               })}
             </select>
@@ -60,7 +61,7 @@ export default function BrzGeneralDataForm({
       </div>
       <div className="px-4 py-3 bg-slate-50 text-right">
         <button
-          disabled={isSubmitting ? true : false}
+          disabled={Boolean(isSubmitting)}
           type="submit"
           className="submitBtn"
         >
