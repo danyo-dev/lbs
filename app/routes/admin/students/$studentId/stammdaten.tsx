@@ -12,7 +12,7 @@ export default function StudentGeneralRoute() {
   return (
     <div className="w-full my-12 grid grid-areas-overview grid-cols-2 gap-8">
       <section className=" border-slate-200">
-        <h2 className="text-xl text-slate-600 mb-2 ml-2 grid-in-box">
+        <h2 className="text-xl text-slate-600 mb-2 ml-2">
           BRZ Stammdaten Abfragen
         </h2>
         <BrzGetStammdatenForm
@@ -21,7 +21,7 @@ export default function StudentGeneralRoute() {
         />
       </section>
 
-      <section className="border-slate-200 mt-4 grid-in-box">
+      <section className="border-slate-200 mt-4">
         <h2 className="text-xl text-slate-600 mb-2 ml-2">BRZ Stammdaten</h2>
         <BrzStammdatenBox data={data} type={type} />
       </section>

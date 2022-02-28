@@ -30,7 +30,7 @@ export default function UpdateStammdatenForm({ data }: Props) {
   return (
     <fetcher.Form
       method="post"
-      action="/admin/api/academy5/updateStammdaten"
+      action="/admin/api/brz/updateStammdaten"
       className="bg-white shadow overflow-hidden rounded-lg p-4"
     >
       {Object.entries(data).map(([label, value], idxA) => {
