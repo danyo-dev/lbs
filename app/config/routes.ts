@@ -7,9 +7,9 @@ import {
 
 export const routes = [
   {
-    path: "overview",
+    path: "dashboard",
     icon: HomeIcon,
-    name: "Overview",
+    name: "Dashboard",
   },
   {
     path: "students",
