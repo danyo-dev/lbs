@@ -5,7 +5,7 @@ export default function DashboardIndexRoute() {
     <>
       <section>
         <h2 className="text-3xl font-bold text-gray-900 mb-6">BRZ Abfragen</h2>
-        <ul className="grid grid-cols-4 gap-4">
+        <ul className="grid grid-cols-3 gap-8">
           <li>
             <NavLink
               to="matrikel"
