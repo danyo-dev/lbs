@@ -6,7 +6,7 @@ import BrzGetStammdatenForm from "~/components/BrzGetStammdatenForm";
 import BrzStammdatenBox from "~/components/BrzStammdatenBox";
 import { BrzGeneralDataBoxItem } from "~/types/brzTypes";
 
-export default function MatrikelAbfrageRoute() {
+export default function StammdatenQueryRoute() {
   const stammdatenFetcher = useFetcher<BrzGeneralDataBoxItem>();
   return (
     <>
@@ -15,7 +15,7 @@ export default function MatrikelAbfrageRoute() {
           <ArrowLeftIcon className="h-5 w-5 text-slate-600" />
         </Link>
       </div>
-      <div className="w-full my-12 grid grid-areas-overview grid-cols-2 gap-8">
+      <div className="w-full my-6 grid grid-areas-overview grid-cols-2 gap-8">
         <section className=" border-slate-200">
           <h2 className="text-xl text-slate-600 mb-2 ml-2">
             BRZ Stammdaten Abfragen

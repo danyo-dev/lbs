@@ -8,7 +8,7 @@ export default function DashboardIndexRoute() {
         <ul className="grid grid-cols-4 gap-4">
           <li>
             <NavLink
-              to="matrikel-query"
+              to="matrikel"
               className="h-40 bg-white flex justify-center items-center rounded-lg px-2 text-xl hover:shadow "
             >
               Matrikel
@@ -16,7 +16,7 @@ export default function DashboardIndexRoute() {
           </li>
           <li>
             <NavLink
-              to="stammdaten-query"
+              to="stammdaten"
               className=" h-40 bg-white flex justify-center items-center rounded-lg text-xl hover:shadow"
             >
               Stammdaten
@@ -24,7 +24,7 @@ export default function DashboardIndexRoute() {
           </li>
           <li>
             <NavLink
-              to="abfragen"
+              to="studiendaten"
               className=" h-40 bg-white flex justify-center items-center rounded-lg text-xl hover:shadow"
             >
               Studiendaten

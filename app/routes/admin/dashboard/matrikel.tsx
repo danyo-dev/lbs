@@ -4,7 +4,7 @@ import BrzGetMatrikelForm from "~/components/BrzGetMatrikelForm";
 import BrzMatrikelDataBox from "~/components/BrzMatrikelDataBox";
 import { BrzMatrikelStudent } from "~/types/brzTypes";
 
-export default function MatrikelAbfrageRoute() {
+export default function MatrikelQueryRoute() {
   const matrikelFetcher = useFetcher<BrzMatrikelStudent>();
   return (
     <>
@@ -13,7 +13,7 @@ export default function MatrikelAbfrageRoute() {
           <ArrowLeftIcon className="h-5 w-5 text-slate-600" />
         </Link>
       </div>
-      <div className="w-full my-12 grid grid-cols-12 gap-6 ">
+      <div className="w-full my-6 grid grid-cols-12 gap-6 ">
         <section className=" border-slate-200 col-span-6">
           <h2 className="text-xl text-slate-600 mb-2 ml-2">
             BRZ Matrikeldaten Abfragen
