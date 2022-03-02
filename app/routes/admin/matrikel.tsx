@@ -3,7 +3,6 @@ import {
   Form,
   json,
   LoaderFunction,
-  redirect,
   useActionData,
   useCatch,
   useLoaderData,
@@ -34,9 +33,12 @@ export const action: ActionFunction = async ({ request }) => {
   const newMatrikelNumberResponse = await requestNewMatrikel(brzSession, year);
 
   if (!newMatrikelNumberResponse) {
-    throw json("this should not be possible", { status: 500 });
+    throw new Response("this should not be possible", { status: 500 });
   }
-  return json(getParsedNewMatrikelData(newMatrikelNumberResponse));
+  return json({
+    newMatrikelNumber: getParsedNewMatrikelData(newMatrikelNumberResponse),
+    year,
+  });
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -52,28 +54,33 @@ export const loader: LoaderFunction = async ({ request }) => {
   );
 
   if (!reservedMatrikelResponse) {
-    throw json("this should not be possible", { status: 500 });
+    throw new Response("this should not be possible", { status: 500 });
   }
   return json(getParsedReservedMatrikelData(reservedMatrikelResponse));
 };
 
 export default function Matrikel() {
-  const data = useLoaderData();
-  const newMatrikelNumber = useActionData();
+  const data = useLoaderData<
+    {
+      _text: string;
+    }[]
+  >();
+  const actionData = useActionData<{
+    newMatrikelNumber: string;
+    year: FormDataEntryValue;
+  }>();
   const [searchParams] = useSearchParams();
 
-  let submit = useSubmit();
+  const submit = useSubmit();
 
   useEffect(() => {
-    if (newMatrikelNumber) {
+    if (actionData?.newMatrikelNumber) {
       toast.success(
-        `Matrikelnummer ${newMatrikelNumber} für das Jahr ${searchParams.get(
-          "year"
-        )} erfolgreich reserviert`,
+        `Matrikelnummer ${actionData.newMatrikelNumber} für das Jahr ${actionData?.year} erfolgreich reserviert`,
         toastConfig
       );
     }
-  }, [newMatrikelNumber]);
+  }, [actionData]);
 
   return (
     <div className="grid grid-cols-12 gap-24">
@@ -100,15 +107,13 @@ export default function Matrikel() {
 
         <ul className="listWithOverflow">
           {data.length ? (
-            data.map((matrikelNumber: { _text: string }) => (
+            data.map((matrikelNumber) => (
               <li key={matrikelNumber._text} className="py-2">
                 {matrikelNumber._text}
               </li>
             ))
           ) : (
-            <li key={data._text} className="py-2">
-              {data._text}
-            </li>
+            <li className="py-2">No Data here yet!</li>
           )}
         </ul>
       </div>
