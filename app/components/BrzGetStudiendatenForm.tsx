@@ -14,9 +14,9 @@ export default function BrzGetStudiendatenForm({
     <FetcherForm
       method="get"
       action={`/admin/api/brz/getStudiendaten`}
-      className=" bg-white shadow overflow-hidden rounded-lg"
+      className=" bg-white overflow-hidden rounded-lg"
     >
-      <div className="px-6 py-3 bg-white  shadow overflow-hidden ">
+      <div className="px-6 py-3 bg-white overflow-hidden ">
         <div className="grid grid-cols-12 gap-6 ">
           <div className="col-span-6">
             <label
@@ -58,7 +58,7 @@ export default function BrzGetStudiendatenForm({
           </div>
         </div>
       </div>
-      <div className="px-4 py-3 bg-slate-50 text-right">
+      <div className="px-4 py-3  text-right">
         <button
           disabled={isSubmitting ? true : false}
           type="submit"

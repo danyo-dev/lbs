@@ -1,7 +1,7 @@
-import { json, LoaderFunction } from "remix";
+import { LoaderFunction } from "remix";
 
 export const loader: LoaderFunction = () => {
-  throw json("404 Not Found", {
+  throw new Response("404 Not Found", {
     status: 404,
   });
 };

@@ -17,7 +17,7 @@ export function LbsLoader({
 }: Props) {
   function Container({ children }: { children: ReactChild }) {
     return (
-      <div className="bg-white py-6 px-6 shadow border-slate-200 rounded-lg text-sm ">
+      <div className="bg-white py-6 px-6 border-slate-200 rounded-lg text-sm ">
         {children}
       </div>
     );
@@ -35,7 +35,7 @@ export function LbsLoader({
     return (
       <Container>
         <div className="text-slate-600">
-          Ergebnisse werden nach überprüfung der Daten geladen.
+          Ergebnisse werden nach Abrufen der Daten angezeigt.
         </div>
       </Container>
     );
