@@ -21,7 +21,7 @@ const forwardConfig = {
 
  * @return {sshConnection}
  */
-async function connectDB<DBQueryFn extends Function>(dbQueryFn: DBQueryFn) {
+async function connectDB<DBQueryFn extends Function>(dbQueryFn: DBQueryFn): Promise<PrismaPromise<DBQueryFn>> {
   // check if port is in use
   const tunnelOpen = await portUsed.check(3306, '127.0.0.1');
   const sshConnection = new SSHConnection(sshConfig);
