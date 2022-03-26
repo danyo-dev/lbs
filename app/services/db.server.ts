@@ -1,53 +1,59 @@
-import { PrismaClient } from '@prisma/client'
-import { NodeSSH } from 'node-ssh';
-
-let db: PrismaClient;
-let ssh: NodeSSH;
-
-declare global {
-  var __db: PrismaClient | undefined;
-  var __ssh: NodeSSH | undefined;
-}
+import { PrismaClient, PrismaPromise } from '@prisma/client'
+import { SSHConnection } from 'node-ssh-forward';
+import portUsed from 'port-used';
 
 const sshConfig = {
-  host: process.env.AC5_SSH_HOST,
-  username: process.env.AC5_SSH_USER,
+  endHost: process.env.AC5_SSH_HOST as string,
+  username: process.env.AC5_SSH_USER as string,
   privateKey: process.env.AC5_SSH_KEY ? Buffer.from(process.env.AC5_SSH_KEY, 'base64').toString('utf-8') : undefined,
-  passphrase: process.env.AC5_SSH_PASSPHRASE,
+  passphrase: process.env.AC5_SSH_PASSPHRASE as string,
 }
 
-// this is needed because in development we don't want to restart
-// the server with every change, but we want to make sure we don't
-// create a new connection to the DB with every change either.
-export function connectSSH() {
-  if (process.env.NODE_ENV === "production") {
-    if (ssh.isConnected()) {
-      connectDB();
-    } else {
-      ssh = new NodeSSH();
-      ssh.connect(sshConfig).then(connectDB)
-    }
-  } else {
-    if (!global.__ssh) {
-      global.__ssh = new NodeSSH();
-      global.__ssh.connect(sshConfig).then(connectDB)
-    }
-    ssh = global.__ssh;
+const forwardConfig = {
+  fromPort: 3306,
+  toHost: process.env.AC5_DB_HOST as string,
+  toPort: 3306 // sql default
+}
+
+/**
+ * establishes ssh connecton and tunnel
+ * returns connection to close it manually
+
+ * @return {sshConnection}
+ */
+async function connectDB<DBQueryFn extends Function>(dbQueryFn: DBQueryFn) {
+  // check if port is in use
+  const tunnelOpen = await portUsed.check(3306, '127.0.0.1');
+  const sshConnection = new SSHConnection(sshConfig);
+
+  // only run forwarding when port is not used
+  if (!tunnelOpen) {
+    await sshConnection.forward(forwardConfig).catch(err => {
+      console.log('SSH Connection error', err);
+    });
   }
-  return ssh;
+
+  const result = await dbQueryFn();
+
+  // disconnect SSH to avoid opening multiple connections
+  sshConnection.shutdown();
+
+  return result;
 }
 
-function connectDB() {
-  if (process.env.NODE_ENV === "production") {
-    db = new PrismaClient();
-    db.$connect();
-  } else {
-    if (!global.__db) {
-      global.__db = new PrismaClient();
-      global.__db.$connect();
-    }
-    db = global.__db;
-  }
+// function to query profiles
+const queryProfiles = () => {
+  const db = new PrismaClient();
+
+  return db.profil.findMany({
+    select: {
+      vorname: true,
+      name: true,
+      email: true,
+    }, take: 10
+  });
 }
 
-export { db, ssh };
+const getProfiles = () => connectDB(queryProfiles);
+
+export { getProfiles };
