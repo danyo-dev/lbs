@@ -2,20 +2,16 @@ import { useFetcher, useParams, useMatches, useCatch } from "remix";
 import BrzGetMatrikelForm from "~/components/BrzGetMatrikelForm";
 import BrzMatrikelDataBox from "~/components/BrzMatrikelDataBox";
 import { BrzMatrikelStudent } from "~/types/brzTypes";
-import { StudentProfile } from "~/types/responseTypes";
 
 export default function StudentMatrikelDataRoute() {
   const fetcherData = useFetcher<BrzMatrikelStudent>();
   const { state, type, data, Form } = fetcherData;
 
   const params = useParams();
-  const studentData = useMatches().find(
-    (m) => m.pathname === "/admin/students"
-  )?.data;
 
-  const student = studentData?.find(
-    (student: StudentProfile) => student.id === params.studentId
-  );
+  const studentData = useMatches().find(
+    (m) => m.pathname === `/admin/students/${params.studentId}`
+  )?.data;
 
   return (
     <div className="w-full my-12 grid grid-cols-12 gap-6">
@@ -23,7 +19,7 @@ export default function StudentMatrikelDataRoute() {
         <h2 className="text-xl text-slate-600 mb-2 ml-2">
           BRZ Matrikeldaten Abfragen
         </h2>
-        <BrzGetMatrikelForm Form={Form} state={state} student={student} />
+        <BrzGetMatrikelForm Form={Form} state={state} student={studentData} />
       </section>
 
       <section className="border-slate-200 gap-6 col-span-6">

@@ -1,10 +1,14 @@
-import { LoaderFunction, Outlet } from "remix";
-import { getStudentProfiles } from "~/services/academy5Service";
+import { LoaderFunction, Outlet, json } from "remix";
+import { getProfiles } from "~/services/db.server";
 
 export const loader: LoaderFunction = async () => {
-  const studentProfiles = await getStudentProfiles();
-
-  return studentProfiles;
+  const studentProfiles = await getProfiles();
+  if (!studentProfiles) {
+    throw new Response("no studentProfiles found", {
+      status: 404,
+    });
+  }
+  return json(studentProfiles);
 };
 
 export default function Students() {

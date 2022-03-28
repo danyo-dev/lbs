@@ -27,7 +27,7 @@ export default function StudentGeneralRoute() {
       </section>
 
       <section className="border-slate-200 grid-in-form">
-        <h2 className="text-xl text-slate-600 mb-2 ml-2">Stammdaten Formular</h2>
+        <h2 className="text-xl text-slate-600 mb-2 ml-2">Stammdaten Melden</h2>
         <UpdateStammdatenForm data={data} />
       </section>
     </div>

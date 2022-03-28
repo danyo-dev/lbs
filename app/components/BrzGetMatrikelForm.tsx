@@ -1,5 +1,6 @@
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { FormProps } from "remix";
+
 import { StateTypes } from "~/types/generalTypes";
 import { StudentProfile } from "~/types/responseTypes";
 
@@ -27,7 +28,7 @@ export default function BrzGetMatrikelForm({ Form, state, student }: Props) {
             <input
               type="text"
               name="vorname"
-              defaultValue={student?.firstname || ""}
+              defaultValue={student?.vorname || ""}
               id="vorname"
               required
               autoComplete="given-name"
@@ -45,7 +46,7 @@ export default function BrzGetMatrikelForm({ Form, state, student }: Props) {
             <input
               type="text"
               name="nachname"
-              defaultValue={student?.lastname || ""}
+              defaultValue={student?.name || ""}
               id="nachname"
               required
               autoComplete="family-name"
@@ -58,15 +59,18 @@ export default function BrzGetMatrikelForm({ Form, state, student }: Props) {
               htmlFor="geburtsdatum"
               className="block text-sm font-medium text-slate-600"
             >
-              Geburtsdatum
+              Geburtstag
             </label>
             <input
               type="date"
               name="geburtsdatum"
-              defaultValue={student?.birthdate || ""}
+              defaultValue={
+                (student?.geb &&
+                  new Date(student?.geb).toISOString().slice(0, 10)) ||
+                ""
+              }
               id="geburtsdatum"
               required
-              autoComplete="email"
               className="inputField"
             />
           </div>

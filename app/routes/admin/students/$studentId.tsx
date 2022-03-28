@@ -1,16 +1,29 @@
 import { ArrowLeftIcon } from "@heroicons/react/outline";
-import { Link, NavLink, Outlet, useMatches, useParams } from "remix";
+import {
+  json,
+  Link,
+  LoaderFunction,
+  NavLink,
+  Outlet,
+  useLoaderData,
+} from "remix";
 import { studentDetailRoutes } from "~/config/routes";
 import { StudentProfile } from "~/types/responseTypes";
+import { getProfile } from "~/services/db.server";
+
+export const loader: LoaderFunction = async ({ params }) => {
+  if (!params.studentId) {
+    throw new Response("no student ID has been set");
+  }
+  const studentProfile = await getProfile(params.studentId);
+  if (!studentProfile) {
+    throw new Response("no student ID has been set");
+  }
+  return json(studentProfile);
+};
 
 export default function EditStudent() {
-  const params = useParams();
-  const data = useMatches().find((m) => m.pathname === "/admin/students")?.data;
-
-  const student = data?.find(
-    (student: StudentProfile) => student.id === params.studentId
-  );
-
+  const data = useLoaderData<StudentProfile>();
   return (
     <>
       <div className="flex items-center mb-6">
@@ -24,7 +37,7 @@ export default function EditStudent() {
           {studentDetailRoutes.map((route, idx) => (
             <li key={idx} className="mr-2">
               <NavLink
-                to={`/admin/students/${student.id}/${route.path}`}
+                to={`/admin/students/${data.id}/${route.path}`}
                 className={({ isActive }) =>
                   isActive ? "activeLink" : "inactiveLink "
                 }

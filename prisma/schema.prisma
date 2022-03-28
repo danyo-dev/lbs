@@ -15004,7 +15004,7 @@ model profil {
   telefax                                                                  String?                                       @db.VarChar(50)
   web                                                                      String?                                       @db.VarChar(128)
   showweb                                                                  Int                                           @default(2) @db.TinyInt
-  geb                                                                      DateTime?                                     @db.Date
+  geb                                                                      DateTime?                                    @db.Date
   ekm                                                                      String?                                       @db.VarChar(4)
   geburtsort                                                               String?                                       @db.VarChar(100)
   geburtsland                                                              BigInt?

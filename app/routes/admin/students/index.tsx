@@ -1,16 +1,8 @@
 import { useState } from "react";
 import { Link, LoaderFunction, useMatches } from "remix";
+import PendingLink from "~/components/PendingLink";
 import SearchBar from "~/components/SearchBar";
-import { getStudentProfiles } from "~/services/academy5Service";
 import type { StudentProfile } from "~/types/responseTypes";
-
-export const loader: LoaderFunction = async () => {
-  const studentProfiles = await getStudentProfiles();
-
-  return studentProfiles;
-};
-
-// simulating API Student data to intgrate search fuction -> needs to be adjusted when actual data is received
 
 export default function StudentsIndex() {
   const studentProfiles = useMatches().find(
@@ -20,12 +12,11 @@ export default function StudentsIndex() {
 
   // only filter when filterBy is set
   const students = filterBy
-    ? studentProfiles?.filter(
-        ({ firstname, lastname, email }: StudentProfile) =>
-          // other search options can be added here
-          [firstname, lastname, email].some((entry) =>
-            entry.toLowerCase().includes(filterBy.toLowerCase())
-          )
+    ? studentProfiles?.filter(({ vorname, name, email }: StudentProfile) =>
+        // other search options can be added here
+        [vorname, name, email].some((entry) =>
+          entry.toLowerCase().includes(filterBy.toLowerCase())
+        )
       )
     : studentProfiles;
 
@@ -67,7 +58,7 @@ export default function StudentsIndex() {
                   </td>
                   <td className="tableCell">
                     <p className="tableContent text-slate-900">
-                      {student.title} {student.firstname} {student.lastname}
+                      {student.title} {student.vorname} {student.name}
                     </p>
                   </td>
                   <td className="tableCell">
@@ -82,12 +73,16 @@ export default function StudentsIndex() {
                     </span>
                   </td>
                   <td className="tableCell text-right text-sm font-medium">
-                    <Link
+                    <PendingLink
                       to={`${student.id}/matrikeldaten`}
-                      className="text-indigo-600 hover:text-indigo-900"
+                      className={({ isActive }: { isActive: boolean }) =>
+                        `inline-flex w-full text-sm font-medium transition-colors duration-150 hover:text-slate-800 px-3 py-3 ${
+                          isActive && "bg-slate-100 rounded-lg text-slate-800 "
+                        }`
+                      }
                     >
                       Edit
-                    </Link>
+                    </PendingLink>
                   </td>
                 </tr>
               ))}
