@@ -17,7 +17,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   }
   const studentProfile = await getProfile(params.studentId);
   if (!studentProfile) {
-    throw new Response("no student ID has been set");
+    throw new Response("No profile corresponding with given ID found");
   }
   return json(studentProfile);
 };

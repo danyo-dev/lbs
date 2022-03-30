@@ -33,8 +33,8 @@ export interface BrzMatrikelStudentData {
 }
 export interface BrzGeneralDataBoxItem {
   vorname: { _text: string };
-  nachname: { _text: string };
-  geburtsdatum: { _text: string };
+  name: { _text: string };
+  geb: { _text: string };
   svnr: { _text: string };
   geschlecht: { _text: string };
   staatsbuergerschaft: { _text: string };
@@ -53,6 +53,18 @@ export interface BrzGeneralDataBoxItem {
   zaehlungPePn: { _text: string };
   zaehlungPo: { _text: string };
   emailliste: { email: { emailadresse: { _text: string } } };
+}
+
+export interface StammdatenProfile {
+  geb: string;
+  name: string;
+  vorname: string;
+  email: string;
+  strasse: string;
+  strasse2: string;
+  plz: string;
+  ort: string;
+  land: string;
 }
 
 export interface BrzStudienDaten {

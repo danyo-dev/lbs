@@ -1,4 +1,4 @@
-import { useCatch, useFetcher } from "remix";
+import { useCatch, useFetcher, useMatches, useParams } from "remix";
 import BrzStammdatenBox from "~/components/BrzStammdatenBox";
 import BrzGetStammdatenForm from "~/components/BrzGetStammdatenForm";
 import UpdateStammdatenForm from "~/components/UpdateStammdatenForm";
@@ -6,8 +6,15 @@ import { BrzGeneralDataBoxItem } from "~/types/brzTypes";
 
 export default function StudentGeneralRoute() {
   const fetcherData = useFetcher<BrzGeneralDataBoxItem>();
-
   const { state, type, data, Form } = fetcherData;
+
+  const params = useParams();
+
+  const studentData = useMatches().find(
+    (m) => m.pathname === `/admin/students/${params.studentId}`
+  )?.data;
+
+  console.log(studentData);
 
   return (
     <div className="w-full my-12 grid grid-areas-overview grid-cols-2 gap-8">
@@ -28,7 +35,7 @@ export default function StudentGeneralRoute() {
 
       <section className="border-slate-200 grid-in-form">
         <h2 className="text-xl text-slate-600 mb-2 ml-2">Stammdaten Melden</h2>
-        <UpdateStammdatenForm data={data} />
+        <UpdateStammdatenForm data={studentData} />
       </section>
     </div>
   );

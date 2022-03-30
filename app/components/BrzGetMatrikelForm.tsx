@@ -3,6 +3,7 @@ import { FormProps } from "remix";
 
 import { StateTypes } from "~/types/generalTypes";
 import { StudentProfile } from "~/types/responseTypes";
+import { formatBirthdates } from "~/utils/dateUtils";
 
 interface Props {
   Form: ForwardRefExoticComponent<FormProps & RefAttributes<HTMLFormElement>>;
@@ -64,11 +65,7 @@ export default function BrzGetMatrikelForm({ Form, state, student }: Props) {
             <input
               type="date"
               name="geburtsdatum"
-              defaultValue={
-                (student?.geb &&
-                  new Date(student?.geb).toISOString().slice(0, 10)) ||
-                ""
-              }
+              defaultValue={formatBirthdates(student?.geb)}
               id="geburtsdatum"
               required
               className="inputField"

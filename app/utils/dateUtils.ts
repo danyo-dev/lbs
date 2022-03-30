@@ -10,3 +10,10 @@ export function getCurrentSemester() {
     ? `${currentYear}S`
     : `${currentYear}W`;
 }
+
+export function formatBirthdates(timeDate: string | undefined): string | null {
+  if (!timeDate) {
+    return null;
+  }
+  return new Date(timeDate).toISOString().slice(0, 10);
+}

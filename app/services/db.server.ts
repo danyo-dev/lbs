@@ -77,6 +77,12 @@ function queryProfile(id: number) {
       geb: true,
       name: true,
       vorname: true,
+      email: true,
+      strasse: true,
+      strasse2: true,
+      plz: true,
+      ort: true,
+      land: true,
     },
   });
 }

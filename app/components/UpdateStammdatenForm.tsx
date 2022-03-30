@@ -3,45 +3,28 @@ import { useFetcher } from "remix";
 import { toast } from "react-toastify";
 
 import { toastConfig } from "~/config/settings";
-import { BrzGeneralDataBoxItem } from "~/types/brzTypes";
+import { StammdatenProfile } from "~/types/brzTypes";
 import { InputField } from "~/components/InputField";
+import { formatBirthdates } from "~/utils/dateUtils";
 
 interface Props {
-  data: BrzGeneralDataBoxItem | undefined;
+  data: StammdatenProfile | undefined;
 }
 
 export default function UpdateStammdatenForm({ data }: Props) {
   const fetcher = useFetcher();
 
   // create object from BrzGeneralDataBoxItem
-  const stammdatenFormFields: BrzGeneralDataBoxItem = {
-    vorname: { _text: "" },
-    nachname: { _text: "" },
-    geburtsdatum: { _text: "" },
-    svnr: { _text: "" },
-    geschlecht: { _text: "" },
-    staatsbuergerschaft: { _text: "" },
-    akadnach: { _text: "" },
-    bpk: { _text: "" },
-    adressen: {
-      adresse: [
-        {
-          strasse: { _text: "" },
-          plz: { _text: "" },
-          ort: { _text: "" },
-          staat: { _text: "" },
-          typ: { _text: "" },
-        },
-      ],
-    },
-    beitragstatus: { _text: "" },
-    zaehlungPePn: { _text: "" },
-    zaehlungPo: { _text: "" },
-    emailliste: {
-      email: {
-        emailadresse: { _text: "" },
-      },
-    },
+  const stammdatenFormFields: StammdatenProfile = {
+    vorname: data?.vorname || "",
+    geb: formatBirthdates(data?.geb) || "",
+    name: data?.name || "",
+    email: data?.email || "",
+    strasse: data?.strasse || "",
+    strasse2: data?.strasse2 || "",
+    plz: data?.plz || "",
+    ort: data?.ort || "",
+    land: data?.land || "",
   };
 
   useEffect(() => {
@@ -54,7 +37,7 @@ export default function UpdateStammdatenForm({ data }: Props) {
     }
   }, [fetcher.data]);
 
-  const formfieldsToRender = data ? data : stammdatenFormFields;
+  const formfieldsToRender = stammdatenFormFields;
 
   return (
     <fetcher.Form
@@ -63,43 +46,20 @@ export default function UpdateStammdatenForm({ data }: Props) {
       className="bg-white shadow overflow-hidden rounded-lg p-4"
     >
       {Object.entries(formfieldsToRender).map(([label, value], idxA) => {
-        if (label === "adressen") {
-          return (value as BrzGeneralDataBoxItem["adressen"]).adresse.map(
-            (adresse, idxB) => {
-              return (
-                <fieldset key={`adresses-${idxB + 1}`}>
-                  <legend className="border-b-2 mb-2">
-                    Adresse {idxB + 1}
-                  </legend>
-                  {Object.entries(adresse).map(([label, value], idxC) => {
-                    return (
-                      <InputField
-                        key={`label-${idxB}-${idxC}`}
-                        label={label}
-                        value={value._text}
-                      />
-                    );
-                  })}
-                </fieldset>
-              );
-            }
-          );
-        }
+        console.log(value);
 
-        if (label === "emailliste") {
+        if (label === "geb") {
           return (
             <InputField
               key={`label-${idxA}`}
               label={label}
-              value={value.email.emailadresse._text}
-              inputType="email"
+              value={value}
+              inputType="date"
             />
           );
         }
 
-        return (
-          <InputField key={`label-${idxA}`} label={label} value={value._text} />
-        );
+        return <InputField key={`label-${idxA}`} label={label} value={value} />;
       })}
       <button type="submit" className="submitBtn">
         Daten aktualisieren
