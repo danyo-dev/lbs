@@ -1,6 +1,7 @@
-import { Addresses, BrzGeneralDataBoxItem, EmailList } from "~/types/brzTypes";
-import { Fetcher } from "~/types/generalTypes";
-import { LbsLoader } from "~/components/shared/LbsLoader";
+import { Addresses, BrzGeneralDataBoxItem, EmailList } from "~/types/brzTypes"
+import { Fetcher } from "~/types/generalTypes"
+import { LbsLoader } from "~/components/shared/LbsLoader"
+import { useFetchers } from "remix"
 
 export default function BrzGeneralDataBox({
   data,
@@ -24,8 +25,8 @@ export default function BrzGeneralDataBox({
             <li>{`Typ: ${address.typ._text}`}</li>
           </ul>
         </li>
-      );
-    });
+      )
+    })
   }
 
   function renderEmail({ email }: EmailList, key: keyof BrzGeneralDataBoxItem) {
@@ -34,7 +35,7 @@ export default function BrzGeneralDataBox({
         <div className="mr-2 text-slate-600 font-medium capitalize">{`${key}:`}</div>
         <div>{email.emailadresse._text}</div>
       </li>
-    );
+    )
   }
   return (
     <LbsLoader type={type} hasData={Boolean(data)}>
@@ -42,10 +43,10 @@ export default function BrzGeneralDataBox({
         {data &&
           Object.entries(data).map(([key, value]) => {
             if (key === "adressen") {
-              return renderAddresses(value, key);
+              return renderAddresses(value, key)
             }
             if (key === "emailliste") {
-              return renderEmail(value, key);
+              return renderEmail(value, key)
             }
 
             return (
@@ -53,9 +54,9 @@ export default function BrzGeneralDataBox({
                 <div className="mr-2 text-slate-600 font-medium capitalize">{`${key}:`}</div>
                 <div className="px-2">{value._text}</div>
               </li>
-            );
+            )
           })}
       </ul>
     </LbsLoader>
-  );
+  )
 }

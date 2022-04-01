@@ -1,20 +1,21 @@
-import { useState } from "react";
-import { Form } from "remix";
-import { BrzMatrikelStudent } from "~/types/brzTypes";
-import { Fetcher } from "~/types/generalTypes";
-import { DuplicateIcon, CheckIcon } from "@heroicons/react/outline";
-import { LbsLoader } from "~/components/shared/LbsLoader";
+import { useState } from "react"
+import { Form } from "remix"
+
+import { Fetcher } from "~/types/generalTypes"
+import { DuplicateIcon, CheckIcon } from "@heroicons/react/outline"
+import { LbsLoader } from "~/components/shared/LbsLoader"
+import { BRZ_MatrikelStudent } from "~/types/studentTypes"
 
 export default function BrzMatrikelDataBox({
   data,
   type,
-}: Fetcher<BrzMatrikelStudent>) {
-  const [textIsCopied, setTextIsCopied] = useState(false);
+}: Fetcher<BRZ_MatrikelStudent>) {
+  const [textIsCopied, setTextIsCopied] = useState(false)
   function handleCopy() {
     navigator.clipboard.writeText(
       `${data?.matrikelStudentData?.matrikelnummer._text}`
-    );
-    setTextIsCopied(true);
+    )
+    setTextIsCopied(true)
   }
 
   function NoDataFound() {
@@ -30,7 +31,7 @@ export default function BrzMatrikelDataBox({
           </button>
         </Form>
       </div>
-    );
+    )
   }
 
   return (
@@ -80,5 +81,5 @@ export default function BrzMatrikelDataBox({
         </div>
       </div>
     </LbsLoader>
-  );
+  )
 }

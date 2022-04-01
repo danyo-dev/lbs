@@ -1,14 +1,14 @@
-import { ForwardRefExoticComponent, RefAttributes } from "react";
-import { FormProps } from "remix";
-
-import { StateTypes } from "~/types/generalTypes";
-import { StudentProfile } from "~/types/responseTypes";
-import { formatBirthdates } from "~/utils/dateUtils";
+import { ForwardRefExoticComponent, RefAttributes } from "react"
+import { FormProps } from "remix"
+import { StateTypes } from "~/types/generalTypes"
+import { BRZ_MatrikelRequest } from "~/types/studentTypes"
+import { formatBirthdates } from "~/utils/dateUtils"
+import { InputField } from "./InputField"
 
 interface Props {
-  Form: ForwardRefExoticComponent<FormProps & RefAttributes<HTMLFormElement>>;
-  state: StateTypes;
-  student?: Partial<StudentProfile>;
+  Form: ForwardRefExoticComponent<FormProps & RefAttributes<HTMLFormElement>>
+  state: StateTypes
+  student: BRZ_MatrikelRequest | undefined
 }
 export default function BrzGetMatrikelForm({ Form, state, student }: Props) {
   return (
@@ -20,69 +20,39 @@ export default function BrzGetMatrikelForm({ Form, state, student }: Props) {
       <div className="px-6 py-3 bg-white overflow-hidden ">
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-6">
-            <label
-              htmlFor="vorname"
-              className="block text-sm font-medium text-slate-600"
-            >
-              Vorname
-            </label>
-            <input
-              type="text"
-              name="vorname"
-              defaultValue={student?.vorname || ""}
-              id="vorname"
+            <InputField
+              inputType="text"
+              label="vorname"
+              value={student?.vorname || ""}
               required
-              autoComplete="given-name"
               className="inputField"
             />
           </div>
 
           <div className="col-span-6">
-            <label
-              htmlFor="nachname"
-              className="block text-sm font-medium text-slate-600"
-            >
-              Nachname
-            </label>
-            <input
-              type="text"
-              name="nachname"
-              defaultValue={student?.name || ""}
-              id="nachname"
+            <InputField
+              inputType="text"
+              label="nachname"
+              value={student?.name || ""}
               required
-              autoComplete="family-name"
               className="inputField"
             />
           </div>
 
           <div className="col-span-6">
-            <label
-              htmlFor="geburtsdatum"
-              className="block text-sm font-medium text-slate-600"
-            >
-              Geburtstag
-            </label>
-            <input
-              type="date"
-              name="geburtsdatum"
-              defaultValue={formatBirthdates(student?.geb)}
-              id="geburtsdatum"
+            <InputField
+              inputType="date"
+              label="geburtsdatum"
+              value={formatBirthdates(student?.geb) || ""}
               required
               className="inputField"
             />
           </div>
           <div className="col-span-6">
-            <label
-              htmlFor="svnr"
-              className="block text-sm font-medium text-slate-600"
-            >
-              Svnr:
-            </label>
-            <input
-              type="text"
-              name="svnr"
-              id="svnr"
-              defaultValue=""
+            <InputField
+              inputType="text"
+              label="svnr"
+              value=""
               className="inputField"
             />
           </div>
@@ -98,5 +68,5 @@ export default function BrzGetMatrikelForm({ Form, state, student }: Props) {
         </button>
       </div>
     </Form>
-  );
+  )
 }

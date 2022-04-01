@@ -1,4 +1,4 @@
-import { ArrowLeftIcon } from "@heroicons/react/outline";
+import { ArrowLeftIcon } from "@heroicons/react/outline"
 import {
   json,
   Link,
@@ -6,24 +6,41 @@ import {
   NavLink,
   Outlet,
   useLoaderData,
-} from "remix";
-import { studentDetailRoutes } from "~/config/routes";
-import { StudentProfile } from "~/types/responseTypes";
-import { getProfile } from "~/services/db.server";
+} from "remix"
+import { studentDetailRoutes } from "~/config/routes"
+import { getAddresses, getCountry, getProfile } from "~/services/db.server"
+import {
+  AC5_StammDatenProfile,
+  BRZ_StammDatenProfile,
+} from "~/types/StudentTypes"
 
 export const loader: LoaderFunction = async ({ params }) => {
   if (!params.studentId) {
-    throw new Response("no student ID has been set");
+    throw new Response("no student ID has been set")
   }
-  const studentProfile = await getProfile(params.studentId);
-  if (!studentProfile) {
-    throw new Response("No profile corresponding with given ID found");
+  const studentProfileData = await getProfile(params.studentId)
+  const countryData = await getCountry(Number(studentProfileData?.land))
+  const citizenship = await getCountry(
+    Number(studentProfileData?.staatsangehoerigkeit)
+  )
+  const addresses = await getAddresses(params.studentId)
+
+  const mapStudentprofile = {
+    ...studentProfileData,
+    land: countryData?.bis_code,
+    staatsangehoerigkeit: citizenship?.bis_code,
+    addresses: addresses,
   }
-  return json(studentProfile);
-};
+
+  console.log(mapStudentprofile)
+  if (!studentProfileData) {
+    throw new Response("No profile corresponding with given ID found")
+  }
+  return json(mapStudentprofile)
+}
 
 export default function EditStudent() {
-  const data = useLoaderData<StudentProfile>();
+  const data = useLoaderData<BRZ_StammDatenProfile>()
   return (
     <>
       <div className="flex items-center mb-6">
@@ -50,5 +67,5 @@ export default function EditStudent() {
       </div>
       <Outlet />
     </>
-  );
+  )
 }

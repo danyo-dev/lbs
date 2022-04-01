@@ -1,11 +1,18 @@
-
 interface Props {
-  label: string;
-  value: string;
-  inputType?: 'text' | 'number' | 'email' | 'date';
+  label: string
+  value?: string | number
+  inputType?: "text" | "number" | "email" | "date"
+  className?: string
+  required?: boolean
 }
 
-export function InputField({ label, value, inputType = 'text' }: Props) {
+export function InputField({
+  label,
+  value,
+  inputType = "text",
+  className = "inputField",
+  required = false,
+}: Props) {
   return (
     <label
       htmlFor={label}
@@ -17,7 +24,8 @@ export function InputField({ label, value, inputType = 'text' }: Props) {
         name={label}
         id={label}
         defaultValue={value}
-        className="inputField"
+        className={className}
+        required={required}
       />
     </label>
   )

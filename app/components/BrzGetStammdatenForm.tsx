@@ -1,10 +1,11 @@
-import React from "react";
-import { useFetcher } from "remix";
-import { getCurrentSemester, getSemesterSelection } from "~/utils/dateUtils";
+import React from "react"
+import { useFetcher } from "remix"
+import { getCurrentSemester, getSemesterSelection } from "~/utils/dateUtils"
+import { InputField } from "./InputField"
 
 interface Props {
-  FetcherForm: ReturnType<typeof useFetcher>["Form"];
-  isSubmitting: Boolean;
+  FetcherForm: ReturnType<typeof useFetcher>["Form"]
+  isSubmitting: Boolean
 }
 
 export default function BrzGeneralDataForm({
@@ -20,19 +21,7 @@ export default function BrzGeneralDataForm({
       <div className="px-6 py-3 bg-white  overflow-hidden">
         <div className="grid grid-cols-12 gap-6 ">
           <div className="col-span-6">
-            <label
-              htmlFor="matrikelnummer"
-              className="block text-sm font-medium text-slate-600"
-            >
-              Matrikelnr.
-            </label>
-            <input
-              type="text"
-              name="matrikelnummer"
-              id="matrikelnummer"
-              required
-              className="inputField"
-            />
+            <InputField label="matrikelnummer" required />
           </div>
 
           <div className="col-span-6">
@@ -53,7 +42,7 @@ export default function BrzGeneralDataForm({
                     <option value={`${el}S`} key={`${el}S`}>{`${el}S`}</option>
                     <option value={`${el}W`} key={`${el}W`}>{`${el}W`}</option>
                   </React.Fragment>
-                );
+                )
               })}
             </select>
           </div>
@@ -69,5 +58,5 @@ export default function BrzGeneralDataForm({
         </button>
       </div>
     </FetcherForm>
-  );
+  )
 }

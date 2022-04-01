@@ -1,20 +1,19 @@
-import { useCatch, useFetcher, useMatches, useParams } from "remix";
-import BrzStammdatenBox from "~/components/BrzStammdatenBox";
-import BrzGetStammdatenForm from "~/components/BrzGetStammdatenForm";
-import UpdateStammdatenForm from "~/components/UpdateStammdatenForm";
-import { BrzGeneralDataBoxItem } from "~/types/brzTypes";
+import { useCatch, useFetcher, useMatches, useParams } from "remix"
+import BrzStammdatenBox from "~/components/BrzStammdatenBox"
+import BrzGetStammdatenForm from "~/components/BrzGetStammdatenForm"
+import PostStammdatenForm from "~/components/PostStammdatenForm"
+
+import { BRZ_StammDatenProfile } from "~/types/StudentTypes"
 
 export default function StudentGeneralRoute() {
-  const fetcherData = useFetcher<BrzGeneralDataBoxItem>();
-  const { state, type, data, Form } = fetcherData;
+  const fetcherData = useFetcher()
+  const { state, type, data, Form } = fetcherData
 
-  const params = useParams();
+  const params = useParams()
 
   const studentData = useMatches().find(
     (m) => m.pathname === `/admin/students/${params.studentId}`
-  )?.data;
-
-  console.log(studentData);
+  )?.data as BRZ_StammDatenProfile
 
   return (
     <div className="w-full my-12 grid grid-areas-overview grid-cols-2 gap-8">
@@ -35,17 +34,17 @@ export default function StudentGeneralRoute() {
 
       <section className="border-slate-200 grid-in-form">
         <h2 className="text-xl text-slate-600 mb-2 ml-2">Stammdaten Melden</h2>
-        <UpdateStammdatenForm data={studentData} />
+        <PostStammdatenForm data={studentData} />
       </section>
     </div>
-  );
+  )
 }
 export function CatchBoundary() {
-  const caught = useCatch();
-  const parseData = JSON.parse(caught.data);
+  const caught = useCatch()
+  const parseData = JSON.parse(caught.data)
 
   const errors: { fehlertext: { _text: string } } =
-    parseData.FehlerAntwort?.fehlerliste?.fehler;
+    parseData.FehlerAntwort?.fehlerliste?.fehler
 
   return (
     <div className="error-container">
@@ -54,5 +53,5 @@ export function CatchBoundary() {
       </div>
       <div>{errors.fehlertext._text}</div>
     </div>
-  );
+  )
 }

@@ -1,17 +1,17 @@
-import { useFetcher, useParams, useMatches, useCatch } from "remix";
-import BrzGetMatrikelForm from "~/components/BrzGetMatrikelForm";
-import BrzMatrikelDataBox from "~/components/BrzMatrikelDataBox";
-import { BrzMatrikelStudent } from "~/types/brzTypes";
+import { useFetcher, useParams, useMatches, useCatch } from "remix"
+import BrzGetMatrikelForm from "~/components/BrzGetMatrikelForm"
+import BrzMatrikelDataBox from "~/components/BrzMatrikelDataBox"
+import { BRZ_MatrikelRequest, BRZ_MatrikelStudent } from "~/types/StudentTypes"
 
 export default function StudentMatrikelDataRoute() {
-  const fetcherData = useFetcher<BrzMatrikelStudent>();
-  const { state, type, data, Form } = fetcherData;
+  const fetcherData = useFetcher<BRZ_MatrikelStudent>()
+  const { state, type, data, Form } = fetcherData
 
-  const params = useParams();
+  const params = useParams()
 
   const studentData = useMatches().find(
     (m) => m.pathname === `/admin/students/${params.studentId}`
-  )?.data;
+  )?.data as BRZ_MatrikelRequest
 
   return (
     <div className="w-full my-12 grid grid-cols-12 gap-6">
@@ -27,15 +27,15 @@ export default function StudentMatrikelDataRoute() {
         <BrzMatrikelDataBox data={data} type={type} />
       </section>
     </div>
-  );
+  )
 }
 
 export function CatchBoundary() {
-  const caught = useCatch();
-  const parseData = JSON.parse(caught.data);
+  const caught = useCatch()
+  const parseData = JSON.parse(caught.data)
 
   const errorMsg =
-    parseData.FehlerAntwort?.fehlerliste?.fehler?.massnahme?._text;
+    parseData.FehlerAntwort?.fehlerliste?.fehler?.massnahme?._text
 
   return (
     <div className="error-container">
@@ -44,5 +44,5 @@ export function CatchBoundary() {
       </div>
       <div className="text-slate-700 ">{errorMsg}</div>
     </div>
-  );
+  )
 }

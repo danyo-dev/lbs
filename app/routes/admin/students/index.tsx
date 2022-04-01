@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Link, LoaderFunction, useMatches } from "remix";
+import { useMatches } from "remix";
 import PendingLink from "~/components/PendingLink";
 import SearchBar from "~/components/SearchBar";
-import type { StudentProfile } from "~/types/responseTypes";
+import { StudentProfileList } from "~/types/StudentProfiles";
 
 export default function StudentsIndex() {
   const studentProfiles = useMatches().find(
@@ -11,11 +11,11 @@ export default function StudentsIndex() {
   const [filterBy, setFilterBy] = useState("");
 
   // only filter when filterBy is set
-  const students = filterBy
-    ? studentProfiles?.filter(({ vorname, name, email }: StudentProfile) =>
+  const students: StudentProfileList[] = filterBy
+    ? studentProfiles?.filter(({ vorname, name, email }: StudentProfileList) =>
         // other search options can be added here
         [vorname, name, email].some((entry) =>
-          entry.toLowerCase().includes(filterBy.toLowerCase())
+          entry?.toLowerCase().includes(filterBy.toLowerCase())
         )
       )
     : studentProfiles;
@@ -51,14 +51,14 @@ export default function StudentsIndex() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-slate-200">
-              {students.map((student: StudentProfile) => (
-                <tr key={student?.id}>
+              {students.map((student: StudentProfileList) => (
+                <tr key={Number(student?.id)}>
                   <td className="tableCell">
                     <p className="tableContent text-slate-900">{student.id}</p>
                   </td>
                   <td className="tableCell">
                     <p className="tableContent text-slate-900">
-                      {student.title} {student.vorname} {student.name}
+                      {student.titel} {student.vorname} {student.name}
                     </p>
                   </td>
                   <td className="tableCell">

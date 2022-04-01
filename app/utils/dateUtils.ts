@@ -11,9 +11,13 @@ export function getCurrentSemester() {
     : `${currentYear}W`;
 }
 
-export function formatBirthdates(timeDate: string | undefined): string | null {
+export function formatBirthdates(
+  timeDate: string | number | bigint | boolean | Date | null | undefined
+): string | null {
   if (!timeDate) {
     return null;
   }
-  return new Date(timeDate).toISOString().slice(0, 10);
+  return typeof timeDate === "string"
+    ? new Date(timeDate).toISOString().slice(0, 10)
+    : null;
 }
