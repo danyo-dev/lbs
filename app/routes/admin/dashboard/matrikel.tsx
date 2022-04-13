@@ -1,11 +1,11 @@
-import { ArrowLeftIcon } from "@heroicons/react/outline";
-import { Link, useFetcher } from "remix";
-import BrzGetMatrikelForm from "~/components/BrzGetMatrikelForm";
-import BrzMatrikelDataBox from "~/components/BrzMatrikelDataBox";
-import { BrzMatrikelStudent } from "~/types/brzTypes";
+import { ArrowLeftIcon } from "@heroicons/react/outline"
+import { Link, useFetcher } from "remix"
+import BrzGetMatrikelForm from "~/components/BrzGetMatrikelForm"
+import BrzMatrikelDataBox from "~/components/BrzMatrikelDataBox"
+import { BRZ_MatrikelRequest } from "~/types/studentTypes"
 
 export default function MatrikelQueryRoute() {
-  const matrikelFetcher = useFetcher<BrzMatrikelStudent>();
+  const matrikelFetcher = useFetcher<BRZ_MatrikelRequest>()
   return (
     <>
       <div className="flex items-center mr-6">
@@ -21,6 +21,7 @@ export default function MatrikelQueryRoute() {
           <BrzGetMatrikelForm
             Form={matrikelFetcher.Form}
             state={matrikelFetcher.state}
+            student={matrikelFetcher.data}
           />
         </section>
 
@@ -35,5 +36,5 @@ export default function MatrikelQueryRoute() {
         </section>
       </div>
     </>
-  );
+  )
 }

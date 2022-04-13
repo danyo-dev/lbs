@@ -5,7 +5,23 @@ require("~/patches/patches.js")
 // useing require here because TS yells when importing and no Types are defined
 const portUsed = require("port-used")
 
-const prisma = new PrismaClient()
+let db: PrismaClient
+
+declare global {
+  var __db: PrismaClient | undefined
+}
+
+// this is needed because in development we don't want to restart
+// the server with every change, but we want to make sure we don't
+// create a new connection to the DB with every change either.
+if (process.env.NODE_ENV === "production") {
+  db = new PrismaClient()
+} else {
+  if (!global.__db) {
+    global.__db = new PrismaClient()
+  }
+  db = global.__db
+}
 
 const sshConfig = {
   endHost: process.env.AC5_SSH_HOST as string,
@@ -50,8 +66,7 @@ export async function connectDB<DBQueryFn extends (...args: any) => any>(
   return result
 }
 
-function getStudentProfiles() {
-  const db = prisma
+function queryStudentProfiles() {
   return db.profil.findMany({
     select: {
       id: true,
@@ -59,48 +74,54 @@ function getStudentProfiles() {
       name: true,
       email: true,
     },
-    take: 100,
+    take: 200,
   })
 }
 
 function queryProfile(id: number) {
-  const db = prisma
   return db.profil.findUnique({
     where: {
       id,
     },
     select: {
-      id: true,
       titel: true,
+      title_postposed: true,
       staatsangehoerigkeit: true,
       anrede: true,
       geb: true,
       name: true,
+      middlename: true,
       vorname: true,
       email: true,
     },
   })
 }
 
-function queryCountry(id: number) {
-  const db = prisma
-  return db.laender.findUnique({
+function queryBisProfileProperties(id: number) {
+  return db.bis_profile_property.findUnique({
     where: {
-      id,
+      profile_id: id,
+    },
+    select: {
+      matriculation_number: true,
+      replacement_label: true,
+      sector_specific_pin: true,
+      social_insurance_number: true,
     },
   })
 }
 
+function queryCountries(ids: number[]) {
+  return db.laender.findMany({
+    where: { id: { in: [...ids] } },
+  })
+}
+
 function queryAddresses(id: number) {
-  const db = prisma
   return db.pm_fields.findMany({
     where: {
-      pid: id,
-      NOT: [
-        {
-          strasse: null,
-        },
-      ],
+      OR: [{ adresstyp: 4 }, { adresstyp: 5 }],
+      AND: [{ pid: id }],
     },
     select: {
       strasse: true,
@@ -112,6 +133,28 @@ function queryAddresses(id: number) {
   })
 }
 
+function queryMnr(id: number) {
+  return db.profil_studium.findMany({
+    where: {
+      pid: id,
+      NOT: {
+        mnr: "",
+      },
+    },
+    select: {
+      mnr: true,
+    },
+  })
+}
+
+export async function getMnr(profileId: string) {
+  try {
+    return await connectDB(() => queryMnr(parseInt(profileId)))
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export async function getAddresses(profileId: string) {
   try {
     return await connectDB(() => queryAddresses(parseInt(profileId)))
@@ -120,9 +163,17 @@ export async function getAddresses(profileId: string) {
   }
 }
 
-export async function getCountry(countryId: number) {
+export async function getBisProfileProperties(profileId: string) {
   try {
-    return await connectDB(() => queryCountry(countryId))
+    return await connectDB(() => queryBisProfileProperties(parseInt(profileId)))
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function getCountries(...countries: number[]) {
+  try {
+    return await connectDB(() => queryCountries(countries.filter(Boolean)))
   } catch (error) {
     console.log(error)
   }
@@ -141,7 +192,7 @@ export async function getProfile(profileId: string) {
 export async function getProfiles() {
   return handleCache("studentProfiles", async () => {
     try {
-      return await connectDB(getStudentProfiles)
+      return await connectDB(queryStudentProfiles)
     } catch (error) {
       console.log(error)
     }

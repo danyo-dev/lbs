@@ -10,19 +10,19 @@ export default function StudentMatrikelDataRoute() {
   const params = useParams()
 
   const studentData = useMatches().find(
-    (m) => m.pathname === `/admin/students/${params.studentId}`
+    (m) => m.pathname === `/admin/${params.studentId}`
   )?.data as BRZ_MatrikelRequest
 
   return (
-    <div className="w-full my-12 grid grid-cols-12 gap-6">
-      <section className=" border-slate-200 col-span-6">
+    <div className="w-full my-12 ">
+      <section className=" border-slate-200 mb-10">
         <h2 className="text-xl text-slate-600 mb-2 ml-2">
           BRZ Matrikeldaten Abfragen
         </h2>
         <BrzGetMatrikelForm Form={Form} state={state} student={studentData} />
       </section>
 
-      <section className="border-slate-200 gap-6 col-span-6">
+      <section className="border-slate-200">
         <h2 className="text-xl text-slate-600 mb-2 ml-2">BRZ Matrikeldaten</h2>
         <BrzMatrikelDataBox data={data} type={type} />
       </section>

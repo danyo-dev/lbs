@@ -15,7 +15,7 @@
 }
 
 .inputField {
-  @apply mt-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm  border-slate-300 rounded-lg;
+  @apply my-1 p-2 border focus:ring-sky-500 focus:border-sky-500 block w-full shadow-sm border-slate-300 rounded-lg;
 }
 .activeLink {
   @apply bg-sky-600 inline-flex rounded-lg text-sm font-medium transition-colors duration-150 px-6 py-2 text-white shadow;

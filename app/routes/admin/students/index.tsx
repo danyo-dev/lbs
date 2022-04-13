@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { useMatches } from "remix";
-import PendingLink from "~/components/PendingLink";
-import SearchBar from "~/components/SearchBar";
-import { StudentProfileList } from "~/types/StudentProfiles";
+import { useState } from "react"
+import { useMatches } from "remix"
+import PendingLink from "~/components/PendingLink"
+import SearchBar from "~/components/SearchBar"
+import { StudentProfileList } from "~/types/StudentTypes"
 
 export default function StudentsIndex() {
   const studentProfiles = useMatches().find(
     (m) => m.pathname === "/admin/students"
-  )?.data;
-  const [filterBy, setFilterBy] = useState("");
+  )?.data
+  const [filterBy, setFilterBy] = useState("")
 
   // only filter when filterBy is set
   const students: StudentProfileList[] = filterBy
@@ -18,7 +18,7 @@ export default function StudentsIndex() {
           entry?.toLowerCase().includes(filterBy.toLowerCase())
         )
       )
-    : studentProfiles;
+    : studentProfiles
 
   return (
     <>
@@ -74,7 +74,7 @@ export default function StudentsIndex() {
                   </td>
                   <td className="tableCell text-right text-sm font-medium">
                     <PendingLink
-                      to={`${student.id}/matrikeldaten`}
+                      to={`/admin/${student.id}/matrikeldaten`}
                       className={({ isActive }: { isActive: boolean }) =>
                         `inline-flex w-full text-sm font-medium transition-colors duration-150 hover:text-slate-800 px-3 py-3 ${
                           isActive && "bg-slate-100 rounded-lg text-slate-800 "
@@ -91,5 +91,5 @@ export default function StudentsIndex() {
         </div>
       </div>
     </>
-  );
+  )
 }
