@@ -39,14 +39,12 @@ export const loader: LoaderFunction = async ({ params }) => {
   }
 
   // map addresses to country bis code
-  const mappedAdressesWithBisCode =
-    addresses &&
-    addresses?.map((address) => {
-      return {
-        ...address,
-        land: getCountryBisCode(Number(address.land)) || '',
-      };
-    });
+  const mappedAdressesWithBisCode = addresses?.map((address) => {
+    return {
+      ...address,
+      land: getCountryBisCode(Number(address.land)) || '',
+    };
+  });
 
   // push the same address to the end of the array
   if (mappedAdressesWithBisCode?.length === 1) {
@@ -63,8 +61,6 @@ export const loader: LoaderFunction = async ({ params }) => {
     ekz: bisProfileProperties?.replacement_label,
     perskz: mnr?.[0]?.mnr,
   };
-
-  console.log(fullStudentProfile);
 
   return json(fullStudentProfile);
 };

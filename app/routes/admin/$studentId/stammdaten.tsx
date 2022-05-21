@@ -64,12 +64,12 @@ export const action: ActionFunction = async ({ request }) => {
   });
 };
 
-export default function StudentGeneralRoute() {
+export default function StudentStammdatenRoute() {
   const params = useParams();
 
   // TODO -> handle errors on this screen
   const actionData = useActionData();
-  const data = useMatches().find((m) => m.pathname === `/admin/${params.studentId}`)?.data as BRZ_StammDatenProfile;
+  const data = useMatches().find((m) => m.pathname === `/admin/${params.studentId}`)?.data;
 
   useEffect(() => {
     if (actionData?.success) {
@@ -79,7 +79,6 @@ export default function StudentGeneralRoute() {
 
   return (
     <div className="w-full my-12">
-      {actionData && <h3>'YEY saved!'</h3>}
       <section className="border-slate-200 ">
         <h2 className="text-xl text-slate-600 mb-2 ml-2">Stammdaten Melden</h2>
 
@@ -98,12 +97,12 @@ export default function StudentGeneralRoute() {
                 Semester
               </label>
               <select className="dropDown" name="semester" defaultValue={getCurrentSemester()}>
-                {getSemesterSelection().map((el) => {
+                {getSemesterSelection().map((el, key) => {
                   return (
-                    <>
+                    <div key={key}>
                       <option value={`${el}S`} key={`${el}S`}>{`${el}S`}</option>
                       <option value={`${el}W`} key={`${el}W`}>{`${el}W`}</option>
-                    </>
+                    </div>
                   );
                 })}
               </select>
@@ -163,16 +162,16 @@ export default function StudentGeneralRoute() {
                 key="home-strasse"
                 name="homeStrasse"
                 label="strasse"
-                value={data?.addresses?.[0].strasse || ''}
+                value={data?.addresses?.[0]?.strasse || ''}
                 required
               />
-              <InputField key="home-plz" label="plz" name="homePlz" value={data?.addresses?.[0].plz || ''} required />
-              <InputField key="home-ort" label="ort" name="homeOrt" value={data?.addresses?.[0].ort || ''} required />
+              <InputField key="home-plz" label="plz" name="homePlz" value={data?.addresses?.[0]?.plz || ''} required />
+              <InputField key="home-ort" label="ort" name="homeOrt" value={data?.addresses?.[0]?.ort || ''} required />
               <InputField
                 key="home-land"
                 label="land"
                 name="homeLand"
-                value={data?.addresses?.[0].land || ''}
+                value={data?.addresses?.[0]?.land || ''}
                 required
               />
               <div key="typ">
@@ -183,7 +182,7 @@ export default function StudentGeneralRoute() {
                   key="home-address-type"
                   className="dropDown"
                   name="homeTyp"
-                  defaultValue={data?.addresses?.[0].typ === 1 ? 'S' : 'H'}
+                  defaultValue={data?.addresses?.[0]?.typ === 1 ? 'S' : 'H'}
                 >
                   <option value="S" key="typ-s">
                     S
@@ -200,28 +199,28 @@ export default function StudentGeneralRoute() {
                 key="semester-strasse"
                 label="strasse"
                 name="semesterStrasse"
-                value={data?.addresses?.[1].strasse || ''}
+                value={data?.addresses?.[1]?.strasse || ''}
                 required
               />
               <InputField
                 key="semester-plz"
                 name="semesterPlz"
                 label="plz"
-                value={data?.addresses?.[1].plz || ''}
+                value={data?.addresses?.[1]?.plz || ''}
                 required
               />
               <InputField
                 key="semester-ort"
                 name="semesterOrt"
                 label="ort"
-                value={data?.addresses?.[1].ort || ''}
+                value={data?.addresses?.[1]?.ort || ''}
                 required
               />
               <InputField
                 key="semester-land"
                 label="land"
                 name="semesterLand"
-                value={data?.addresses?.[1].land || ''}
+                value={data?.addresses?.[1]?.land || ''}
                 required
               />
               <div>
@@ -232,7 +231,7 @@ export default function StudentGeneralRoute() {
                   key="semester-address-type"
                   className="dropDown"
                   name="semesterTyp"
-                  defaultValue={data?.addresses?.[1].typ === 1 ? 'S' : 'H'}
+                  defaultValue={data?.addresses?.[1]?.typ === 1 ? 'S' : 'H'}
                 >
                   <option value="S" key="typ-s">
                     S

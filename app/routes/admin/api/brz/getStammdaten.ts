@@ -6,10 +6,7 @@ import getCleanQueryString from '~/utils/getCleanQueryString';
 
 export const loader: LoaderFunction = async ({ request }) => {
   await requireAuthentication(request);
-
   const url = new URL(request.url);
-
-  console.log(url);
 
   if (url.search === '') {
     throw Error('Bad Request');

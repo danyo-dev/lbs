@@ -11,8 +11,6 @@ export type BisProfileProperties = Pick<
 
 export type StudentProfileList = Pick<profil, 'id' | 'titel' | 'vorname' | 'name' | 'email'>;
 
-export type AC5_MNR = Pick<profil_studium, 'mnr'>;
-
 export type AC5_StammDatenProfile = Pick<
   profil,
   | 'id'
@@ -27,19 +25,21 @@ export type AC5_StammDatenProfile = Pick<
   | 'title_postposed'
 >;
 
-export type BRZ_StammDatenProfile = Omit<AC5_StammDatenProfile, 'staatsangehoerigkeit' | 'id'> & {
-  staatsangehoerigkeit?: string | undefined | null;
-  id?: number;
-  addresses: BRZ_AdressFields[] | undefined;
-  semester?: string;
-  titel?: string | null;
-  title_postposed?: string | null;
-  matrikelnummer: string;
-  bpk?: string | null;
-  svnr?: string | null;
-  ekz?: string | null;
-  perskz: string | null | undefined;
-};
+export type BRZ_StammDatenProfile =
+  | (Omit<AC5_StammDatenProfile, 'staatsangehoerigkeit' | 'id'> & {
+      staatsangehoerigkeit?: string | undefined | null;
+      id?: number;
+      addresses: BRZ_AdressFields[] | undefined;
+      semester?: string;
+      titel?: string | null;
+      title_postposed?: string | null;
+      matrikelnummer: string;
+      bpk?: string | null;
+      svnr?: string | null;
+      ekz?: string | null;
+      perskz: string | null | undefined;
+    })
+  | undefined;
 
 export type BRZ_FlattendedStammDatenProfile = Omit<
   BRZ_StammDatenProfile,
