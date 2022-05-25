@@ -9,6 +9,10 @@ export const loader: LoaderFunction = async ({ params }) => {
   if (!params.studentId) {
     throw new Response('no student ID has been set');
   }
+
+  // fetch matrikel number, bpk, svnr, ekz
+  const bisProfileProperties: BisProfileProperties | undefined | null = await getBisProfileProperties(params.studentId);
+
   const studentProfileData = await getProfile(params.studentId);
 
   if (!studentProfileData) {
@@ -16,9 +20,6 @@ export const loader: LoaderFunction = async ({ params }) => {
       status: 404,
     });
   }
-
-  // fetch matrikel number, bpk, svnr, ekz
-  const bisProfileProperties: BisProfileProperties | undefined | null = await getBisProfileProperties(params.studentId);
 
   // fetches Address data from AC5_DB
   const addresses = await getAddresses(params.studentId);

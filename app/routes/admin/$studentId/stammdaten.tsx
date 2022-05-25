@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { ActionFunction, Form, json, useCatch, useMatches, useParams, useActionData } from 'remix';
-import { BRZ_FlattendedStammDatenProfile, BRZ_StammDatenProfile } from '~/types/StudentTypes';
+import { useEffect, Fragment } from 'react';
+import { ActionFunction, Form, json, useTransition, useMatches, useParams, useActionData } from 'remix';
+import { BRZ_FlattendedStammDatenProfile } from '~/types/StudentTypes';
 import { InputField } from '~/components/InputField';
 import { formatBirthdates, getCurrentSemester, getSemesterSelection } from '~/utils/dateUtils';
 import { brzAuthenticationHandler, postStammDaten } from '~/services/brzService';
@@ -52,36 +52,72 @@ export const action: ActionFunction = async ({ request }) => {
   // the server can respond with 200 but still return an error,
   // if array is empty it is valid
   const parsedData = JSON.parse(stammDaten);
-  const hasError = parsedData.stammdatenantwort.fehlerliste._attributes.fehleranzahl !== '0';
+  const hasError = parsedData.stammdatenantwort?.fehlerliste?._attributes?.fehleranzahl !== '0';
 
-  if (hasError) {
-    return json(parsedData, { status: 200 });
+  if (hasError || parsedData?.FehlerAntwort) {
+    return json({
+      error: parsedData?.FehlerAntwort || parsedData?.stammdatenantwort,
+      status: 400,
+    });
   }
 
   return json({
-    success: true,
     status: 200,
   });
 };
 
+type ErrorResponse = {
+  datenfeld: { _text: string };
+  fehlernummer: { _text: string };
+  fehlertext: { _text: string };
+  massnahme: { _text: string };
+};
+
 export default function StudentStammdatenRoute() {
   const params = useParams();
-
-  // TODO -> handle errors on this screen
   const actionData = useActionData();
+  const transition = useTransition();
   const data = useMatches().find((m) => m.pathname === `/admin/${params.studentId}`)?.data;
 
   useEffect(() => {
-    if (actionData?.success) {
+    if (actionData?.status === 200) {
       toast.success('Successfully saved Stammdaten to BRZ', toastConfig);
     }
+    if (actionData?.status === 400) {
+      toast.error('Error while saving Stammdaten to BRZ, please see errors above', toastConfig);
+    }
   }, [actionData]);
+
+  function renderError(data: any) {
+    if (Array.isArray(data?.fehlerliste?.fehler)) {
+      return data.fehlerliste.fehler.map((el: ErrorResponse) => {
+        return (
+          <>
+            <div className=" text-sm mb-4">
+              <p className="font-bold text-red-600">
+                Fehler: {el.fehlernummer._text} in {el.datenfeld._text}
+              </p>
+              <p>Fehler: {el.fehlertext._text}</p>
+            </div>
+          </>
+        );
+      });
+    }
+    return (
+      <>
+        <div className=" text-sm mb-4">
+          <p className="font-bold text-red-600">Fehler: {data?.fehlerliste.fehler.fehlernummer._text}</p>
+          <p>Fehler: {data?.fehlerliste.fehler.fehlertext._text}</p>
+        </div>
+      </>
+    );
+  }
 
   return (
     <div className="w-full my-12">
       <section className="border-slate-200 ">
         <h2 className="text-xl text-slate-600 mb-2 ml-2">Stammdaten Melden</h2>
-
+        {actionData?.error && <p className="text-red-500 text-sm">{renderError(actionData.error)}</p>}
         <Form method="post" className="bg-white shadow overflow-hidden rounded-lg p-4 ">
           <h3 className="text-xl font-bold  text-slate-600 my-4">Basisdaten</h3>
           <div className="grid grid-cols-3 gap-4 gap-y-1">
@@ -99,17 +135,17 @@ export default function StudentStammdatenRoute() {
               <select className="dropDown" name="semester" defaultValue={getCurrentSemester()}>
                 {getSemesterSelection().map((el, key) => {
                   return (
-                    <div key={key}>
+                    <Fragment key={key}>
                       <option value={`${el}S`} key={`${el}S`}>{`${el}S`}</option>
                       <option value={`${el}W`} key={`${el}W`}>{`${el}W`}</option>
-                    </div>
+                    </Fragment>
                   );
                 })}
               </select>
             </div>
-            <div key="semster">
+            <div key="anrede">
               <label htmlFor="anrede" className="block text-sm font-medium text-slate-600">
-                Semester
+                Anrede
               </label>
               <select key="anrede" className="dropDown" name="anrede" defaultValue={data?.anrede === 1 ? 'M' : 'W'}>
                 <option value="M" key="anrede-M">
@@ -245,49 +281,10 @@ export default function StudentStammdatenRoute() {
           </div>
 
           <button type="submit" className="submitBtn mt-6">
-            Stammdaten melden
+            {transition.state === 'submitting' ? 'Stammdaten werden gemeldet...' : 'Stammdaten melden'}
           </button>
         </Form>
       </section>
     </div>
   );
-}
-export function CatchBoundary() {
-  const caught = useCatch();
-
-  const parseData = JSON.parse(caught.data);
-
-  type ErrorResponse = {
-    datenfeld: { _text: string };
-    fehlernummer: { _text: string };
-    fehlertext: { _text: string };
-    massnahme: { _text: string };
-  };
-
-  function renderError(data: any) {
-    if (Array.isArray(data?.fehlerliste?.fehler)) {
-      console.log(data?.fehlerliste?.fehler);
-      return data.fehlerliste.fehler.map((el: ErrorResponse) => {
-        return (
-          <>
-            <div className=" text-sm mb-4">
-              <p className="font-bold text-red-600">
-                Fehler: {el.fehlernummer._text} in {el.datenfeld._text}
-              </p>
-              <p>Fehler: {el.fehlertext._text}</p>
-            </div>
-          </>
-        );
-      });
-    }
-    return (
-      <>
-        <div className=" text-sm mb-4">
-          <p className="font-bold text-red-600">Fehler: {data?.fehlerliste.fehler.fehlernummer._text}</p>
-          <p>Fehler: {data?.fehlerliste.fehler.fehlertext._text}</p>
-        </div>
-      </>
-    );
-  }
-  return renderError(parseData.stammdatenantwort || parseData.FehlerAntwort);
 }

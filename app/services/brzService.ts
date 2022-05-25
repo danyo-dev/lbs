@@ -342,7 +342,5 @@ export async function postStammDaten(
   const XMLResponse = await response.text();
   const responseBody = handleXMLResponse(XMLResponse);
 
-  handleErrors(response, responseBody);
-
   return responseBody;
 }

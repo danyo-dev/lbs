@@ -1,32 +1,32 @@
-import { profil, pm_fields, bis_profile_property, profil_studium } from '@prisma/client';
+import { profil, pm_fields, bis_profile_property, profil_studium } from "@prisma/client";
 
-export type AC5_AdressFields = Pick<pm_fields, 'strasse' | 'plz' | 'ort' | 'land' | 'typ'>;
+export type AC5_AdressFields = Pick<pm_fields, "strasse" | "plz" | "ort" | "land" | "typ">;
 
-export type BRZ_AdressFields = Omit<AC5_AdressFields, 'land'> & { land: string };
+export type BRZ_AdressFields = Omit<AC5_AdressFields, "land"> & { land: string };
 
 export type BisProfileProperties = Pick<
   bis_profile_property,
-  'matriculation_number' | 'sector_specific_pin' | 'social_insurance_number' | 'replacement_label'
+  "matriculation_number" | "sector_specific_pin" | "social_insurance_number" | "replacement_label"
 >;
 
-export type StudentProfileList = Pick<profil, 'id' | 'titel' | 'vorname' | 'name' | 'email'>;
+export type StudentProfileList = Pick<profil, "id" | "titel" | "vorname" | "name" | "email">;
 
 export type AC5_StammDatenProfile = Pick<
   profil,
-  | 'id'
-  | 'vorname'
-  | 'middlename'
-  | 'name'
-  | 'geb'
-  | 'email'
-  | 'staatsangehoerigkeit'
-  | 'anrede'
-  | 'titel'
-  | 'title_postposed'
+  | "id"
+  | "vorname"
+  | "middlename"
+  | "name"
+  | "geb"
+  | "email"
+  | "staatsangehoerigkeit"
+  | "anrede"
+  | "titel"
+  | "title_postposed"
 >;
 
 export type BRZ_StammDatenProfile =
-  | (Omit<AC5_StammDatenProfile, 'staatsangehoerigkeit' | 'id'> & {
+  | (Omit<AC5_StammDatenProfile, "staatsangehoerigkeit" | "id"> & {
       staatsangehoerigkeit?: string | undefined | null;
       id?: number;
       addresses: BRZ_AdressFields[] | undefined;
@@ -41,10 +41,10 @@ export type BRZ_StammDatenProfile =
     })
   | undefined;
 
-export type BRZ_FlattendedStammDatenProfile = Omit<
-  BRZ_StammDatenProfile,
-  'addresses' | 'bpk' | 'svnr' | 'perskz' | 'ekz' | 'titel' | 'title_postposed' | 'geb' | 'name'
-> & {
+export type BRZ_FlattendedStammDatenProfile = {
+  email: string;
+  matrikelnummer: string;
+  semester: string;
   homeStrasse: string;
   homePlz: string;
   homeOrt: string;
@@ -63,9 +63,12 @@ export type BRZ_FlattendedStammDatenProfile = Omit<
   perskz?: string;
   geburtsdatum: string;
   nachname: string;
+  vorname: string;
+  staatsangehoerigkeit: string;
+  anrede: string;
 };
 
-export type BRZ_MatrikelRequest = Pick<AC5_StammDatenProfile, 'vorname' | 'name' | 'geb'>;
+export type BRZ_MatrikelRequest = Pick<AC5_StammDatenProfile, "vorname" | "name" | "geb">;
 
 export interface BRZ_MatrikelStudent {
   matrikelStudentData?: BRZ_MatrikelStudentData;

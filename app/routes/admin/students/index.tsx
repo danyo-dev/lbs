@@ -1,28 +1,24 @@
-import { useState } from "react"
-import { useMatches } from "remix"
-import PendingLink from "~/components/PendingLink"
-import SearchBar from "~/components/SearchBar"
-import { StudentProfileList } from "~/types/StudentTypes"
+import { useState } from "react";
+import { useMatches } from "remix";
+import PendingLink from "~/components/PendingLink";
+import SearchBar from "~/components/SearchBar";
+import { StudentProfileList } from "~/types/StudentTypes";
 
 export default function StudentsIndex() {
-  const studentProfiles = useMatches().find(
-    (m) => m.pathname === "/admin/students"
-  )?.data
-  const [filterBy, setFilterBy] = useState("")
+  const studentProfiles = useMatches().find((m) => m.pathname === "/admin/students")?.data;
+  const [filterBy, setFilterBy] = useState("");
 
   // only filter when filterBy is set
   const students: StudentProfileList[] = filterBy
     ? studentProfiles?.filter(({ vorname, name, email }: StudentProfileList) =>
         // other search options can be added here
-        [vorname, name, email].some((entry) =>
-          entry?.toLowerCase().includes(filterBy.toLowerCase())
-        )
+        [vorname, name, email].some((entry) => entry?.toLowerCase().includes(filterBy.toLowerCase()))
       )
-    : studentProfiles
+    : studentProfiles;
 
   return (
     <>
-      <h1 className="text-2xl font-extrabold text-slate-900 mb-6">Students</h1>
+      <h1 className="text-2xl font-extrabold text-slate-900 mb-6">{students?.length} Students</h1>
       <SearchBar setFilterBy={setFilterBy} />
 
       <div className="align-middle">
@@ -36,14 +32,9 @@ export default function StudentsIndex() {
                 <th scope="col" className="tableHeader">
                   Name
                 </th>
-                <th scope="col" className="tableHeader">
-                  eMail
-                </th>
+
                 <th scope="col" className="tableHeader">
                   Semester
-                </th>
-                <th scope="col" className="tableHeader">
-                  Payment Status
                 </th>
                 <th scope="col" className="relative px-6 py-3">
                   <span className="sr-only">Edit</span>
@@ -64,14 +55,7 @@ export default function StudentsIndex() {
                   <td className="tableCell">
                     <p className="text-sm text-slate-500">{student.email}</p>
                   </td>
-                  <td className="tableCell">
-                    <p className="text-sm text-slate-500 text-center">-</p>
-                  </td>
-                  <td className="tableCell">
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                      Active
-                    </span>
-                  </td>
+
                   <td className="tableCell text-right text-sm font-medium">
                     <PendingLink
                       to={`/admin/${student.id}/matrikeldaten`}
@@ -91,5 +75,5 @@ export default function StudentsIndex() {
         </div>
       </div>
     </>
-  )
+  );
 }
