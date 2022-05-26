@@ -74,7 +74,7 @@ type ErrorResponseItem = {
 };
 type ErrorResponse = {
   fehlerliste: {
-    fehler: ErrorResponseItem[];
+    fehler: ErrorResponseItem[] | ErrorResponseItem;
   };
 };
 
