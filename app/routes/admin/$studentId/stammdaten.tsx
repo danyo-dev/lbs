@@ -66,11 +66,16 @@ export const action: ActionFunction = async ({ request }) => {
   });
 };
 
-type ErrorResponse = {
+type ErrorResponseItem = {
   datenfeld: { _text: string };
   fehlernummer: { _text: string };
   fehlertext: { _text: string };
   massnahme: { _text: string };
+};
+type ErrorResponse = {
+  fehlerliste: {
+    fehler: ErrorResponseItem[];
+  };
 };
 
 export default function StudentStammdatenRoute() {
@@ -88,9 +93,12 @@ export default function StudentStammdatenRoute() {
     }
   }, [actionData]);
 
-  function renderError(data: any) {
-    if (Array.isArray(data?.fehlerliste?.fehler)) {
-      return data.fehlerliste.fehler.map((el: ErrorResponse) => {
+  function renderError(data: ErrorResponse) {
+    if (!data) {
+      return;
+    }
+    if (Array.isArray(data.fehlerliste.fehler)) {
+      return data.fehlerliste.fehler.map((el: ErrorResponseItem) => {
         return (
           <>
             <div className=" text-sm mb-4">
@@ -107,7 +115,7 @@ export default function StudentStammdatenRoute() {
       <>
         <div className=" text-sm mb-4">
           <p className="font-bold text-red-600">Fehler: {data?.fehlerliste.fehler.fehlernummer._text}</p>
-          <p>Fehler: {data?.fehlerliste.fehler.fehlertext._text}</p>
+          <p>Fehler: {data.fehlerliste.fehler.fehlertext._text}</p>
         </div>
       </>
     );
