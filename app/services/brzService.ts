@@ -70,7 +70,7 @@ async function authenticate(request: Request): Promise<Session> {
     method: 'post',
     headers,
   });
-  console.log(response);
+
   handleErrors(response);
 
   const responseData = await response.json();

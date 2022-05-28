@@ -23,7 +23,6 @@ export const loader: LoaderFunction = async ({ params }) => {
   // fetch dueDate, financials
   const valutaDatum: AC5_Financials | undefined | null = await getFinancials(params.studentId);
 
-  console.log(valutaDatum);
   const studentProfileData = await getProfile(params.studentId);
 
   if (!studentProfileData) {
