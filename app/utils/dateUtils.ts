@@ -15,3 +15,13 @@ export function formatBirthdates(timeDate: Date | null | undefined): string | nu
   }
   return new Date(timeDate).toISOString().slice(0, 10);
 }
+
+export function addDays(date: string | undefined, days: number): string | null {
+  if (!date) {
+    return null;
+  }
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + days);
+
+  return newDate.toISOString();
+}

@@ -1,8 +1,8 @@
 interface Props {
-  label: string;
+  label?: string;
   name: string;
   value?: string | number;
-  inputType?: 'text' | 'number' | 'email' | 'date';
+  inputType?: 'text' | 'number' | 'email' | 'date' | 'hidden';
   className?: string;
   required?: boolean;
 }
@@ -17,7 +17,7 @@ export function InputField({
 }: Props) {
   return (
     <label htmlFor={label} className="block text-sm font-medium text-slate-600 capitalize mb-2">
-      {`${label}${required ? '*' : ''}`}
+      {label && `${label}${required ? '*' : ''}`}
       <input type={inputType} name={name} id={name} defaultValue={value} className={className} required={required} />
     </label>
   );

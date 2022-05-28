@@ -2,8 +2,15 @@ import { ArrowLeftIcon } from '@heroicons/react/outline';
 import { json, Link, LoaderFunction, NavLink, Outlet, useCatch } from 'remix';
 import { studentDetailRoutes } from '~/config/routes';
 
-import { getAddresses, getBisProfileProperties, getProfile, getCountries, getMnr } from '~/services/db.server';
-import { BRZ_StammDatenProfile, BisProfileProperties } from '~/types/StudentTypes';
+import {
+  getAddresses,
+  getBisProfileProperties,
+  getProfile,
+  getCountries,
+  getMnr,
+  getFinancials,
+} from '~/services/db.server';
+import { BRZ_StammDatenProfile, BisProfileProperties, AC5_Financials } from '~/types/StudentTypes';
 
 export const loader: LoaderFunction = async ({ params }) => {
   if (!params.studentId) {
@@ -13,6 +20,10 @@ export const loader: LoaderFunction = async ({ params }) => {
   // fetch matrikel number, bpk, svnr, ekz
   const bisProfileProperties: BisProfileProperties | undefined | null = await getBisProfileProperties(params.studentId);
 
+  // fetch dueDate, financials
+  const valutaDatum: AC5_Financials | undefined | null = await getFinancials(params.studentId);
+
+  console.log(valutaDatum);
   const studentProfileData = await getProfile(params.studentId);
 
   if (!studentProfileData) {
@@ -61,6 +72,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     addresses: mappedAdressesWithBisCode,
     ekz: bisProfileProperties?.replacement_label,
     perskz: mnr?.[0]?.mnr,
+    valutadatum: valutaDatum?.due_date,
   };
 
   return json(fullStudentProfile);

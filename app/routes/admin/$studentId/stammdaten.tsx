@@ -2,16 +2,27 @@ import { useEffect, Fragment } from 'react';
 import { ActionFunction, Form, json, useTransition, useMatches, useParams, useActionData } from 'remix';
 import { BRZ_FlattendedStammDatenProfile } from '~/types/StudentTypes';
 import { InputField } from '~/components/InputField';
-import { formatBirthdates, getCurrentSemester, getSemesterSelection } from '~/utils/dateUtils';
+import { formatBirthdates, getCurrentSemester, getSemesterSelection, addDays } from '~/utils/dateUtils';
 import { brzAuthenticationHandler, postStammDaten } from '~/services/brzService';
 import { requireAuthentication } from '~/services/auth.server';
 import { toast } from 'react-toastify';
 import { toastConfig } from '~/config/settings';
 
+type ErrorResponseItem = {
+  datenfeld: { _text: string };
+  fehlernummer: { _text: string };
+  fehlertext: { _text: string };
+  massnahme: { _text: string };
+};
+type ErrorResponse = {
+  fehlerliste: {
+    fehler: ErrorResponseItem[] | ErrorResponseItem;
+  };
+};
 export const action: ActionFunction = async ({ request }) => {
   await requireAuthentication(request);
 
-  const brzSession = await brzAuthenticationHandler(request);
+  const session = await brzAuthenticationHandler(request);
   const formData = await request.formData();
 
   const formDataToObjectMapping = [
@@ -39,19 +50,21 @@ export const action: ActionFunction = async ({ request }) => {
     'bpk',
     'ekz',
     'perskz',
+    'valutadatum',
+    'valutadatumnachfrist',
   ].reduce((total, curr) => {
     return { ...total, [curr]: formData.get(curr) };
   }, {});
 
-  const stammDaten = await postStammDaten(brzSession, formDataToObjectMapping as BRZ_FlattendedStammDatenProfile);
+  const data = await postStammDaten(session, formDataToObjectMapping as BRZ_FlattendedStammDatenProfile);
 
-  if (!stammDaten) {
+  if (!data) {
     throw new Response('this should not be possible', { status: 500 });
   }
 
   // the server can respond with 200 but still return an error,
   // if array is empty it is valid
-  const parsedData = JSON.parse(stammDaten);
+  const parsedData = JSON.parse(data);
   const hasError = parsedData.stammdatenantwort?.fehlerliste?._attributes?.fehleranzahl !== '0';
 
   if (hasError || parsedData?.FehlerAntwort) {
@@ -64,18 +77,6 @@ export const action: ActionFunction = async ({ request }) => {
   return json({
     status: 200,
   });
-};
-
-type ErrorResponseItem = {
-  datenfeld: { _text: string };
-  fehlernummer: { _text: string };
-  fehlertext: { _text: string };
-  massnahme: { _text: string };
-};
-type ErrorResponse = {
-  fehlerliste: {
-    fehler: ErrorResponseItem[] | ErrorResponseItem;
-  };
 };
 
 export default function StudentStammdatenRoute() {
@@ -267,6 +268,7 @@ export default function StudentStammdatenRoute() {
                 value={data?.addresses?.[1]?.land || ''}
                 required
               />
+
               <div>
                 <label htmlFor="semesterTyp" className="block text-sm font-medium text-slate-600">
                   Typ
@@ -287,7 +289,13 @@ export default function StudentStammdatenRoute() {
               </div>
             </div>
           </div>
-
+          <InputField key="valutadatum" inputType="hidden" name="valutadatum" value={data?.valutadatum || ''} />
+          <InputField
+            key="valutadatumnachfrist"
+            inputType="hidden"
+            name="valutadatumnachfrist"
+            value={addDays(data?.valutadatum, 90) || ''}
+          />
           <button type="submit" className="submitBtn mt-6">
             {transition.state === 'submitting' ? 'Stammdaten werden gemeldet...' : 'Stammdaten melden'}
           </button>

@@ -2,7 +2,7 @@ import { v4 } from 'uuid';
 import { getSession } from './session.server';
 import converter from 'xml-js';
 import { Session } from 'remix';
-import { BRZ_FlattendedStammDatenProfile } from '~/types/StudentTypes';
+import { BRZ_FlattendedStammDatenProfile, BRZ_FlattenedStudienDaten } from '~/types/StudentTypes';
 
 /**
  * Handle XML Response
@@ -233,10 +233,7 @@ export async function requestNewMatrikel(session: Session, year: FormDataEntryVa
  * @param session
  * @returns Promise
  */
-export async function postStammDaten(
-  session: Session,
-  stammDatenData: BRZ_FlattendedStammDatenProfile
-): Promise<string | void> {
+export async function postStammDaten(session: Session, data: BRZ_FlattendedStammDatenProfile): Promise<string | void> {
   const {
     matrikelnummer,
     semester,
@@ -262,11 +259,12 @@ export async function postStammDaten(
     bpk,
     ekz,
     perskz,
-  } = stammDatenData;
+    valutadatum,
+    valutadatumnachfrist,
+  } = data;
 
   const token = session.get('brz_auth').access_token;
   const uuid = v4();
-
   const headers = new Headers();
   headers.set('Authorization', `Bearer ${token}`);
   headers.set('Content-Type', 'application/xml');
@@ -325,13 +323,70 @@ export async function postStammDaten(
           <oehbeitrag>2070</oehbeitrag>
           <sonderbeitrag>0</sonderbeitrag>
           <studienbeitrag>0</studienbeitrag>
-          <valutadatum>2021-08-30</valutadatum>
+          <valutadatum>${valutadatum?.split('T')[0]}</valutadatum>
           <studienbeitragnachfrist>0</studienbeitragnachfrist>
-          <valutadatumnachfrist>2021-10-31</valutadatumnachfrist>
+          <valutadatumnachfrist>${valutadatumnachfrist?.split('T')[0]}</valutadatumnachfrist>
       </vorschreibung>
   </stammdatenanfrage>`;
 
   const requestURL = `${process.env.BRZ_POST_STAMMDATEN}`;
+
+  const response = await fetch(requestURL, {
+    method: 'post',
+    headers,
+    body: XMLdata,
+  });
+
+  const XMLResponse = await response.text();
+  const responseBody = handleXMLResponse(XMLResponse);
+
+  return responseBody;
+}
+
+/**
+ * Post Studiendaten
+ * https://stubei-q.portal.at/rws/0.6/studium.xml
+ * @param session
+ * @returns Promise
+ */
+export async function postStudienDaten(session: Session, data: BRZ_FlattenedStudienDaten): Promise<string | void> {
+  const token = session.get('brz_auth').access_token;
+  const uuid = v4();
+
+  const headers = new Headers();
+  headers.set('Authorization', `Bearer ${token}`);
+  headers.set('Content-Type', 'application/xml');
+
+  const { matrikelnummer, ausbildungssemester, semester, perskz } = data;
+
+  const XMLdata = `<?xml version="1.0" encoding="UTF-8"?>
+  <studienanfrage xmlns="http://www.brz.gv.at/datenverbund-unis">
+    <uuid>${uuid}</uuid>
+    <studierendenkey>
+      <matrikelnummer>${matrikelnummer}</matrikelnummer>
+      <be>FL</be>
+      <semester>${semester}</semester>
+    </studierendenkey>
+    <studien>
+      <studiengang disloziert='N'>
+        <ausbildungssemester>${ausbildungssemester}</ausbildungssemester>
+        <bmwfwfoerderrelevant>J</bmwfwfoerderrelevant>
+        <orgformcode>1</orgformcode>
+        <perskz>${perskz}</perskz>
+        <standortcode>22</standortcode>
+        <stgkz>022${perskz?.substring(3, 7)}</stgkz>
+        <studstatuscode>1</studstatuscode>
+        <zugangsberechtigung>
+          <datum>2020-06-30</datum>
+          <staat>D</staat>
+          <voraussetzung>05</voraussetzung>
+        </zugangsberechtigung>
+        <zulassungsdatum>2021-10-05</zulassungsdatum>
+      </studiengang>
+    </studien>
+  </studienanfrage>`;
+
+  const requestURL = `${process.env.BRZ_POST_STUDIENDATEN}`;
 
   const response = await fetch(requestURL, {
     method: 'post',

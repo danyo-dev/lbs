@@ -1,9 +1,9 @@
-import { PrismaClient } from "@prisma/client";
-import { SSHConnection } from "node-ssh-forward";
-import { handleCache } from "~/utils/cacheUtils";
-require("~/patches/patches.js");
+import { PrismaClient } from '@prisma/client';
+import { SSHConnection } from 'node-ssh-forward';
+import { handleCache } from '~/utils/cacheUtils';
+require('~/patches/patches.js');
 // useing require here because TS yells when importing and no Types are defined
-const portUsed = require("port-used");
+const portUsed = require('port-used');
 
 let db: PrismaClient;
 
@@ -14,7 +14,7 @@ declare global {
 // this is needed because in development we don't want to restart
 // the server with every change, but we want to make sure we don't
 // create a new connection to the DB with every change either.
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === 'production') {
   db = new PrismaClient();
 } else {
   if (!global.__db) {
@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === "production") {
 const sshConfig = {
   endHost: process.env.AC5_SSH_HOST as string,
   username: process.env.AC5_SSH_USER as string,
-  privateKey: process.env.AC5_SSH_KEY ? Buffer.from(process.env.AC5_SSH_KEY, "base64").toString("utf-8") : undefined,
+  privateKey: process.env.AC5_SSH_KEY ? Buffer.from(process.env.AC5_SSH_KEY, 'base64').toString('utf-8') : undefined,
   passphrase: process.env.AC5_SSH_PASSPHRASE as string,
 };
 
@@ -46,13 +46,13 @@ export async function connectDB<DBQueryFn extends (...args: any) => any>(
   dbQueryFn: DBQueryFn
 ): Promise<ReturnType<DBQueryFn>> {
   // check if port is in use
-  const tunnelOpen = await portUsed.check(3306, "127.0.0.1");
+  const tunnelOpen = await portUsed.check(3306, '127.0.0.1');
   const sshConnection = new SSHConnection(sshConfig);
 
   // only run forwarding when port is not used
   if (!tunnelOpen) {
     await sshConnection.forward(forwardConfig).catch((err) => {
-      console.log("SSH Connection error", err);
+      console.log('SSH Connection error', err);
     });
   }
 
@@ -149,7 +149,7 @@ function queryMnr(id: number) {
     where: {
       pid: id,
       NOT: {
-        mnr: "",
+        mnr: '',
       },
     },
     select: {
@@ -158,9 +158,27 @@ function queryMnr(id: number) {
   });
 }
 
+function queryFinancials(id: number) {
+  return db.financial_invoice.findFirst({
+    where: {
+      profile_id: id,
+    },
+    select: {
+      due_date: true,
+    },
+  });
+}
+
 export async function getMnr(profileId: string) {
   try {
     return await connectDB(() => queryMnr(parseInt(profileId)));
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function getFinancials(profileId: string) {
+  try {
+    return await connectDB(() => queryFinancials(parseInt(profileId)));
   } catch (error) {
     console.log(error);
   }
@@ -201,7 +219,7 @@ export async function getProfile(profileId: string) {
 }
 
 export async function getProfiles(profiles: { id: bigint }[]) {
-  return handleCache("students", async () => {
+  return handleCache('students', async () => {
     try {
       return await connectDB(() => queryStudentProfiles(profiles));
     } catch (error) {
@@ -211,7 +229,7 @@ export async function getProfiles(profiles: { id: bigint }[]) {
 }
 
 export async function getRelevantProfiles() {
-  return handleCache("studentRelevantProfiles", async () => {
+  return handleCache('studentRelevantProfiles', async () => {
     try {
       return await connectDB(queryRelevantStudents);
     } catch (error) {
