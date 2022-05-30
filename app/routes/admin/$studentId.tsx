@@ -8,42 +8,45 @@ import {
   getProfile,
   getCountries,
   getMnr,
-  getFinancials,
+  getFinancialDueDate,
+  getFinancialProfile,
 } from '~/services/db.server';
-import { BRZ_StammDatenProfile, BisProfileProperties, AC5_Financials } from '~/types/StudentTypes';
+import { CompleteStudentProfile } from '~/types/StudentTypes';
 
 export const loader: LoaderFunction = async ({ params }) => {
   if (!params.studentId) {
     throw new Response('no student ID has been set');
   }
 
-  // fetch matrikel number, bpk, svnr, ekz
-  const bisProfileProperties: BisProfileProperties | undefined | null = await getBisProfileProperties(params.studentId);
-
-  // fetch dueDate, financials
-  const valutaDatum: AC5_Financials | undefined | null = await getFinancials(params.studentId);
-
   const studentProfileData = await getProfile(params.studentId);
-
   if (!studentProfileData) {
     throw new Response(`No profile found with ID Nr: ${params.studentId}`, {
       status: 404,
     });
   }
 
-  // fetches Address data from AC5_DB
+  // fetch matrikel number, bpk, svnr, ekz
+  const bisProfileProperties = await getBisProfileProperties(params.studentId);
+
+  // fetch student Financial profile
+  const financialProfile = await getFinancialProfile(params.studentId);
+
+  // fetch dueDate, financials
+  const dueDate = await getFinancialDueDate(params.studentId);
+
+  // fetch Address data from AC5_DB
   const addresses = await getAddresses(params.studentId);
+
+  // fetch MNR number
+  const mnr = await getMnr(params.studentId);
 
   // Every profile needs two addresses , so if only one is in the database a second one is created with the first address
   const countryId_1 = Number(addresses?.[0]?.land);
   const countryId_2 = addresses?.[1]?.land ? Number(addresses?.[1]?.land) : Number(addresses?.[0]?.land);
   const citizenshipId = Number(studentProfileData?.staatsangehoerigkeit);
 
-  // Fetches the country data from AC5_DB with bis_code
+  // fetch  country data  with bis_code
   const countryData = await getCountries(countryId_1, countryId_2, citizenshipId);
-
-  // fetch MNR number from AC5_DB
-  const mnr = await getMnr(params.studentId);
 
   function getCountryBisCode(countryId: number) {
     return countryData?.find((country) => Number(country.id) === countryId)?.bis_code;
@@ -62,19 +65,22 @@ export const loader: LoaderFunction = async ({ params }) => {
     mappedAdressesWithBisCode.push(mappedAdressesWithBisCode[0]);
   }
 
-  const fullStudentProfile: BRZ_StammDatenProfile = {
-    ...studentProfileData,
-    matrikelnummer: bisProfileProperties?.matriculation_number || '',
-    bpk: bisProfileProperties?.sector_specific_pin,
-    svnr: bisProfileProperties?.social_insurance_number,
-    staatsangehoerigkeit: getCountryBisCode(Number(citizenshipId)),
-    addresses: mappedAdressesWithBisCode,
-    ekz: bisProfileProperties?.replacement_label,
-    perskz: mnr?.[0]?.mnr,
-    valutadatum: valutaDatum?.due_date,
+  const completeStudentProfile: CompleteStudentProfile = {
+    stammDaten: {
+      ...studentProfileData,
+      matrikelnummer: bisProfileProperties?.matriculation_number || '',
+      bpk: bisProfileProperties?.sector_specific_pin,
+      svnr: bisProfileProperties?.social_insurance_number,
+      staatsangehoerigkeit: getCountryBisCode(Number(citizenshipId)),
+      addresses: mappedAdressesWithBisCode,
+      ekz: bisProfileProperties?.replacement_label,
+      perskz: mnr?.[0]?.mnr,
+      valutadatum: dueDate?.due_date,
+    },
+    financialData: [...(financialProfile || [])],
   };
 
-  return json(fullStudentProfile);
+  return json(completeStudentProfile);
 };
 
 export default function EditStudent() {

@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { SSHConnection } from 'node-ssh-forward';
 import { handleCache } from '~/utils/cacheUtils';
+import { currentYear } from '~/utils/dateUtils';
 require('~/patches/patches.js');
 // useing require here because TS yells when importing and no Types are defined
 const portUsed = require('port-used');
@@ -158,13 +159,27 @@ function queryMnr(id: number) {
   });
 }
 
-function queryFinancials(id: number) {
+function queryFinancialDueDate(id: number) {
   return db.financial_invoice.findFirst({
+    where: { AND: [{ profile_id: id }, { year: currentYear }] },
+    select: {
+      due_date: true,
+    },
+  });
+}
+
+function queryFinancialInfo(id: number) {
+  return db.financial_invoice.findMany({
     where: {
       profile_id: id,
     },
     select: {
+      amount: true,
+      invoice_date: true,
+      invoice_number: true,
       due_date: true,
+      year: true,
+      term: true,
     },
   });
 }
@@ -176,9 +191,16 @@ export async function getMnr(profileId: string) {
     console.log(error);
   }
 }
-export async function getFinancials(profileId: string) {
+export async function getFinancialDueDate(profileId: string) {
   try {
-    return await connectDB(() => queryFinancials(parseInt(profileId)));
+    return await connectDB(() => queryFinancialDueDate(parseInt(profileId)));
+  } catch (error) {
+    console.log(error);
+  }
+}
+export async function getFinancialProfile(profileId: string) {
+  try {
+    return await connectDB(() => queryFinancialInfo(parseInt(profileId)));
   } catch (error) {
     console.log(error);
   }

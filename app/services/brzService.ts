@@ -163,6 +163,9 @@ export async function requestBrzMatrikelNumber(session: Session, queryString: st
 
   handleErrors(response, responseBody);
 
+  console.log(session.has('matrikel'));
+  session.set('matrikel', 'asdasdas');
+
   return responseBody;
 }
 
@@ -385,6 +388,49 @@ export async function postStudienDaten(session: Session, data: BRZ_FlattenedStud
       </studiengang>
     </studien>
   </studienanfrage>`;
+
+  const requestURL = `${process.env.BRZ_POST_STUDIENDATEN}`;
+
+  const response = await fetch(requestURL, {
+    method: 'post',
+    headers,
+    body: XMLdata,
+  });
+
+  const XMLResponse = await response.text();
+  const responseBody = handleXMLResponse(XMLResponse);
+
+  return responseBody;
+}
+/**
+ * Post Zahlungsdaten
+ * https://stubei-q.portal.at/rws/0.6/zahlung.xml
+ * @param session
+ * @returns Promise
+ */
+export async function postZahlungsDaten(session: Session, data: any): Promise<string | void> {
+  const token = session.get('brz_auth').access_token;
+  const uuid = v4();
+
+  const headers = new Headers();
+  headers.set('Authorization', `Bearer ${token}`);
+  headers.set('Content-Type', 'application/xml');
+
+  const { matrikelnummer, semester } = data;
+
+  const XMLdata = `<?xml version="1.0" encoding="UTF-8"?>
+  <zahlungsanfrage xmlns="http://www.brz.gv.at/datenverbund-unis">
+          <uuid>${uuid}</uuid>
+          <studierendenkey>
+                  <matrikelnummer>${matrikelnummer}</matrikelnummer>
+                  <be>FL</be>
+                  <semester>${semester}</semester>
+          </studierendenkey>
+          <zahlungsart>1</zahlungsart>
+          <betrag>2070</betrag>
+          <buchungsdatum>2021-09-01</buchungsdatum>
+          <referenznummer>-2021-900973</referenznummer>
+  </zahlungsanfrage>`;
 
   const requestURL = `${process.env.BRZ_POST_STUDIENDATEN}`;
 

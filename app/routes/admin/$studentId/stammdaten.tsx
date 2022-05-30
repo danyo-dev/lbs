@@ -85,6 +85,8 @@ export default function StudentStammdatenRoute() {
   const transition = useTransition();
   const data = useMatches().find((m) => m.pathname === `/admin/${params.studentId}`)?.data;
 
+  const { stammDaten } = data ?? {};
+
   useEffect(() => {
     if (actionData?.status === 200) {
       toast.success('Successfully saved Stammdaten to BRZ', toastConfig);
@@ -134,7 +136,7 @@ export default function StudentStammdatenRoute() {
               key="matrikel"
               label="matrikelnummer"
               name="matrikelnummer"
-              value={data?.matrikelnummer || ''}
+              value={stammDaten?.matrikelnummer || ''}
               required
             />
             <div key="semester">
@@ -156,7 +158,12 @@ export default function StudentStammdatenRoute() {
               <label htmlFor="anrede" className="block text-sm font-medium text-slate-600">
                 Anrede
               </label>
-              <select key="anrede" className="dropDown" name="anrede" defaultValue={data?.anrede === 1 ? 'M' : 'W'}>
+              <select
+                key="anrede"
+                className="dropDown"
+                name="anrede"
+                defaultValue={stammDaten?.anrede === 1 ? 'M' : 'W'}
+              >
                 <option value="M" key="anrede-M">
                   M
                 </option>
@@ -166,57 +173,69 @@ export default function StudentStammdatenRoute() {
               </select>
             </div>
 
-            <InputField key="titel" name="akadgrad" label="titel" value={data?.titel || ''} />
+            <InputField key="titel" name="akadgrad" label="titel" value={stammDaten?.titel || ''} />
             <InputField
               key="title-postposed"
               name="akadnach"
               label="Titel Postposed"
-              value={data?.title_postposed || ''}
+              value={stammDaten?.title_postposed || ''}
             />
-            <InputField key="vorname" label="vorname" name="vorname" value={data?.vorname || ''} required />
+            <InputField key="vorname" label="vorname" name="vorname" value={stammDaten?.vorname || ''} required />
             <InputField
               key="nachname"
               label="nachname"
               name="nachname"
-              value={`${data?.name} ${data?.middlename}` || ''}
+              value={`${stammDaten?.name} ${stammDaten?.middlename}` || ''}
               required
             />
             <InputField
               key="birthdate"
               label="geburtsdatum"
               name="geburtsdatum"
-              value={formatBirthdates(data?.geb) || ''}
+              value={formatBirthdates(stammDaten?.geb) || ''}
               inputType="date"
               required
             />
-            <InputField key="email" label="email" name="email" value={data?.email || ''} required />
+            <InputField key="email" label="email" name="email" value={stammDaten?.email || ''} required />
             <InputField
               key="staatsangehoerigkeit"
               label="staatsangehoerigkeit"
               name="staatsangehoerigkeit"
-              value={data?.staatsangehoerigkeit || ''}
+              value={stammDaten?.staatsangehoerigkeit || ''}
               required
             />
-            <InputField key="bpk" name="bpk" label="bpk" value={data?.bpk || ''} />
-            <InputField key="perskz" name="perskz" label="perskz" value={data?.perskz || ''} />
-            <InputField key="svnr" name="svnr" label="svnr" value={data?.svnr || ''} />
-            <InputField key="ekz" name="ekz" label="ekz" value={data?.ekz || ''} />
+            <InputField key="bpk" name="bpk" label="bpk" value={stammDaten?.bpk || ''} />
+            <InputField key="perskz" name="perskz" label="perskz" value={stammDaten?.perskz || ''} />
+            <InputField key="svnr" name="svnr" label="svnr" value={stammDaten?.svnr || ''} />
+            <InputField key="ekz" name="ekz" label="ekz" value={stammDaten?.ekz || ''} />
             <div key="home-address" className="col-span-3 grid grid-cols-3 gap-4 gap-y-1">
               <h3 className="text-xl font-bold text-slate-600 my-4 col-span-3">Heim Adresse</h3>
               <InputField
                 key="home-strasse"
                 name="homeStrasse"
                 label="strasse"
-                value={data?.addresses?.[0]?.strasse || ''}
+                value={stammDaten?.addresses?.[0]?.strasse || ''}
                 required
               />
-              <InputField key="home-plz" label="plz" name="homePlz" value={data?.addresses?.[0]?.plz || ''} required />
-              <InputField key="home-ort" label="ort" name="homeOrt" value={data?.addresses?.[0]?.ort || ''} required />
+              <InputField
+                key="home-plz"
+                label="plz"
+                name="homePlz"
+                value={stammDaten?.addresses?.[0]?.plz || ''}
+                required
+              />
+              <InputField
+                key="home-ort"
+                label="ort"
+                name="homeOrt"
+                value={stammDaten?.addresses?.[0]?.ort || ''}
+                required
+              />
               <InputField
                 key="home-land"
                 label="land"
                 name="homeLand"
-                value={data?.addresses?.[0]?.land || ''}
+                value={stammDaten?.addresses?.[0]?.land || ''}
                 required
               />
               <div key="typ">
@@ -227,7 +246,7 @@ export default function StudentStammdatenRoute() {
                   key="home-address-type"
                   className="dropDown"
                   name="homeTyp"
-                  defaultValue={data?.addresses?.[0]?.typ === 1 ? 'S' : 'H'}
+                  defaultValue={stammDaten?.addresses?.[0]?.typ === 1 ? 'S' : 'H'}
                 >
                   <option value="S" key="typ-s">
                     S
@@ -244,28 +263,28 @@ export default function StudentStammdatenRoute() {
                 key="semester-strasse"
                 label="strasse"
                 name="semesterStrasse"
-                value={data?.addresses?.[1]?.strasse || ''}
+                value={stammDaten?.addresses?.[1]?.strasse || ''}
                 required
               />
               <InputField
                 key="semester-plz"
                 name="semesterPlz"
                 label="plz"
-                value={data?.addresses?.[1]?.plz || ''}
+                value={stammDaten?.addresses?.[1]?.plz || ''}
                 required
               />
               <InputField
                 key="semester-ort"
                 name="semesterOrt"
                 label="ort"
-                value={data?.addresses?.[1]?.ort || ''}
+                value={stammDaten?.addresses?.[1]?.ort || ''}
                 required
               />
               <InputField
                 key="semester-land"
                 label="land"
                 name="semesterLand"
-                value={data?.addresses?.[1]?.land || ''}
+                value={stammDaten?.addresses?.[1]?.land || ''}
                 required
               />
 
@@ -277,7 +296,7 @@ export default function StudentStammdatenRoute() {
                   key="semester-address-type"
                   className="dropDown"
                   name="semesterTyp"
-                  defaultValue={data?.addresses?.[1]?.typ === 1 ? 'S' : 'H'}
+                  defaultValue={stammDaten?.addresses?.[1]?.typ === 1 ? 'S' : 'H'}
                 >
                   <option value="S" key="typ-s">
                     S
@@ -289,12 +308,12 @@ export default function StudentStammdatenRoute() {
               </div>
             </div>
           </div>
-          <InputField key="valutadatum" inputType="hidden" name="valutadatum" value={data?.valutadatum || ''} />
+          <InputField key="valutadatum" inputType="hidden" name="valutadatum" value={stammDaten?.valutadatum || ''} />
           <InputField
             key="valutadatumnachfrist"
             inputType="hidden"
             name="valutadatumnachfrist"
-            value={addDays(data?.valutadatum, 90) || ''}
+            value={addDays(stammDaten?.valutadatum, 90) || ''}
           />
           <button type="submit" className="submitBtn mt-6">
             {transition.state === 'submitting' ? 'Stammdaten werden gemeldet...' : 'Stammdaten melden'}

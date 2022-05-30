@@ -1,10 +1,10 @@
-import { profil, pm_fields, bis_profile_property } from '@prisma/client';
+import { profil, pm_fields, bis_profile_property, financial_invoice } from '@prisma/client';
 
 export type AC5_AdressFields = Pick<pm_fields, 'strasse' | 'plz' | 'ort' | 'land' | 'typ'>;
 
 export type BRZ_AdressFields = Omit<AC5_AdressFields, 'land'> & { land: string };
 
-export type BisProfileProperties = Pick<
+export type AC5_BisProfileProperties = Pick<
   bis_profile_property,
   'matriculation_number' | 'sector_specific_pin' | 'social_insurance_number' | 'replacement_label'
 >;
@@ -25,7 +25,12 @@ export type AC5_StammDatenProfile = Pick<
   | 'title_postposed'
 >;
 
-export type AC5_Financials = { due_date: Date | null };
+export type AC_5_FinancialProfile = Pick<
+  financial_invoice,
+  'amount' | 'invoice_date' | 'invoice_number' | 'due_date' | 'year' | 'term'
+>;
+
+export type CompleteStudentProfile = { stammDaten: BRZ_StammDatenProfile; financialData: AC_5_FinancialProfile[] };
 
 export type BRZ_StammDatenProfile =
   | (Omit<AC5_StammDatenProfile, 'staatsangehoerigkeit' | 'id'> & {
@@ -80,7 +85,7 @@ export type BRZ_FlattenedStudienDaten = {
   perskz: string;
 };
 
-export type BRZ_MatrikelRequest = Pick<AC5_StammDatenProfile, 'vorname' | 'name' | 'geb'>;
+export type BRZ_MatrikelRequest = { stammDaten: Pick<AC5_StammDatenProfile, 'vorname' | 'name' | 'geb'> };
 
 export interface BRZ_MatrikelStudent {
   matrikelStudentData?: BRZ_MatrikelStudentData;
