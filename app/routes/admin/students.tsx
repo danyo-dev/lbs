@@ -1,10 +1,27 @@
-import { LoaderFunction, Outlet } from "remix";
-import { getStudentProfiles } from "~/services/academy5Service";
+import { LoaderFunction, Outlet, json } from "remix";
+import { requireAuthentication } from "~/services/auth.server";
+import { getProfiles, getRelevantProfiles } from "~/services/db.server";
 
-export const loader: LoaderFunction = async () => {
-  const studentProfiles = await getStudentProfiles();
+export const loader: LoaderFunction = async ({ request }) => {
+  await requireAuthentication(request);
+  const studentProfilesToRender = await getRelevantProfiles();
 
-  return studentProfiles;
+  if (!studentProfilesToRender) {
+    throw new Response("no studentProfiles found", {
+      status: 404,
+    });
+  }
+  const mapStudentProfiles = studentProfilesToRender.map((profile) => {
+    return { id: profile.pid };
+  });
+  const studentProfiles = await getProfiles(mapStudentProfiles);
+
+  if (!studentProfiles) {
+    throw new Response("no studentProfiles found", {
+      status: 404,
+    });
+  }
+  return json(studentProfiles);
 };
 
 export default function Students() {

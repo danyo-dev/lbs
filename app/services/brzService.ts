@@ -1,7 +1,8 @@
-import { v4 } from "uuid";
-import { getSession } from "./session.server";
-import converter from "xml-js";
-import { Session } from "remix";
+import { v4 } from 'uuid';
+import { getSession } from './session.server';
+import converter from 'xml-js';
+import { Session } from 'remix';
+import { BRZ_FlattendedStammDatenProfile, BRZ_FlattenedStudienDaten } from '~/types/StudentTypes';
 
 /**
  * Handle XML Response
@@ -16,15 +17,12 @@ export function handleXMLResponse(response: string) {
 }
 
 /**
- * Handle Errors
+ * Handle Errors Server Side
  * @param status
  * @param statusText
  */
 
-export function handleErrors(
-  response: Response,
-  responseMsg = "error occured"
-) {
+export function handleErrors(response: Response, responseMsg = 'error occured') {
   if (response.ok) {
     return;
   }
@@ -39,14 +37,9 @@ export function handleErrors(
  * @returns Session as Promise
  */
 
-export async function brzAuthenticationHandler(
-  request: Request
-): Promise<Session> {
+export async function brzAuthenticationHandler(request: Request): Promise<Session> {
   const session = await getSession(request);
-  if (
-    !session.has("brz_auth_expiration") ||
-    session.get("brz_auth_expiration") <= Date.now()
-  ) {
+  if (!session.has('brz_auth_expiration') || session.get('brz_auth_expiration') <= Date.now()) {
     const authenticateRequest = await authenticate(request);
 
     return authenticateRequest;
@@ -63,18 +56,18 @@ export async function brzAuthenticationHandler(
 async function authenticate(request: Request): Promise<Session> {
   const session = await getSession(request);
 
-  const requestURL = process.env.BRZ_AUTH_URL || "";
+  const requestURL = process.env.BRZ_AUTH_URL || '';
   const { BRZ_USER: user, BRZ_PASSWORD: password } = process.env;
 
-  const base64Output = Buffer.from(`${user}:${password}`).toString("base64");
+  const base64Output = Buffer.from(`${user}:${password}`).toString('base64');
   const headers = new Headers();
 
-  headers.set("Authorization", `Basic ${base64Output}`);
-  headers.set("Content-Type", "Application/x-www-form-urlencoded");
-  headers.set("Accept", "Application/json");
+  headers.set('Authorization', `Basic ${base64Output}`);
+  headers.set('Content-Type', 'Application/x-www-form-urlencoded');
+  headers.set('Accept', 'Application/json');
 
   const response = await fetch(requestURL, {
-    method: "post",
+    method: 'post',
     headers,
   });
 
@@ -82,11 +75,8 @@ async function authenticate(request: Request): Promise<Session> {
 
   const responseData = await response.json();
 
-  session.set("brz_auth", responseData);
-  session.set(
-    "brz_auth_expiration",
-    Date.now() + responseData.expires_in * 1000
-  );
+  session.set('brz_auth', responseData);
+  session.set('brz_auth_expiration', Date.now() + responseData.expires_in * 1000);
 
   return session;
 }
@@ -97,21 +87,18 @@ async function authenticate(request: Request): Promise<Session> {
  * @param request
  * @returns promise
  */
-export async function requestBrzStudiendaten(
-  session: Session,
-  queryString: string
-): Promise<string | void> {
-  const token = session.get("brz_auth").access_token;
+export async function requestBrzStudiendaten(session: Session, queryString: string): Promise<string | void> {
+  const token = session.get('brz_auth').access_token;
 
   const uuid = v4();
 
   const headers = new Headers();
-  headers.set("Authorization", `Bearer ${token}`);
+  headers.set('Authorization', `Bearer ${token}`);
 
   const requestURL = `${process.env.BRZ_STUDIENDATEN}?be=FL&${queryString}&uuid=${uuid}`;
 
   const response = await fetch(requestURL, {
-    method: "get",
+    method: 'get',
     headers,
   });
   const XMLResponse = await response.text();
@@ -128,21 +115,18 @@ export async function requestBrzStudiendaten(
  * @param request
  * @returns promise
  */
-export async function requestBrzStammdaten(
-  session: Session,
-  queryString: string
-): Promise<string | void> {
-  const token = session.get("brz_auth").access_token;
+export async function requestBrzStammdaten(session: Session, queryString: string): Promise<string | void> {
+  const token = session.get('brz_auth').access_token;
 
   const uuid = v4();
 
   const headers = new Headers();
-  headers.set("Authorization", `Bearer ${token}`);
+  headers.set('Authorization', `Bearer ${token}`);
 
   const requestURL = `${process.env.BRZ_STAMMDATEN_URL}?be=FL&${queryString}&uuid=${uuid}`;
 
   const response = await fetch(requestURL, {
-    method: "get",
+    method: 'get',
     headers,
   });
   const XMLResponse = await response.text();
@@ -159,21 +143,18 @@ export async function requestBrzStammdaten(
  * @param request
  * @returns Promise
  */
-export async function requestBrzMatrikelNumber(
-  session: Session,
-  queryString: string
-): Promise<string | void> {
-  const token = session.get("brz_auth").access_token;
+export async function requestBrzMatrikelNumber(session: Session, queryString: string): Promise<string | void> {
+  const token = session.get('brz_auth').access_token;
 
   const uuid = v4();
 
   const headers = new Headers();
-  headers.set("Authorization", `Bearer ${token}`);
+  headers.set('Authorization', `Bearer ${token}`);
 
   const requestURL = `${process.env.BRZ_MATRIKEL_CHECK_URL}?${queryString}&uuid=${uuid}`;
 
   const response = await fetch(requestURL, {
-    method: "get",
+    method: 'get',
     headers,
   });
 
@@ -181,6 +162,9 @@ export async function requestBrzMatrikelNumber(
   const responseBody = handleXMLResponse(XMLResponse);
 
   handleErrors(response, responseBody);
+
+  console.log(session.has('matrikel'));
+  session.set('matrikel', 'asdasdas');
 
   return responseBody;
 }
@@ -192,20 +176,17 @@ export async function requestBrzMatrikelNumber(
  * @returns Promise
  */
 
-export async function requestGetReservedMatrikel(
-  session: Session,
-  year: string
-): Promise<string | void> {
-  const token = session.get("brz_auth").access_token;
+export async function requestGetReservedMatrikel(session: Session, year: string): Promise<string | void> {
+  const token = session.get('brz_auth').access_token;
   const uuid = v4();
 
   const headers = new Headers();
-  headers.set("Authorization", `Bearer ${token}`);
+  headers.set('Authorization', `Bearer ${token}`);
 
   const requestURL = `${process.env.BRZ_RESERVED_MATRIKEL_URL}?be=FL&sj=${year}&uuid=${uuid}`;
 
   const response = await fetch(requestURL, {
-    method: "get",
+    method: 'get',
     headers,
   });
 
@@ -223,23 +204,20 @@ export async function requestGetReservedMatrikel(
  * @param session
  * @returns Promise
  */
-export async function requestNewMatrikel(
-  session: Session,
-  year: FormDataEntryValue
-): Promise<string | void> {
-  const token = session.get("brz_auth").access_token;
+export async function requestNewMatrikel(session: Session, year: FormDataEntryValue): Promise<string | void> {
+  const token = session.get('brz_auth').access_token;
   const uuid = v4();
 
   const headers = new Headers();
-  headers.set("Authorization", `Bearer ${token}`);
-  headers.set("Content-Type", "application/xml");
+  headers.set('Authorization', `Bearer ${token}`);
+  headers.set('Content-Type', 'application/xml');
 
   const XMLdata = `<?xml version="1.0" encoding="UTF-8"?> <matrikelnummernanfrage><uuid>${uuid}</uuid><kontingentblock><anzahl>1</anzahl><be>FL</be><sj>${year}</sj></kontingentblock></matrikelnummernanfrage>`;
 
   const requestURL = `${process.env.BRZ_GET_NEW_MATRIKEL_URL}`;
 
   const response = await fetch(requestURL, {
-    method: "post",
+    method: 'post',
     headers,
     body: XMLdata,
   });
@@ -248,6 +226,222 @@ export async function requestNewMatrikel(
   const responseBody = handleXMLResponse(XMLResponse);
 
   handleErrors(response, responseBody);
+
+  return responseBody;
+}
+
+/**
+ * Post Stammdaten
+ * https://stubei-q.portal.at/rws/0.6/stammdaten.xml
+ * @param session
+ * @returns Promise
+ */
+export async function postStammDaten(session: Session, data: BRZ_FlattendedStammDatenProfile): Promise<string | void> {
+  const {
+    matrikelnummer,
+    semester,
+    vorname,
+    nachname,
+    geburtsdatum,
+    email,
+    homeStrasse,
+    homePlz,
+    homeOrt,
+    homeTyp,
+    homeLand,
+    semesterStrasse,
+    semesterPlz,
+    semesterOrt,
+    semesterTyp,
+    semesterLand,
+    staatsangehoerigkeit,
+    anrede,
+    akadgrad,
+    akadnach,
+    svnr,
+    bpk,
+    ekz,
+    perskz,
+    valutadatum,
+    valutadatumnachfrist,
+  } = data;
+
+  const token = session.get('brz_auth').access_token;
+  const uuid = v4();
+  const headers = new Headers();
+  headers.set('Authorization', `Bearer ${token}`);
+  headers.set('Content-Type', 'application/xml');
+
+  const XMLdata = `<?xml version="1.0" encoding="UTF-8"?>
+  <stammdatenanfrage xmlns="http://www.brz.gv.at/datenverbund-unis" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" xsi:schemaLocation="http://www.brz.gv.at/datenverbund-unis schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <uuid>${uuid}</uuid>
+      <studierendenkey>
+          <matrikelnummer>${matrikelnummer}</matrikelnummer>
+          <be>FL</be>
+          <semester>${semester}</semester>
+      </studierendenkey>
+      <stammdaten xsi:type="studentInfoMitbelegung">
+          <vorname>${vorname}</vorname>
+          <nachname>${nachname}</nachname>
+          <akadnach>${akadnach}</akadnach>
+          <akadgrad>${akadgrad}</akadgrad>
+          {${bpk && `<bpk>${bpk}</bpk>`}}
+          {${svnr && `<svnr>${svnr}</svnr>`}}
+          {${ekz && `<ekz>${ekz}</ekz>`}}
+          <geburtsdatum>${geburtsdatum}</geburtsdatum>
+          <geschlecht>${anrede}</geschlecht>
+          <staatsbuergerschaft>${staatsangehoerigkeit}</staatsbuergerschaft>
+          <adressen>
+              <adresse>
+                  <strasse>${homeStrasse}</strasse>
+                  <plz>${homePlz}</plz>
+                  <ort>${homeOrt}</ort>
+                  <staat>${homeLand}</staat>
+                  <typ>${homeTyp}</typ>
+              </adresse>
+              <adresse>
+                  <strasse>${semesterStrasse}</strasse>
+                  <plz>${semesterPlz}</plz>
+                  <ort>${semesterOrt}</ort>
+                  <staat>${semesterLand}</staat>
+                  <typ>${semesterTyp}</typ>
+              </adresse>
+          </adressen>
+          <beitragstatus>X</beitragstatus>
+          <emailliste>
+              <email>
+                  <emailadresse>${email}</emailadresse>
+                  <emailtyp>BE</emailtyp>
+              </email>
+          </emailliste>
+          <studienliste>
+              <studiengang>
+                  <stgkz>022${perskz?.substring(3, 7)}</stgkz>
+                  <perskz>${perskz}</perskz>
+                  <bmwfwfoerderrelevant>j</bmwfwfoerderrelevant>
+              </studiengang>
+          </studienliste>
+      </stammdaten>
+      <vorschreibung>
+          <oehbeitrag>2070</oehbeitrag>
+          <sonderbeitrag>0</sonderbeitrag>
+          <studienbeitrag>0</studienbeitrag>
+          <valutadatum>${valutadatum?.split('T')[0]}</valutadatum>
+          <studienbeitragnachfrist>0</studienbeitragnachfrist>
+          <valutadatumnachfrist>${valutadatumnachfrist?.split('T')[0]}</valutadatumnachfrist>
+      </vorschreibung>
+  </stammdatenanfrage>`;
+
+  const requestURL = `${process.env.BRZ_POST_STAMMDATEN}`;
+
+  const response = await fetch(requestURL, {
+    method: 'post',
+    headers,
+    body: XMLdata,
+  });
+
+  const XMLResponse = await response.text();
+  const responseBody = handleXMLResponse(XMLResponse);
+
+  return responseBody;
+}
+
+/**
+ * Post Studiendaten
+ * https://stubei-q.portal.at/rws/0.6/studium.xml
+ * @param session
+ * @returns Promise
+ */
+export async function postStudienDaten(session: Session, data: BRZ_FlattenedStudienDaten): Promise<string | void> {
+  const token = session.get('brz_auth').access_token;
+  const uuid = v4();
+
+  const headers = new Headers();
+  headers.set('Authorization', `Bearer ${token}`);
+  headers.set('Content-Type', 'application/xml');
+
+  const { matrikelnummer, ausbildungssemester, semester, perskz } = data;
+
+  const XMLdata = `<?xml version="1.0" encoding="UTF-8"?>
+  <studienanfrage xmlns="http://www.brz.gv.at/datenverbund-unis">
+    <uuid>${uuid}</uuid>
+    <studierendenkey>
+      <matrikelnummer>${matrikelnummer}</matrikelnummer>
+      <be>FL</be>
+      <semester>${semester}</semester>
+    </studierendenkey>
+    <studien>
+      <studiengang disloziert='N'>
+        <ausbildungssemester>${ausbildungssemester}</ausbildungssemester>
+        <bmwfwfoerderrelevant>J</bmwfwfoerderrelevant>
+        <orgformcode>1</orgformcode>
+        <perskz>${perskz}</perskz>
+        <standortcode>22</standortcode>
+        <stgkz>022${perskz?.substring(3, 7)}</stgkz>
+        <studstatuscode>1</studstatuscode>
+        <zugangsberechtigung>
+          <datum>2020-06-30</datum>
+          <staat>D</staat>
+          <voraussetzung>05</voraussetzung>
+        </zugangsberechtigung>
+        <zulassungsdatum>2021-10-05</zulassungsdatum>
+      </studiengang>
+    </studien>
+  </studienanfrage>`;
+
+  const requestURL = `${process.env.BRZ_POST_STUDIENDATEN}`;
+
+  const response = await fetch(requestURL, {
+    method: 'post',
+    headers,
+    body: XMLdata,
+  });
+
+  const XMLResponse = await response.text();
+  const responseBody = handleXMLResponse(XMLResponse);
+
+  return responseBody;
+}
+/**
+ * Post Zahlungsdaten
+ * https://stubei-q.portal.at/rws/0.6/zahlung.xml
+ * @param session
+ * @returns Promise
+ */
+export async function postZahlungsDaten(session: Session, data: any): Promise<string | void> {
+  const token = session.get('brz_auth').access_token;
+  const uuid = v4();
+
+  const headers = new Headers();
+  headers.set('Authorization', `Bearer ${token}`);
+  headers.set('Content-Type', 'application/xml');
+
+  const { matrikelnummer, semester } = data;
+
+  const XMLdata = `<?xml version="1.0" encoding="UTF-8"?>
+  <zahlungsanfrage xmlns="http://www.brz.gv.at/datenverbund-unis">
+          <uuid>${uuid}</uuid>
+          <studierendenkey>
+                  <matrikelnummer>${matrikelnummer}</matrikelnummer>
+                  <be>FL</be>
+                  <semester>${semester}</semester>
+          </studierendenkey>
+          <zahlungsart>1</zahlungsart>
+          <betrag>2070</betrag>
+          <buchungsdatum>2021-09-01</buchungsdatum>
+          <referenznummer>-2021-900973</referenznummer>
+  </zahlungsanfrage>`;
+
+  const requestURL = `${process.env.BRZ_POST_STUDIENDATEN}`;
+
+  const response = await fetch(requestURL, {
+    method: 'post',
+    headers,
+    body: XMLdata,
+  });
+
+  const XMLResponse = await response.text();
+  const responseBody = handleXMLResponse(XMLResponse);
 
   return responseBody;
 }

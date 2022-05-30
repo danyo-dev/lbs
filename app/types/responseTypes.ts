@@ -50,7 +50,6 @@ export interface FullStudentProfile {
   active: string;
   additionalAddress: string;
   birthCountryId: string;
-  birthdate: string;
   birthName: string;
   city: string;
   cityOfBirth: string;
@@ -65,13 +64,14 @@ export interface FullStudentProfile {
   editTime: string;
   editUserId: string;
   email: string;
-  firstname: string;
+  geb: string | number | Date;
+  vorname: string;
   grade: string;
   id: string;
   infopoolFolderId: string;
   languageOfCorrespondence: string;
   lastLoginTime: string;
-  lastname: string;
+  name: string;
   locked: string;
   loginAttempts: string;
   middleName: string;
@@ -94,11 +94,11 @@ export interface FullStudentProfile {
 export type StudentProfile = Pick<
   FullStudentProfile,
   | "birthName"
-  | "birthdate"
+  | "geb"
   | "email"
-  | "firstname"
+  | "vorname"
   | "id"
-  | "lastname"
+  | "name"
   | "phone"
   | "street"
   | "street2"

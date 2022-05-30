@@ -1,95 +1,59 @@
-import { ForwardRefExoticComponent, RefAttributes } from "react";
-import { FormProps } from "remix";
-import { StateTypes } from "~/types/generalTypes";
-import { StudentProfile } from "~/types/responseTypes";
+import { ForwardRefExoticComponent, RefAttributes } from 'react';
+import { FormProps } from 'remix';
+import { StateTypes } from '~/types/generalTypes';
+import { CompleteStudentProfile } from '~/types/studentTypes';
+import { formatBirthdates } from '~/utils/dateUtils';
+import { InputField } from './InputField';
 
 interface Props {
   Form: ForwardRefExoticComponent<FormProps & RefAttributes<HTMLFormElement>>;
   state: StateTypes;
-  student?: Partial<StudentProfile>;
+  student: CompleteStudentProfile | undefined;
 }
 export default function BrzGetMatrikelForm({ Form, state, student }: Props) {
+  const { stammDaten } = student || {};
   return (
-    <Form
-      method="get"
-      action={`/admin/api/brz/getMatrikel`}
-      className=" bg-white overflow-hidden rounded-lg p-3"
-    >
+    <Form method="get" action="/admin/api/brz/getMatrikel" className=" bg-white overflow-hidden rounded-lg p-3">
       <div className="px-6 py-3 bg-white overflow-hidden ">
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-6">
-            <label
-              htmlFor="vorname"
-              className="block text-sm font-medium text-slate-600"
-            >
-              Vorname
-            </label>
-            <input
-              type="text"
+            <InputField
               name="vorname"
-              defaultValue={student?.firstname || ""}
-              id="vorname"
+              label="vorname"
+              value={stammDaten?.vorname || ''}
               required
-              autoComplete="given-name"
               className="inputField"
             />
           </div>
 
           <div className="col-span-6">
-            <label
-              htmlFor="nachname"
-              className="block text-sm font-medium text-slate-600"
-            >
-              Nachname
-            </label>
-            <input
-              type="text"
+            <InputField
               name="nachname"
-              defaultValue={student?.lastname || ""}
-              id="nachname"
+              label="nachname"
+              value={stammDaten?.name || ''}
               required
-              autoComplete="family-name"
               className="inputField"
             />
           </div>
 
           <div className="col-span-6">
-            <label
-              htmlFor="geburtsdatum"
-              className="block text-sm font-medium text-slate-600"
-            >
-              Geburtsdatum
-            </label>
-            <input
-              type="date"
+            <InputField
               name="geburtsdatum"
-              defaultValue={student?.birthdate || ""}
-              id="geburtsdatum"
+              inputType="date"
+              label="geburtsdatum"
+              value={formatBirthdates(stammDaten?.geb) || ''}
               required
-              autoComplete="email"
               className="inputField"
             />
           </div>
           <div className="col-span-6">
-            <label
-              htmlFor="svnr"
-              className="block text-sm font-medium text-slate-600"
-            >
-              Svnr:
-            </label>
-            <input
-              type="text"
-              name="svnr"
-              id="svnr"
-              defaultValue=""
-              className="inputField"
-            />
+            <InputField name="svnr" label="svnr" value="" className="inputField" />
           </div>
         </div>
       </div>
       <div className="px-4 py-3 text-right">
         <button
-          disabled={state === "submitting" ? true : false}
+          disabled={state === 'submitting' ? true : false}
           type="submit"
           className="disabled:opacity-50 inline-flex justify-center py-2 px-4 border border-transparent  text-sm font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
         >

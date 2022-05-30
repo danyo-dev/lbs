@@ -6,7 +6,6 @@ import {
   requestBrzStudiendaten,
 } from "~/services/brzService";
 import getCleanQueryString from "~/utils/getCleanQueryString";
-import { BrzStudienDaten } from "~/types/brzTypes";
 
 export const loader: LoaderFunction = async ({ request }) => {
   await requireAuthentication(request);

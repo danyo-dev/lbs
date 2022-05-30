@@ -1,19 +1,15 @@
-import { useState } from "react";
-import { Form } from "remix";
-import { BrzMatrikelStudent } from "~/types/brzTypes";
-import { Fetcher } from "~/types/generalTypes";
-import { DuplicateIcon, CheckIcon } from "@heroicons/react/outline";
-import { LbsLoader } from "~/components/shared/LbsLoader";
+import { useState } from 'react';
+import { Form } from 'remix';
 
-export default function BrzMatrikelDataBox({
-  data,
-  type,
-}: Fetcher<BrzMatrikelStudent>) {
+import { Fetcher } from '~/types/generalTypes';
+import { DuplicateIcon, CheckIcon } from '@heroicons/react/outline';
+import { LbsLoader } from '~/components/shared/LbsLoader';
+import { BRZ_MatrikelStudent } from '~/types/studentTypes';
+
+export default function BrzMatrikelDataBox({ data, type }: Fetcher<BRZ_MatrikelStudent>) {
   const [textIsCopied, setTextIsCopied] = useState(false);
   function handleCopy() {
-    navigator.clipboard.writeText(
-      `${data?.matrikelStudentData?.matrikelnummer._text}`
-    );
+    navigator.clipboard.writeText(`${data?.matrikelStudentData?.matrikelnummer._text}`);
     setTextIsCopied(true);
   }
 
@@ -34,11 +30,7 @@ export default function BrzMatrikelDataBox({
   }
 
   return (
-    <LbsLoader
-      type={type}
-      hasData={Boolean(data?.matrikelStudentData)}
-      noDataFound={<NoDataFound />}
-    >
+    <LbsLoader type={type} hasData={Boolean(data?.matrikelStudentData)} noDataFound={<NoDataFound />}>
       <div className="grid grid-cols-4">
         <div>
           <p className="text-slate-500">Matrikelnummer</p>
@@ -47,10 +39,7 @@ export default function BrzMatrikelDataBox({
           </div>
           {textIsCopied ? (
             <div className=" text-slate-500 flex">
-              <CheckIcon
-                className="w-5 h-5"
-                data-tooltip-target="tooltip-default"
-              />
+              <CheckIcon className="w-5 h-5" data-tooltip-target="tooltip-default" />
               <span>copied</span>
             </div>
           ) : (
@@ -63,14 +52,12 @@ export default function BrzMatrikelDataBox({
         <div>
           <p className="text-slate-500">Semester</p>
           <div className="block text-2xl font-medium text-sky-600">
-            {data?.matrikelStudentData?.semester?._text || "-"}
+            {data?.matrikelStudentData?.semester?._text || '-'}
           </div>
         </div>
         <div>
           <p className="text-slate-500">Bildungseinrichtung</p>
-          <div className="block text-2xl font-medium text-sky-600">
-            {data?.matrikelStudentData?.be?._text || "-"}
-          </div>
+          <div className="block text-2xl font-medium text-sky-600">{data?.matrikelStudentData?.be?._text || '-'}</div>
         </div>
         <div>
           <p className="text-slate-500">Matrikelstatus</p>

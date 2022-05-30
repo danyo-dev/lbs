@@ -8,79 +8,79 @@ import {
   useLoaderData,
   useSearchParams,
   useSubmit,
-} from "remix";
-import { toast } from "react-toastify";
-import { requireAuthentication } from "~/services/auth.server";
+} from "remix"
+import { toast } from "react-toastify"
+import { requireAuthentication } from "~/services/auth.server"
 import {
   brzAuthenticationHandler,
   requestGetReservedMatrikel,
   requestNewMatrikel,
-} from "~/services/brzService";
+} from "~/services/brzService"
 import {
   getParsedNewMatrikelData,
   getParsedReservedMatrikelData,
-} from "~/utils/brzUtils";
-import { useEffect } from "react";
-import { toastConfig } from "~/config/settings";
-import { currentYear, getSemesterSelection } from "~/utils/dateUtils";
+} from "~/utils/brzUtils"
+import { useEffect } from "react"
+import { toastConfig } from "~/config/settings"
+import { currentYear, getSemesterSelection } from "~/utils/dateUtils"
 
 export const action: ActionFunction = async ({ request }) => {
-  await requireAuthentication(request);
+  await requireAuthentication(request)
 
-  const body = await request.formData();
-  const year = body.get("year") || currentYear.toString();
-  const brzSession = await brzAuthenticationHandler(request);
-  const newMatrikelNumberResponse = await requestNewMatrikel(brzSession, year);
+  const body = await request.formData()
+  const year = body.get("year") || currentYear.toString()
+  const brzSession = await brzAuthenticationHandler(request)
+  const newMatrikelNumberResponse = await requestNewMatrikel(brzSession, year)
 
   if (!newMatrikelNumberResponse) {
-    throw new Response("this should not be possible", { status: 500 });
+    throw new Response("this should not be possible", { status: 500 })
   }
   return json({
     newMatrikelNumber: getParsedNewMatrikelData(newMatrikelNumberResponse),
     year,
-  });
-};
+  })
+}
 
 export const loader: LoaderFunction = async ({ request }) => {
-  await requireAuthentication(request);
+  await requireAuthentication(request)
 
-  const brzSession = await brzAuthenticationHandler(request);
-  const url = new URL(request.url);
-  const year = url.searchParams.get("year") || currentYear.toString();
+  const brzSession = await brzAuthenticationHandler(request)
+  const url = new URL(request.url)
+  const year = url.searchParams.get("year") || currentYear.toString()
 
   const reservedMatrikelResponse = await requestGetReservedMatrikel(
     brzSession,
     year
-  );
+  )
 
   if (!reservedMatrikelResponse) {
-    throw new Response("this should not be possible", { status: 500 });
+    throw new Response("this should not be possible", { status: 500 })
   }
-  return json(getParsedReservedMatrikelData(reservedMatrikelResponse));
-};
+  return json(getParsedReservedMatrikelData(reservedMatrikelResponse))
+}
 
 export default function Matrikel() {
   const data = useLoaderData<
     {
-      _text: string;
+      _text: string
     }[]
-  >();
+  >()
   const actionData = useActionData<{
-    newMatrikelNumber: string;
-    year: FormDataEntryValue;
-  }>();
-  const [searchParams] = useSearchParams();
+    newMatrikelNumber: string
+    year: FormDataEntryValue
+  }>()
+  const [searchParams] = useSearchParams()
 
-  const submit = useSubmit();
+  const submit = useSubmit()
 
   useEffect(() => {
     if (actionData?.newMatrikelNumber) {
       toast.success(
         `Matrikelnummer ${actionData.newMatrikelNumber} für das Jahr ${actionData?.year} erfolgreich reserviert`,
         toastConfig
-      );
+      )
     }
-  }, [actionData]);
+  }, [actionData])
 
   return (
     <div className="grid grid-cols-12 gap-24">
@@ -100,7 +100,7 @@ export default function Matrikel() {
                 <>
                   <option value={`${el}`} key={`${el}`}>{`${el}`}</option>
                 </>
-              );
+              )
             })}
           </select>
         </Form>
@@ -128,7 +128,7 @@ export default function Matrikel() {
             defaultValue={currentYear}
           >
             {getSemesterSelection().map((el) => {
-              return <option value={`${el}`} key={`${el}`}>{`${el}`}</option>;
+              return <option value={`${el}`} key={`${el}`}>{`${el}`}</option>
             })}
           </select>
           <button type="submit" className="submitBtn mt-4">
@@ -137,18 +137,18 @@ export default function Matrikel() {
         </Form>
       </div>
     </div>
-  );
+  )
 }
 
 export function CatchBoundary() {
-  const caught = useCatch();
+  const caught = useCatch()
 
   function renderErrorMessage() {
     try {
-      const parsedData = JSON.parse(caught.data);
-      return parsedData.FehlerAntwort.fehlerliste.fehler.fehlertext._text;
+      const parsedData = JSON.parse(caught.data)
+      return parsedData.FehlerAntwort.fehlerliste.fehler.fehlertext._text
     } catch {
-      return caught.data;
+      return caught.data
     }
   }
 
@@ -157,5 +157,5 @@ export function CatchBoundary() {
       <div className="text-2xl font-bold mb-2">{renderErrorMessage()}</div>
       <div className="text-xl font-bold mb-2">Error: {caught.status}</div>
     </div>
-  );
+  )
 }
