@@ -163,9 +163,6 @@ export async function requestBrzMatrikelNumber(session: Session, queryString: st
 
   handleErrors(response, responseBody);
 
-  console.log(session.has('matrikel'));
-  session.set('matrikel', 'asdasdas');
-
   return responseBody;
 }
 
