@@ -38,14 +38,16 @@ const forwardConfig = {
 };
 
 /**
- * establishes ssh connecton and tunnel
- * returns connection to close it manually
+ * establishes ssh connecton with ssh tunnel and establishes DB connection
+ * returns function to close db and ssh connection manually
 
- * @return {sshConnection}
+ * @return {closeDBConnection}
  */
-export async function connectDB<DBQueryFn extends (...args: any) => any>(
-  dbQueryFn: DBQueryFn
-): Promise<ReturnType<DBQueryFn>> {
+export async function connectDB() {
+  let connectionStatus = {
+    db: false,
+    ssh: false,
+  }
   // check if port is in use
   const tunnelOpen = await portUsed.check(3306, '127.0.0.1');
   const sshConnection = new SSHConnection(sshConfig);
@@ -55,15 +57,37 @@ export async function connectDB<DBQueryFn extends (...args: any) => any>(
     await sshConnection.forward(forwardConfig).catch((err) => {
       console.log('SSH Connection error', err);
     });
+    connectionStatus.ssh = true;
+  }
+  await db.$connect().catch((err) => {
+    console.log('DB Connection error', err);
+  });
+  connectionStatus.db = true;
+
+  async function closeConnection() {
+    await db.$disconnect();
+    sshConnection.shutdown();
+
+    connectionStatus = {
+      ssh: false,
+      db: false,
+    }
   }
 
-  const result = await dbQueryFn();
-
-  // disconnect SSH to avoid opening multiple connections
-  sshConnection.shutdown();
-
-  return result;
+  return { connectionStatus, closeConnection };
 }
+
+export function withDatabase(fn: () => Promise<any>) {
+  return async () => {
+    const { connectionStatus, closeConnection } = await connectDB();
+    try {
+      return await fn();
+    } finally {
+      closeConnection();
+    }
+  };
+}
+
 function queryRelevantStudents() {
   return db.profil_semester.findMany({
     where: {
@@ -184,76 +208,76 @@ function queryFinancialInfo(id: number) {
   });
 }
 
-export async function getMnr(profileId: string) {
+export function getMnr(profileId: string) {
   try {
-    return await connectDB(() => queryMnr(parseInt(profileId)));
+    return queryMnr(parseInt(profileId))
   } catch (error) {
     console.log(error);
   }
 }
-export async function getFinancialDueDate(profileId: string) {
+export function getFinancialDueDate(profileId: string) {
   try {
-    return await connectDB(() => queryFinancialDueDate(parseInt(profileId)));
+    return queryFinancialDueDate(parseInt(profileId));
   } catch (error) {
     console.log(error);
   }
 }
-export async function getFinancialProfile(profileId: string) {
+export function getFinancialProfile(profileId: string) {
   try {
-    return await connectDB(() => queryFinancialInfo(parseInt(profileId)));
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export async function getAddresses(profileId: string) {
-  try {
-    return await connectDB(() => queryAddresses(parseInt(profileId)));
+    return queryFinancialInfo(parseInt(profileId));
   } catch (error) {
     console.log(error);
   }
 }
 
-export async function getBisProfileProperties(profileId: string) {
+export function getAddresses(profileId: string) {
   try {
-    return await connectDB(() => queryBisProfileProperties(parseInt(profileId)));
+    return queryAddresses(parseInt(profileId));
   } catch (error) {
     console.log(error);
   }
 }
 
-export async function getCountries(...countries: number[]) {
+export function getBisProfileProperties(profileId: string) {
   try {
-    return await connectDB(() => queryCountries(countries.filter(Boolean)));
+    return queryBisProfileProperties(parseInt(profileId));
   } catch (error) {
     console.log(error);
   }
 }
 
-export async function getProfile(profileId: string) {
-  return handleCache(`studentProfile_${profileId}`, async () => {
+export function getCountries(...countries: number[]) {
+  try {
+    return queryCountries(countries.filter(Boolean))
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function getProfile(profileId: string) {
+  return handleCache(`studentProfile_${profileId}`, () => {
     try {
-      return await connectDB(() => queryProfile(parseInt(profileId)));
+      return queryProfile(parseInt(profileId));
     } catch (error) {
       console.log(error);
     }
   });
 }
 
-export async function getProfiles(profiles: { id: bigint }[]) {
-  return handleCache('students', async () => {
+export function getProfiles(profiles: { id: bigint }[]) {
+  return handleCache('students', () => {
     try {
-      return await connectDB(() => queryStudentProfiles(profiles));
+      return queryStudentProfiles(profiles);
     } catch (error) {
       console.log(error);
     }
   });
 }
 
-export async function getRelevantProfiles() {
-  return handleCache('studentRelevantProfiles', async () => {
+export function getRelevantProfiles() {
+  return handleCache('studentRelevantProfiles', () => {
     try {
-      return await connectDB(queryRelevantStudents);
+      return queryRelevantStudents();
     } catch (error) {
       console.log(error);
     }
