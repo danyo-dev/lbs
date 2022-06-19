@@ -30,23 +30,23 @@ export type AC_5_FinancialProfile = Pick<
   'amount' | 'invoice_date' | 'invoice_number' | 'due_date' | 'year' | 'term'
 >;
 
-export type CompleteStudentProfile = { stammDaten: BRZ_StammDatenProfile; financialData: AC_5_FinancialProfile[] };
+export type CompleteStudentProfile = { stammDaten: BRZ_StammDatenProfile; financialData: AC_5_FinancialProfile | undefined };
 
 export type BRZ_StammDatenProfile =
   | (Omit<AC5_StammDatenProfile, 'staatsangehoerigkeit' | 'id'> & {
-      staatsangehoerigkeit?: string | undefined | null;
-      id?: number;
-      addresses: BRZ_AdressFields[] | undefined;
-      semester?: string;
-      titel?: string | null;
-      title_postposed?: string | null;
-      matrikelnummer: string;
-      bpk?: string | null;
-      svnr?: string | null;
-      ekz?: string | null;
-      perskz: string | null | undefined;
-      valutadatum: Date | null | undefined;
-    })
+    staatsangehoerigkeit?: string | undefined | null;
+    id?: number;
+    addresses: BRZ_AdressFields[] | undefined;
+    semester?: string;
+    titel?: string | null;
+    title_postposed?: string | null;
+    matrikelnummer: string;
+    bpk?: string | null;
+    svnr?: string | null;
+    ekz?: string | null;
+    perskz: string | null | undefined;
+    valutadatum: Date | null | undefined;
+  })
   | undefined;
 
 export type BRZ_FlattendedStammDatenProfile = {
@@ -83,6 +83,13 @@ export type BRZ_FlattenedStudienDaten = {
   semester: string;
   ausbildungssemester: string;
   perskz: string;
+};
+export type BRZ_FlattenedZahlungsDaten = {
+  matrikelnummer: string;
+  semester: string;
+  betrag: string;
+  buchungsdatum: string;
+  referenznummer: string;
 };
 
 export type BRZ_MatrikelRequest = { stammDaten: Pick<AC5_StammDatenProfile, 'vorname' | 'name' | 'geb'> };

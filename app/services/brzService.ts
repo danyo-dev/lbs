@@ -413,7 +413,7 @@ export async function postZahlungsDaten(session: Session, data: any): Promise<st
   headers.set('Authorization', `Bearer ${token}`);
   headers.set('Content-Type', 'application/xml');
 
-  const { matrikelnummer, semester } = data;
+  const { matrikelnummer, semester, betrag, referenznummer, buchungsdatum } = data;
 
   const XMLdata = `<?xml version="1.0" encoding="UTF-8"?>
   <zahlungsanfrage xmlns="http://www.brz.gv.at/datenverbund-unis">
@@ -424,12 +424,12 @@ export async function postZahlungsDaten(session: Session, data: any): Promise<st
                   <semester>${semester}</semester>
           </studierendenkey>
           <zahlungsart>1</zahlungsart>
-          <betrag>2070</betrag>
-          <buchungsdatum>2021-09-01</buchungsdatum>
-          <referenznummer>-2021-900973</referenznummer>
+          <betrag>${betrag}</betrag>
+          <buchungsdatum>${buchungsdatum}</buchungsdatum>
+          <referenznummer>${referenznummer}</referenznummer>
   </zahlungsanfrage>`;
 
-  const requestURL = `${process.env.BRZ_POST_STUDIENDATEN}`;
+  const requestURL = `${process.env.BRZ_POST_ZAHLUNGSDATEN}`;
 
   const response = await fetch(requestURL, {
     method: 'post',
@@ -439,6 +439,7 @@ export async function postZahlungsDaten(session: Session, data: any): Promise<st
 
   const XMLResponse = await response.text();
   const responseBody = handleXMLResponse(XMLResponse);
+  console.log(responseBody)
 
   return responseBody;
 }

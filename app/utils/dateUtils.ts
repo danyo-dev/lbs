@@ -1,5 +1,10 @@
 export const currentYear = new Date().getFullYear();
 
+export function getDateFromISOString(dateTime: string): string {
+  const [date] = dateTime.split('T');
+  return date;
+}
+
 export function getSemesterSelection() {
   return [...Array(4)].map((_, idx) => currentYear - idx);
 }

@@ -65,6 +65,8 @@ export const loader: LoaderFunction = async ({ params }) => {
     mappedAdressesWithBisCode.push(mappedAdressesWithBisCode[0]);
   }
 
+  const currentYearFinancials = financialProfile?.find((financial) => financial.year === 2022 && financial.amount === 21.2);
+  console.log(financialProfile);
   const completeStudentProfile: CompleteStudentProfile = {
     stammDaten: {
       ...studentProfileData,
@@ -77,7 +79,7 @@ export const loader: LoaderFunction = async ({ params }) => {
       perskz: mnr?.[0]?.mnr,
       valutadatum: dueDate?.due_date,
     },
-    financialData: [...(financialProfile || [])],
+    financialData: currentYearFinancials,
   };
 
   return json(completeStudentProfile);
