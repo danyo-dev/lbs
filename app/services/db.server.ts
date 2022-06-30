@@ -77,16 +77,24 @@ export async function connectDB() {
   return { connectionStatus, closeConnection };
 }
 
-export function withDatabase(fn: () => Promise<any>) {
-  return async () => {
+export async function withDatabase(fn: () => Promise<any>) {
+ 
     const { connectionStatus, closeConnection } = await connectDB();
-    try {
-      return await fn();
-    } finally {
-      closeConnection();
-    }
+    const result = await fn();
+    await closeConnection()
+    return result;
+    // return {
+    //   result: await fn(),
+    //   closeConnection
+    // }
+    // return fn();
+    // try{
+    //   return fn();
+    // }finally{
+    //   // await closeConnection()
+    // }
+    
   };
-}
 
 function queryRelevantStudents() {
   return db.profil_semester.findMany({

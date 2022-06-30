@@ -6,7 +6,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   return withDatabase(async () => {
     await requireAuthentication(request);
     const studentProfilesToRender = await getRelevantProfiles();
-
     if (!studentProfilesToRender) {
       throw new Response("no studentProfiles found", {
         status: 404,
