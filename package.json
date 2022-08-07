@@ -9,9 +9,12 @@
     "dev:css": "tailwindcss -i app/styles/tailwind.css -o app/styles/tailwind-build.css --watch",
     "build:css": "tailwindcss -i app/styles/tailwind.css -o app/styles/tailwind-build.css --minify",
     "postinstall": "remix setup node",
-    "start": "remix-serve build"
+    "start": "cross-env NODE_ENV=production netlify dev"
   },
   "dependencies": {
+    "@netlify/functions": "^1.0.0",
+    "@remix-run/netlify": "^1.6.7",
+    "@remix-run/node": "^1.6.7",
     "@headlessui/react": "^1.4.2",
     "@heroicons/react": "^1.0.5",
     "@prisma/client": "^3.11.0",
