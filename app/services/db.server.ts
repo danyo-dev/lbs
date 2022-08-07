@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import { SSHConnection } from 'node-ssh-forward';
 import { handleCache } from '~/utils/cacheUtils';
 import { currentYear } from '~/utils/dateUtils';
+import { getSSHKey} from '~/utils/sshUtils'
+
 require('~/patches/patches.js');
 // useing require here because TS yells when importing and no Types are defined
 const portUsed = require('port-used');
@@ -23,11 +25,10 @@ if (process.env.NODE_ENV === 'production') {
   }
   db = global.__db;
 }
-
 const sshConfig = {
   endHost: process.env.AC5_SSH_HOST as string,
   username: process.env.AC5_SSH_USER as string,
-  privateKey: process.env.AC5_SSH_KEY ? Buffer.from(process.env.AC5_SSH_KEY, 'base64').toString('utf-8') : undefined,
+  privateKey: Buffer.from(getSSHKey(), 'base64').toString('utf-8'),
   passphrase: process.env.AC5_SSH_PASSPHRASE as string,
 };
 
@@ -78,7 +79,7 @@ export async function connectDB() {
 }
 
 export async function withDatabase(fn: () => Promise<any>) {
- 
+
     const { connectionStatus, closeConnection } = await connectDB();
     const result = await fn();
     await closeConnection()
@@ -93,7 +94,7 @@ export async function withDatabase(fn: () => Promise<any>) {
     // }finally{
     //   // await closeConnection()
     // }
-    
+
   };
 
 function queryRelevantStudents() {
