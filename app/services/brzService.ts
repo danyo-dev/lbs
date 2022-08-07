@@ -1,7 +1,7 @@
 import { v4 } from 'uuid';
 import { getSession } from './session.server';
 import converter from 'xml-js';
-import { Session } from 'remix';
+import { Session } from '@remix-run/node';
 import { BRZ_FlattendedStammDatenProfile, BRZ_FlattenedStudienDaten } from '~/types/StudentTypes';
 
 /**

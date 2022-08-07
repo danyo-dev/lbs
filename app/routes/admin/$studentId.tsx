@@ -1,5 +1,6 @@
 import { ArrowLeftIcon } from '@heroicons/react/outline';
-import { json, Link, LoaderFunction, NavLink, Outlet, useCatch } from 'remix';
+import { Link, NavLink, Outlet, useCatch } from '@remix-run/react';
+import {json, LoaderFunction} from '@remix-run/node';
 import { studentDetailRoutes } from '~/config/routes';
 
 import {

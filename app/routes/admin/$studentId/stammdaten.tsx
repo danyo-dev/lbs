@@ -1,5 +1,7 @@
 import { useEffect, Fragment } from 'react';
-import { ActionFunction, Form, json, useTransition, useMatches, useParams, useActionData } from 'remix';
+import {  Form,  useTransition, useMatches, useParams, useActionData } from '@remix-run/react';
+import {ActionFunction,
+  json} from '@remix-run/node'
 import { BRZ_FlattendedStammDatenProfile } from '~/types/StudentTypes';
 import { InputField } from '~/components/InputField';
 import { formatBirthdates, getCurrentSemester, getSemesterSelection, addDays } from '~/utils/dateUtils';

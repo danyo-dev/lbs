@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
-import { ActionFunction, Form, json, useCatch, useMatches, useParams, useTransition } from 'remix';
+import { Form, useCatch, useMatches, useParams, useTransition } from '@remix-run/react';
+import {ActionFunction, json} from '@remix-run/node'
 import { InputField } from '~/components/InputField';
 import { requireAuthentication } from '~/services/auth.server';
 import { brzAuthenticationHandler, postStudienDaten } from '~/services/brzService';

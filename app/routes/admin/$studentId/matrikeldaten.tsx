@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { useFetcher, useParams, useMatches, useCatch, LoaderFunction } from 'remix';
+import { useFetcher, useParams, useMatches, useCatch } from '@remix-run/react';
+import { LoaderFunction } from '@remix-run/node';
 import BrzGetMatrikelForm from '~/components/BrzGetMatrikelForm';
 import BrzMatrikelDataBox from '~/components/BrzMatrikelDataBox';
 import { getSession } from '~/services/session.server';

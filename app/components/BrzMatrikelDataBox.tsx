@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form } from 'remix';
+import { Form } from '@remix-run/react';
 
 import { Fetcher } from '~/types/generalTypes';
 import { DuplicateIcon, CheckIcon } from '@heroicons/react/outline';

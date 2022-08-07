@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFetcher } from 'remix';
+import { useFetcher } from '@remix-run/react';
 import { getCurrentSemester, getSemesterSelection } from '~/utils/dateUtils';
 import { InputField } from './InputField';
 

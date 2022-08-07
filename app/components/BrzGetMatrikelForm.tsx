@@ -1,5 +1,5 @@
 import { ForwardRefExoticComponent, RefAttributes } from 'react';
-import { FormProps } from 'remix';
+import { FormProps } from '@remix-run/react';
 import { StateTypes } from '~/types/generalTypes';
 import { CompleteStudentProfile } from '~/types/studentTypes';
 import { formatBirthdates } from '~/utils/dateUtils';

@@ -1,4 +1,4 @@
-import { LoaderFunction, json } from 'remix';
+import { LoaderFunction, json } from '@remix-run/node';
 import { getParsedStammdaten } from '~/utils/brzUtils';
 import { requireAuthentication } from '~/services/auth.server';
 import { brzAuthenticationHandler, requestBrzStammdaten } from '~/services/brzService';
