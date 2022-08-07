@@ -1,4 +1,5 @@
-import { LoaderFunction, Outlet, json } from "remix";
+import { LoaderFunction, json } from "@remix-run/node";
+import {  Outlet } from "@remix-run/react";
 import { requireAuthentication } from "~/services/auth.server";
 import { withDatabase, getProfiles, getRelevantProfiles } from "~/services/db.server";
 

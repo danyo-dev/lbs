@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMatches } from "remix";
+import { useMatches } from "@remix-run/react";
 import PendingLink from "~/components/PendingLink";
 import SearchBar from "~/components/SearchBar";
 import { StudentProfileList } from "~/types/StudentTypes";

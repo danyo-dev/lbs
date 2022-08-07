@@ -1,5 +1,5 @@
 import { ArrowLeftIcon } from "@heroicons/react/outline";
-import { Link, useFetcher } from "remix";
+import { Link, useFetcher } from "@remix-run/react";
 
 import BrzGetStammdatenForm from "~/components/BrzGetStammdatenForm";
 

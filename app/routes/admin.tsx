@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { LogoutIcon } from "@heroicons/react/outline";
-import { Form, Outlet, useLoaderData } from "remix";
-import type { LoaderFunction } from "remix";
+import { Form, Outlet, useLoaderData } from "@remix-run/react";
+import type { LoaderFunction } from "@remix-run/node";
 import type { Auth0Profile } from "remix-auth-auth0";
 import Sidebar from "~/components/Sidebar";
 import { requireAuthentication } from "~/services/auth.server";

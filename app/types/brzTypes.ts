@@ -1,4 +1,4 @@
-import type { Session } from "remix"
+import type { Session } from "@remix-run/node"
 
 export interface BrzLoginResponse {
   responseData: {

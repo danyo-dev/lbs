@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { To } from "react-router-dom";
-import { NavLink, useResolvedPath, useTransition } from "remix";
+import { NavLink, useResolvedPath, useTransition } from "@remix-run/react";
 
 function useIsPendingPathname(to: To) {
   const { location } = useTransition();

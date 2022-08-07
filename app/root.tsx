@@ -1,15 +1,13 @@
 import {
-  json,
   Links,
-  LinksFunction,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
   useLoaderData,
-} from "remix";
-import type { MetaFunction, LoaderFunction } from "remix";
+} from "@remix-run/react";
+import { MetaFunction, LoaderFunction,json,LinksFunction } from "@remix-run/node";
 import { ToastContainer } from "react-toastify";
 import toastStyles from "react-toastify/dist/ReactToastify.css";
 import { EnvVars } from "~/types/envTypes";

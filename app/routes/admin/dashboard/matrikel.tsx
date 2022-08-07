@@ -1,5 +1,5 @@
 import { ArrowLeftIcon } from "@heroicons/react/outline"
-import { Link, useFetcher } from "remix"
+import { Link, useFetcher } from "@remix-run/react"
 import BrzGetMatrikelForm from "~/components/BrzGetMatrikelForm"
 import BrzMatrikelDataBox from "~/components/BrzMatrikelDataBox"
 import { BRZ_MatrikelRequest } from "~/types/studentTypes"

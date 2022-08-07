@@ -1,7 +1,7 @@
 import { Addresses, BrzGeneralDataBoxItem, EmailList } from "~/types/brzTypes"
 import { Fetcher } from "~/types/generalTypes"
 import { LbsLoader } from "~/components/shared/LbsLoader"
-import { useFetchers } from "remix"
+import { useFetchers } from "@remix-run/react"
 
 export default function BrzGeneralDataBox({
   data,

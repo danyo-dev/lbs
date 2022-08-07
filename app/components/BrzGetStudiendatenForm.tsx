@@ -1,4 +1,4 @@
-import { useFetcher } from "remix";
+import { useFetcher } from "@remix-run/react";
 import { getCurrentSemester, getSemesterSelection } from "~/utils/dateUtils";
 
 interface Props {

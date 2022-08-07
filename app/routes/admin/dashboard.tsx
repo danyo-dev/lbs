@@ -1,4 +1,5 @@
-import { Outlet, LoaderFunction } from "remix"
+import { Outlet } from "@remix-run/react"
+import type {LoaderFunction } from "@remix-run/node"
 import { requireAuthentication } from "~/services/auth.server"
 
 export const loader: LoaderFunction = async ({ request }) => {

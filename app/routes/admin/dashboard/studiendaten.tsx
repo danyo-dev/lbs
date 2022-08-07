@@ -1,5 +1,5 @@
 import { ArrowLeftIcon } from "@heroicons/react/outline";
-import { Link, useFetcher } from "remix";
+import { Link, useFetcher } from "@remix-run/react";
 import BrzGetStudiendatenForm from "~/components/BrzGetStudiendatenForm";
 import BrzStudiendatenBox from "~/components/BrzStudiendatenBox";
 import { BrzStudienDaten } from "~/types/brzTypes";

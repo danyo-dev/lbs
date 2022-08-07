@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSubmit, useTransition } from "remix";
+import { useSubmit, useTransition } from "@remix-run/react";
 import type { CustomWindow } from "~/types/envTypes";
 
 // Logs the user out if there was no interaction within the timelimit

@@ -1,4 +1,5 @@
-import { Form, LoaderFunction } from "remix";
+import { Form } from "@remix-run/react";
+import type {LoaderFunction} from '@remix-run/node';
 import logo from "~/assets/logo.svg";
 import university from "~/assets/university.jpg";
 import { authenticator } from "~/services/auth.server";
